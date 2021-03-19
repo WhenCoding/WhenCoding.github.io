@@ -4227,4 +4227,30 @@
         <tag>Java</tag>
       </tags>
   </entry>
+  <entry>
+    <title>通过shell脚本一键安装JDK8</title>
+    <url>/p/63927.html</url>
+    <content><![CDATA[<blockquote>
+<p>难得闲下来，总结一下了最近的脚本，本文主要是给大家介绍一下快速安装jdk的方法</p>
+</blockquote>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>作为一只老鸟，每次项目运行环境搭建，都需要安装JDK，配置环境变量等，做一些重复的工作。这样的事情可能对于刚接触Linux的人来说是很乐意做的，但是接触多了，总是觉得做这样的事情没有多大意义。因此，写一个自动执行的脚本势在必行，不仅可以省时省力，还可以顺带锻炼一下自己的shell脚本编程能力。</p>
+<h2 id="安装包"><a href="#安装包" class="headerlink" title="安装包"></a>安装包</h2><p>安装前我们需要准备一个安装包，拿Linux 64位举个例子，安装包也可以从官网下载。<br>链接:<a class="link"   href="https://pan.baidu.com/s/1Ps8GC8XPSsu6utW9nV3QAQ" >https://pan.baidu.com/s/1Ps8GC8XPSsu6utW9nV3QAQ<i class="fas fa-external-link-alt"></i></a><br>密码:9wfy</p>
+<h2 id="脚本"><a href="#脚本" class="headerlink" title="脚本"></a>脚本</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash</span><br><span class="line"> </span><br><span class="line">JAVA_HOME&#x3D;&#39;&#39;</span><br><span class="line">jdkDir&#x3D;&#x2F;usr&#x2F;local&#x2F;jdk&#x2F;</span><br><span class="line"> </span><br><span class="line">#校验解压JDK的文件夹</span><br><span class="line">if [ -e $jdkDir ]</span><br><span class="line">then </span><br><span class="line">	echo &quot;$jdkDir文件夹已存在,执行被迫终止!&quot;</span><br><span class="line">	exit</span><br><span class="line">fi</span><br><span class="line"> </span><br><span class="line">echo &quot;检查压缩包是否存在...&quot;</span><br><span class="line">if [ -f $1 ]</span><br><span class="line">then</span><br><span class="line">	mkdir $jdkDir</span><br><span class="line">	echo &quot;开始解压...&quot;</span><br><span class="line">	tar -zxvf $1 -C $jdkDir</span><br><span class="line">	for file in $jdkDir*</span><br><span class="line">	do</span><br><span class="line">		if [ -d $file ]</span><br><span class="line">		then</span><br><span class="line">			JAVA_HOME&#x3D;$file</span><br><span class="line">		fi</span><br><span class="line">	done</span><br><span class="line">	echo &quot;JAVA_HOME&#x3D;$JAVA_HOME&quot;	</span><br><span class="line"> </span><br><span class="line">else</span><br><span class="line">	echo 文件不存在:$1</span><br><span class="line">	exit</span><br><span class="line">fi</span><br><span class="line"> </span><br><span class="line">#修改环境变量</span><br><span class="line"> </span><br><span class="line">echo &quot;export JAVA_HOME&#x3D;$JAVA_HOME&quot; &gt;&gt; &#x2F;etc&#x2F;profile</span><br><span class="line">echo &quot;export PATH&#x3D;\$PATH:\$JAVA_HOME&#x2F;bin&quot; &gt;&gt; &#x2F;etc&#x2F;profile</span><br><span class="line">echo &quot;export CLASSPATH&#x3D;.:\$JAVA_HOME&#x2F;lib&#x2F;dt.jar:\$JAVA_HOME&#x2F;lib&#x2F;tools.jar&quot; &gt;&gt; &#x2F;etc&#x2F;profile</span><br><span class="line"> </span><br><span class="line">echo &quot;jdk 安装配置完成&quot;</span><br><span class="line">echo &#96;java -version&#96;</span><br></pre></td></tr></table></figure>
+<h2 id="执行命令"><a href="#执行命令" class="headerlink" title="执行命令"></a>执行命令</h2><p>上面脚本可以用<code>vi</code>保存脚本文件<code>jdk_install.sh</code>，然后执行如下命令，参数只需传递一个，就是你要解压的jdk压缩包的存放路径:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sh .&#x2F;installj8.sh .&#x2F;jdk-8u281-linux-x64.tar.gz</span><br></pre></td></tr></table></figure>
+
+<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>脚本正常执行后，我们可以执行以下命令进行验证：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure>
+<p>如果提示没有该命令，可以执行如下命令，刷新配置后再进行验证：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">source &#x2F;etc&#x2F;profile </span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>Linux</tag>
+        <tag>Shell</tag>
+      </tags>
+  </entry>
 </search>

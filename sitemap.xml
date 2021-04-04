@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://mynamecoder.com/about/index.html</loc>
+    
+    <lastmod>2021-04-04</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://mynamecoder.com/p/63927.html</loc>
     
     <lastmod>2021-03-20</lastmod>
@@ -19,13 +26,6 @@
     <loc>https://mynamecoder.com/p/20547.html</loc>
     
     <lastmod>2021-01-02</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://mynamecoder.com/about/index.html</loc>
-    
-    <lastmod>2020-12-29</lastmod>
     
   </url>
   
@@ -494,7 +494,7 @@
 
   <url>
     <loc>https://mynamecoder.com/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -502,245 +502,245 @@
   
   <url>
     <loc>https://mynamecoder.com/tags/git/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/Java/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/Elasticsearch/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/Linux/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/mac/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/homebrew/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/%E5%B7%A5%E5%85%B7/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/nginx/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/springboot/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/exception/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/cdn/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/hexo/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/%E5%BB%BA%E7%AB%99/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/jenkins/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/mysql/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/docker/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/centos/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/linux/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/maven/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/mybatis/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/%E6%94%AF%E4%BB%98/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/mq/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/redis/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/email/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/vue/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/SpringBoot/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/Python/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/Selenium/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/Freemarker/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/dev/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/%E9%9D%A2%E8%AF%95/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/Shell/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/tags/swagger/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -749,140 +749,140 @@
   
   <url>
     <loc>https://mynamecoder.com/categories/Git/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/Java/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/Elasticsearch/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/Mac/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/Linux/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/nginx/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/SpringBoot/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/%E6%97%A5%E5%B8%B8%E5%BC%80%E5%8F%91/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/Hexo/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/Jenkins/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/Mysql/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/Maven/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/Mybatis/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/MQ/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/Python/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/linux/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/%E6%97%A5%E5%B8%B8%E5%BC%80%E5%8F%91/%E5%BE%AE%E4%BF%A1/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://mynamecoder.com/categories/%E4%B8%AA%E4%BA%BA%E6%88%90%E9%95%BF/</loc>
-    <lastmod>2021-03-27</lastmod>
+    <lastmod>2021-04-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>

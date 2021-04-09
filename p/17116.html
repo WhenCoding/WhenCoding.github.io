@@ -326,36 +326,32 @@
             </div>
 
             <div class="page-main-content-bottom">
-                <footer class="footer">
-    <div class="info-container">
-        <div class="copyright-info info-item">
-            &copy;
-            
-              <span>2000</span> -
-            
-            2021 <i class="fas fa-heart icon-animate"></i> <a href="/">小明</a>
-        </div>
-        
-            <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-            <div class="website-count info-item">
-                
-                    <span id="busuanzi_container_site_uv">
-                        访问人数 <span id="busuanzi_value_site_uv"></span>&ensp;
-                    </span>
-                
-                
-                    <span id="busuanzi_container_site_pv">
-                        总访问量 <span id="busuanzi_value_site_pv"></span>
-                    </span>
-                
-            </div>
-        
-        <div class="theme-info info-item">
-            <!-- 由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动 | 主题 <a class="theme-version" target="_blank"></a> -->
-            <a href="//beian.miit.gov.cn" target="_blank">京ICP备19029015号-1</a>
-        </div>
-    </div>
-</footer>
+                .footer {
+  font-size: 1rem;
+  color: var(--third-text-color);
+
+  a {
+    color: var(--third-text-color);
+
+    &:hover {
+      color: var(--primary-color);
+    }
+  }
+
+  .info-container {
+    padding-bottom: 10px;
+    text-align: center;
+  }
+
+  .info-item {
+    margin: 5px 0;
+  }
+
+  .icon-animate {
+    animation: icon-animate 1.2s ease-in-out infinite;
+  }
+
+}
 
             </div>
         </div>

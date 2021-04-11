@@ -323,28 +323,53 @@
 
         
             <div class="comment-container">
-                if (hexo-config('comment.valine.enable')) {
-  @require "./valine.styl";
-}
+                <div class="comments-container">
+    <div id="comment-anchor"></div>
+    
+        
+    <div class="valine-container">
+        <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+        <div id="vcomments"></div>
+        <script>
+            new Valine({
+                el: '#vcomments',
+                appId: 'RYD6fM3F1jQ4aTSXOzbclYi6-9Nh9j0Va',
+                appKey: 'mjF7jJLYlbIcPU2mUOoh0I88',
+                meta: 'nick,mail,link'.split(','),
+                avatar: 'wavatar',
+                enableQQ: true,
+                placeholder: '说点什么',
+                lang: 'zh-CN'.toLowerCase()
+            });
 
-if (hexo-config('comment.gitalk.enable')) {
-  @require "./gitalk.styl";
-}
 
-if (hexo-config('comment.valine.enable') && hexo-config('comment.gitalk.enable')) {
-  @require "./valine.styl";
-}
+            // Valine 评论列表增加"博主"标识
+            const getValineDomTimer = setInterval(() => {
+                const vcards = document.querySelectorAll('#vcomments .vcards .vcard');
+                if (vcards.length > 0) {
 
-.comments-container {
-  display: inline-block;
-  margin-top: $component-interspace;
-  width: 100%;
+                    let author = '小明';
+                    if (author) {
+                        author = author.toLocaleLowerCase();
+                    }
 
-  #comment-anchor {
-    width: 100%;
-    height: 10px;
-  }
-}
+                    for (let vcard of vcards) {
+                        const vnick = vcard.querySelector('.vhead .vnick');
+                        if (vnick.innerHTML.toLocaleLowerCase() === author) {
+                            vcard.classList.add('author');
+                        }
+                    }
+                    clearInterval(getValineDomTimer);
+                } else {
+                    clearInterval(getValineDomTimer);
+                }
+            }, 2000);
+        </script>
+    </div>
+
+
+    
+</div>
 
             </div>
         

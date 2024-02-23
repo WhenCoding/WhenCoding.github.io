@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享">
+    <meta name="description" content="Spring Boot, Spring Cloud,日常开发, ElasticSearch, 微服务, 并发编程, 源码分析,Java,程序员小明">
+    <meta name="author" content="小明">
+    
+    <title>
+        
+            我是如何用IDEA调试BUG的？ |
+        
+        程序员小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/brands.min.css">
+    
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"mynamecoder.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":null,"favicon":"/images/logo.svg","avatar":"/images/avatar.png","font_size":null,"font_family":"Optima-Regular,PingFangTC-light","hover":{"shadow":true,"scale":true},"first_screen":{"enable":false,"header_transparent":true,"background_img":"https://img.mynamecoder.com/20230224112801.jpeg","description":"||","font_color":"","hitokoto":true},"scroll":{"progress_bar":false,"percent":false}},"local_search":{"enable":true,"preload":true},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":true,"use":"waline","valine":{"appid":"RYD6fM3F1jQ4aTSXOzbclYi6-9Nh9j0Va","appkey":"mjF7jJLYlbIcPU2mUOoh0I88","server_urls":null,"meta":["nick","mail","link"],"placeholder":"说点什么"},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":"https://comment.mynamecoder.com","reaction":true,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":false,"min2read":false},"img_align":"left","copyright_info":true},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"version":"3.7.7"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1566816837076058" crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+            <a class="site-name border-box" href="/">
+               程序员小明
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                标签
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >
+                                友链
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links">友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+                <div class="article-content-top border-box">
+                    <div class="cover-article-title">
+                        我是如何用IDEA调试BUG的？
+                    </div>
+                    <img class="post-cover" src="https://img.mynamecoder.com/males-391346_640.jpg" alt="我是如何用IDEA调试BUG的？">
+                </div>
+            
+
+            <div class="article-content-bottom border-box has-cover">
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/avatar.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">小明</span>
+                                
+                                    <span class="author-label">Lv6</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2020-03-30 12:34:24</span>
+                <span class="mobile">2020-03-30 12:34</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Thu Jan 18 2024 08:35:59 GMT+0000">2024-01-18 08:35:59</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item article-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul>
+                    
+                            <li class="category-item">
+                                
+                                <a href="/categories/%E6%97%A5%E5%B8%B8%E5%BC%80%E5%8F%91/">日常开发</a>
+                            </li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="article-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul>
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Java/">Java</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <blockquote>
+<p>最近小明的bug有点多，忙的连王者荣耀都顾不上玩了，导致现在不得不抽点时间研究一下作为当前大多Java程序员开发工具的IDEA DEBUG功能，以提高效率。</p>
+</blockquote>
+<h3 id="一、条件断点"><a href="#一、条件断点" class="headerlink" title="一、条件断点"></a>一、条件断点</h3><span id="more"></span>
+
+<blockquote>
+<p>场景：我们在遍历某个集合，期望程序在满足某些预设条件时停住，比如：沐芳老师在课堂上点名，需要在点到小明的时候暂停确认一下是否有人在帮小明答“到”！</p>
+</blockquote>
+<p>那沐芳老师可以这样：</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200331212416.png"
+                     
+                ></p>
+<p>右击断点旁边的小红点（断点），弹出面板，在<strong>Condition</strong>这里填入暂停条件（返回boolean类型，一定要遵守语法哈），这样调试时，当程序满足条件时就会稳稳地停在<code>&quot;小明&quot;.equals(student)</code>的位置。</p>
+<h3 id="二、回到”过去”"><a href="#二、回到”过去”" class="headerlink" title="二、回到”过去”"></a>二、回到”过去”</h3><blockquote>
+<p>场景：人非圣贤，孰能无过。在日常开发中，大家都有手残的时候，比如在调试一个业务逻辑比较复杂，有多个方法嵌套时，一不小心手抖，断点过去了，这该怎么办？</p>
+</blockquote>
+<p>这天，沐芳老师如往常一样在上课前点名，当点到小明的时候，不争气的小明在偷偷看喜欢的妹子，没有注意听，当反应过来时，已经错过了答到！十分懊悔（红颜祸水啊），这时小明就可以借用大雄的机器猫进行时光穿梭：</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200329231627.png"
+                     
+                ></p>
+<p>观察上图，我们看到，按照点名顺序，现在沐芳老师点名已经轮到小红，小明已经错过答到，机器猫可以这样帮助小明：点击上图红色框框圈中的<strong>Drop Frame</strong>图标（如果存在多个方法的嵌套调用，可以多点几下），就这样，小明穿越了，没有错过这次的答到：</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200329231834.png"
+                     
+                ></p>
+<p><strong>tips</strong>:这个按钮之所以叫做<strong>Drop Frame</strong>，是因为<strong>JVM</strong>内部是以<strong>栈帧</strong>为单位来保存线程的运行状态，<strong>Drop Frame</strong>直译过来就是扔掉当前运行的栈帧，回到上一帧的位置，这样就实现了穿越。</p>
+<h3 id="三、多线程调试"><a href="#三、多线程调试" class="headerlink" title="三、多线程调试"></a>三、多线程调试</h3><blockquote>
+<p>终于老师点名结束了，现在可以正常上课了。到了同学们最爱的老师提问，同学们抢答的环节。</p>
+</blockquote>
+<p>As we know 当我们启动多个线程时，哪个线程内的程序先执行，完全靠CPU的心情（爸爸一样的存在），这样就会造成一个问题：无法像单线程那样按照执行顺序debug。现象就是你只管打断点，线程之间不乱跳算我输，程序举例如下：</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200329233500.png"
+                     
+                ></p>
+<p>老师提出问题后，四个同学开始抢答：</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200329235936.png"
+                     
+                ></p>
+<p>这么多同学抢答，让坚守岗位30多年的沐芳老师觉得再这样下去课堂可能会有点混乱：但这并难不倒从业30多年的沐芳老师，她按如下图所示：在断点的位置上右击，选择<strong>Thread</strong>，就可以有目的地跟踪某一位同学的抢答情况（一切都在掌握之中）。</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200330000443.png"
+                     
+                ></p>
+<h3 id="四、远程调试"><a href="#四、远程调试" class="headerlink" title="四、远程调试"></a>四、远程调试</h3><p>大家能看到这里，小明不得不给大家介绍一个装X的技能：云调试。即本机不用启动项目，只要本机的源代码与远程服务器运行的jar包匹配，就可以在本机直接远程调试服务器上的代码！打开姿势如下：</p>
+<h4 id="远程项目启动时，先允许远程调试"><a href="#远程项目启动时，先允许远程调试" class="headerlink" title="远程项目启动时，先允许远程调试"></a>远程项目启动时，先允许远程调试</h4><p>现在大多都是SpringBoot项目，因此我们在远程服务器上运行一个jar包时</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -server -Xms512m -Xmx512m -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8080 -jar xiaoming.jar</span><br></pre></td></tr></table></figure>
+
+<p>这里起作用的核心命令就是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8080</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>远程调试从技术上讲，就是在本机与远程服务之间建立scoket通讯，所以本机要可以访问到远程服务的端口。</p>
+</blockquote>
+<h4 id="在idea中设置远程调试"><a href="#在idea中设置远程调试" class="headerlink" title="在idea中设置远程调试"></a>在idea中设置远程调试</h4><p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200330003106.png"
+                     
+                ></p>
+<p>接下来我们就可以正常调试了，调试方式和本地运行服务调试无差，不信你发起一个请求，并在对应的逻辑代码中打个断点试试？</p>
+<h3 id="五、临时执行表达式"><a href="#五、临时执行表达式" class="headerlink" title="五、临时执行表达式"></a>五、临时执行表达式</h3><p>再一个就是调试时，我们还可以临时执行一些表达式，点击红色框框选中的图标，然后输入你想执行的表达式，如下所示：</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200330004714.png"
+                     
+                ></p>
+<p>大家可以看到，小明心灵是多么脆弱，因为无法直面自己的实际年龄，再快要得到真实年龄是，偷偷的减去了7年，所以他实际年龄永远为18岁（手动滑稽）。</p>
+<h3 id="六、修改变量的运行值"><a href="#六、修改变量的运行值" class="headerlink" title="六、修改变量的运行值"></a>六、修改变量的运行值</h3><p>当然，如果调试时，想动态修改变量的值，也很容易，在变量上右击，然后选择<strong>Set Value</strong>，比如简单粗暴的更改小明的年龄为18……</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200330005141.png"
+                     
+                ></p>
+<p>以上，这就是小明近期总结的IDEA的DEBUG技巧，希望可以帮助到大家。善用上述调试技巧，相信大家撸起代码来会更加有感觉，主要体现在：今晚可以不用加班！</p>
+<p>代码已经提交到Github地址：<a class="link"   target="_blank" rel="noopener" href="https://github.com/WhenCoding/coder-xiaoming" >https://github.com/WhenCoding/coder-xiaoming<i class="fas fa-external-link-alt"></i></a><br><em>欢迎大家关注微信公众号“程序员小明”，获取更多精彩！</em></p>
+
+                </div>
+
+                
+                    <div class="post-copyright-info">
+                        <div class="article-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="post-title border-box text-ellipsis">
+                我是如何用IDEA调试BUG的？
+            </div>
+
+            <div class="post-link border-box text-ellipsis">
+                p/8644.html
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">小明</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2020-03-30 12:34</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-content="复制版权信息" data-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                    </div>
+                
+
+                
+                    <ul class="post-tags-box">
+                        
+                            <li class="tag-item">
+                                <a href="/tags/Java/"><i class="icon fas fa-hashtag"></i>Java</a>&nbsp;
+                            </li>
+                        
+                    </ul>
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/p/63677.html"
+                                   title="「SpringBoot」如何优雅地管理SpringBoot项目"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">「SpringBoot」如何优雅地管理SpringBoot项目</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/p/17116.html"
+                                   title="hexo推荐插件"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">hexo推荐插件</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <script data-pjax src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"></script>
+        <div id="waline-comment"></div>
+        <script data-pjax>
+          function loadWaline() {
+            Waline.init({
+              el: '#waline-comment',
+              serverURL: 'https://comment.mynamecoder.com',
+              lang: 'zh-CN' || 'zh-CN',
+              comment: '.post-comments-count',
+              reaction: 'true' === 'true'
+            })
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              loadWaline()
+            }, 1000)
+          } else {
+            window.addEventListener('DOMContentLoaded', loadWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%9D%A1%E4%BB%B6%E6%96%AD%E7%82%B9"><span class="nav-text">一、条件断点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%9B%9E%E5%88%B0%E2%80%9D%E8%BF%87%E5%8E%BB%E2%80%9D"><span class="nav-text">二、回到”过去”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%A4%9A%E7%BA%BF%E7%A8%8B%E8%B0%83%E8%AF%95"><span class="nav-text">三、多线程调试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95"><span class="nav-text">四、远程调试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E9%A1%B9%E7%9B%AE%E5%90%AF%E5%8A%A8%E6%97%B6%EF%BC%8C%E5%85%88%E5%85%81%E8%AE%B8%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95"><span class="nav-text">远程项目启动时，先允许远程调试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8idea%E4%B8%AD%E8%AE%BE%E7%BD%AE%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95"><span class="nav-text">在idea中设置远程调试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E4%B8%B4%E6%97%B6%E6%89%A7%E8%A1%8C%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-text">五、临时执行表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E4%BF%AE%E6%94%B9%E5%8F%98%E9%87%8F%E7%9A%84%E8%BF%90%E8%A1%8C%E5%80%BC"><span class="nav-text">六、修改变量的运行值</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box shields">
+        
+            <div class="info-item">
+                
+                <a class="shields-item">
+                    <img src="https://img.shields.io/badge/Since-2018_--_2024-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item" href="/">
+                        <img src="https://img.shields.io/badge/WebMaster-小明-dodgerblue?style=flat-square">
+                    </a>
+                
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       href="https://beian.miit.gov.cn"
+                    >
+                        <img src="https://img.shields.io/badge/ICP-京ICP备19029015号-dodgerblue?style=flat-square">
+                    </a>
+                
+                <a class="shields-item" href="https://hexo.io" target="_blank">
+                    <img src="https://img.shields.io/badge/Powered_by-Hexo-dodgerblue?style=flat-square">
+                </a>
+                <a class="shields-item" href="https://github.com/XPoet/hexo-theme-keep" target="_blank">
+                    <img class="shields-keep-version" src="https://img.shields.io/badge/Theme-Keep-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       rel="nofollow"
+                       href="https://github.com/WhenCoding"
+                    >
+                        <img src="https://img.shields.io/badge/Deploy_in-GitHub Pages-dodgerblue?style=flat-square">
+                    </a>
+                
+            </div>
+            
+                <div class="info-item">
+                    
+                        
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item shields">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-box border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%9D%A1%E4%BB%B6%E6%96%AD%E7%82%B9"><span class="nav-text">一、条件断点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%9B%9E%E5%88%B0%E2%80%9D%E8%BF%87%E5%8E%BB%E2%80%9D"><span class="nav-text">二、回到”过去”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%A4%9A%E7%BA%BF%E7%A8%8B%E8%B0%83%E8%AF%95"><span class="nav-text">三、多线程调试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95"><span class="nav-text">四、远程调试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E9%A1%B9%E7%9B%AE%E5%90%AF%E5%8A%A8%E6%97%B6%EF%BC%8C%E5%85%88%E5%85%81%E8%AE%B8%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95"><span class="nav-text">远程项目启动时，先允许远程调试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8idea%E4%B8%AD%E8%AE%BE%E7%BD%AE%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95"><span class="nav-text">在idea中设置远程调试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E4%B8%B4%E6%97%B6%E6%89%A7%E8%A1%8C%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-text">五、临时执行表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E4%BF%AE%E6%94%B9%E5%8F%98%E9%87%8F%E7%9A%84%E8%BF%90%E8%A1%8C%E5%80%BC"><span class="nav-text">六、修改变量的运行值</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/local-search.js"></script>
+
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/toc.js"></script>
+        
+    
+    
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

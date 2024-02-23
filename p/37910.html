@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享">
+    <meta name="description" content="Spring Boot, Spring Cloud,日常开发, ElasticSearch, 微服务, 并发编程, 源码分析,Java,程序员小明">
+    <meta name="author" content="小明">
+    
+    <title>
+        
+            「实用」打造自我感觉非常漂亮的Mac终端 |
+        
+        程序员小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/brands.min.css">
+    
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"mynamecoder.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":null,"favicon":"/images/logo.svg","avatar":"/images/avatar.png","font_size":null,"font_family":"Optima-Regular,PingFangTC-light","hover":{"shadow":true,"scale":true},"first_screen":{"enable":false,"header_transparent":true,"background_img":"https://img.mynamecoder.com/20230224112801.jpeg","description":"||","font_color":"","hitokoto":true},"scroll":{"progress_bar":false,"percent":false}},"local_search":{"enable":true,"preload":true},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":true,"use":"waline","valine":{"appid":"RYD6fM3F1jQ4aTSXOzbclYi6-9Nh9j0Va","appkey":"mjF7jJLYlbIcPU2mUOoh0I88","server_urls":null,"meta":["nick","mail","link"],"placeholder":"说点什么"},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":"https://comment.mynamecoder.com","reaction":true,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":false,"min2read":false},"img_align":"left","copyright_info":true},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"version":"3.7.7"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1566816837076058" crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+            <a class="site-name border-box" href="/">
+               程序员小明
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                标签
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >
+                                友链
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links">友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+
+            <div class="article-content-bottom border-box">
+                
+                    <div class="article-title">
+                        「实用」打造自我感觉非常漂亮的Mac终端
+                    </div>
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/avatar.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">小明</span>
+                                
+                                    <span class="author-label">Lv6</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2021-12-14 16:57:34</span>
+                <span class="mobile">2021-12-14 16:57</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Thu Jan 18 2024 08:35:59 GMT+0000">2024-01-18 08:35:59</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item article-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul>
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="article-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul>
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Mac/">Mac</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Iterm2/">Iterm2</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Zsh/">Zsh</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <p>今天我是一个美妆博主😊</p>
+<span id="more"></span>
+
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>突然发现自己使用的iterm2终端样式有些朴素，为了让她看起来花枝招展的，我决定给她打扮打扮。毕竟每天面对她的时间比对象还多……</p>
+<h2 id="效果对比"><a href="#效果对比" class="headerlink" title="效果对比"></a>效果对比</h2><p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20211222233426.png"
+                     
+                ></p>
+<p>因为每个人的喜好都不一样，所以放一张大家都喜欢的效果图很难，之前我很喜欢黑色主题，后来，我对浅色反倒情有独钟，现在我的开发工具idea、vscode等都是使用的浅色，据说对自己的眼睛好。<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20211222234632.png"
+                      alt="深色"
+                ><br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20211222234032.png"
+                      alt="浅色"
+                ><br>本文的亮点就是：只告诉你设置方法，最终妆后效果由你自己的审美决定。那上面的红玫瑰和白玫瑰，你更喜欢哪个呢？评论区为你选择的玫瑰投票。</p>
+<h2 id="配置方法"><a href="#配置方法" class="headerlink" title="配置方法"></a>配置方法</h2><p>下面给大家详细讲一下深色主题的设置方法。</p>
+<h3 id="安装oh-my-zsh"><a href="#安装oh-my-zsh" class="headerlink" title="安装oh-my-zsh"></a>安装oh-my-zsh</h3><blockquote>
+<p><a class="link"   target="_blank" rel="noopener" href="https://ohmyz.sh/" >oh-my-zsh<i class="fas fa-external-link-alt"></i></a>:Unleash your terminal like never before.</p>
+</blockquote>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/Xnip2021-12-28_10-25-19.jpg"
+                      alt="oh-my-zsh-logo"
+                ><br>oh-my-zsh 是一款社区驱动的命令行工具，正如它的主页所说，oh-my-zsh是一种生活方式。它基于 zsh 命令行，提供了主题配置，插件机制，内置的便捷操作，给我们一种全新使用命令行的方式。所以，安装oh-my-zsh前提条件：<strong>必须安装 zsh</strong>，好像是一句废话。目前来看macOS系统默认推荐的命令行就是zsh。如果你默认的命令行不是zsh，可以执行以下命令进行更换：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chsh -s /bin/zsh</span><br></pre></td></tr></table></figure>
+<p>zsh准备好之后，我们就可以正式开始安装使用oh-my-zsh啦，下面有两种方式可供参考：</p>
+<ul>
+<li>方式一（极力推荐）<br>通过命令行下载安装</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c &quot;$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>方式二<br>（如果方式一无法安装，再尝试该方式）<br>1、<a class="link"   target="_blank" rel="noopener" href="https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh" >点击下载<i class="fas fa-external-link-alt"></i></a>该脚本；<br>2、然后执行<code>install.sh</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh install.sh</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装美化神器：Powerline"><a href="#安装美化神器：Powerline" class="headerlink" title="安装美化神器：Powerline"></a>安装美化神器：Powerline</h3><p>安装完oh-my-zsh，我们重启终端，此时的终端在输入命令时，已经美色侧漏，为了让她变得更华丽，我们继续化妆。</p>
+<blockquote>
+<p><a class="link"   target="_blank" rel="noopener" href="https://powerline.readthedocs.io/en/latest/overview.html" >Powerline<i class="fas fa-external-link-alt"></i></a>:一款比较酷炫的状态栏工具，可以美化终端和vim界面。</p>
+</blockquote>
+<p>这款组件由python开发，因此我们需要本地有python及pip环境，安装命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install powerline-status</span><br></pre></td></tr></table></figure>
+
+<p>（如果你是pip3，可能需要将pip替换为pip3来安装）<br>安装过后，为了字体样式更加<strong>beautiful</strong>，我们需要安装Powerline的<a class="link"   target="_blank" rel="noopener" href="https://github.com/powerline/fonts" >字体库<i class="fas fa-external-link-alt"></i></a>，官方提供的安装命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># clone</span><br><span class="line">git clone https://github.com/powerline/fonts.git --depth=1</span><br><span class="line"># install</span><br><span class="line">cd fonts</span><br><span class="line">./install.sh</span><br><span class="line"># clean-up a bit</span><br><span class="line">cd ..</span><br><span class="line">rm -rf fonts</span><br></pre></td></tr></table></figure>
+
+<h3 id="iterm2更换字体"><a href="#iterm2更换字体" class="headerlink" title="iterm2更换字体"></a>iterm2更换字体</h3><p>字体包安装完成后，我们就需要更改iterm2的字体库，因为一些界面样式，使用系统默认自带的字体会发生乱码。<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20211223104510.png"
+                      alt="更改iterm2字体"
+                ><br>我们搜索<strong>meslo</strong>，选择合适的字体大小（S L M）。同样的，我们使用的其他IDE终端也需要更改，比如mac自带的终端、idea、vscode，否则也会乱码，具体步骤可以查看文末，这里我们着重讲一下Iterm2的配置。</p>
+<h3 id="Iterm2更换配色"><a href="#Iterm2更换配色" class="headerlink" title="Iterm2更换配色"></a>Iterm2更换配色</h3><p>如下图所示，总有你喜欢的配色，当然你还可以去官网下载导入<a class="link"   target="_blank" rel="noopener" href="https://iterm2colorschemes.com/" >更多配色<i class="fas fa-external-link-alt"></i></a><br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20211223140927.png"
+                      alt="Iterm2更换配色"
+                ></p>
+<h2 id="设置主题"><a href="#设置主题" class="headerlink" title="设置主题"></a>设置主题</h2><p>oh-my-zsh内置了很多主题，在目录下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd ~/.oh-my-zsh/themes</span><br></pre></td></tr></table></figure>
+<p>我当前使用的自带的是<strong>agnoster</strong>主题，我们可以直接配置。用vim编辑器打开当前用户目录下隐藏文件.zshrc，将<code>ZSH_THEME</code>后面字段改为<strong>agnoster</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.zshrc</span><br></pre></td></tr></table></figure>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20211223142913.png"
+                      alt="更换专题agnoster"
+                ><br>重新打开iTerm2即可看到最新妆后效果，当然也可以查看<a class="link"   target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh/wiki/Themes" >更多主题<i class="fas fa-external-link-alt"></i></a>。</p>
+<h2 id="设置语法高亮"><a href="#设置语法高亮" class="headerlink" title="设置语法高亮"></a>设置语法高亮</h2><p>继续化妆，我们可以直接使用homebrew安装<a class="link"   target="_blank" rel="noopener" href="https://github.com/zsh-users/zsh-syntax-highlighting" >zsh-syntax-highlighting<i class="fas fa-external-link-alt"></i></a>插件，它可以突出显示命令，有助于在运行命令之前检查命令，特别是捕获语法错误，简直不要太好用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install zsh-syntax-highlighting</span><br></pre></td></tr></table></figure>
+
+<p>然后在根目录下.zshrc中插入下面内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh</span><br><span class="line">source ~.zsh</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong>这里如果，我说的是如果，source 的时候有提示问题：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compinit:503: no such file or directory: /usr/local/share/zsh/site-functions/_brew_cask</span><br></pre></td></tr></table></figure>
+<p>原因有可能就是装了brew缓存记录导致的，我们执行 <code>brew cleanup</code> 即可修正。</p>
+<h2 id="代码补全插件"><a href="#代码补全插件" class="headerlink" title="代码补全插件"></a>代码补全插件</h2><p>有一些插件能让zsh变得更加酷炫！使用更加方便！比如模糊补全命令，之前我们的命令都是必须前缀命中才会补全，现在不用这么麻烦啦，直接模糊补全！</p>
+<ul>
+<li>智能补全：zsh-completions</li>
+</ul>
+<p>在oh-my-zsh存储库中克隆存储库:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/zsh-users/zsh-completions $&#123;ZSH_CUSTOM:=~/.oh-my-zsh/custom&#125;/plugins/zsh-completions</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong>你可能在git clone github仓库时，会遇到<strong>SSL_ERROR_SYSCALL</strong>相关错误，但浏览器可以正常访问github，那是因为clone请求需要LibreSSL来进行加密，但是环境没有curl-openssl模块，所以我们可以使用homebrew来安装该模块：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install curl-openssl</span><br></pre></td></tr></table></figure>
+
+<p>安装成功后即可正常加密请求github仓库资源（如果不行的话来打我）。<br>修改.zshrc文件，找到plugins，更新内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plugins=(git zsh-completions)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>历史命令补全：zsh-autosuggestions<br>安装完这个命令，你会惊奇的发现，在敲击一些命令的时候，会自动提示你的历史命令！<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/zsh-users/zsh-autosuggestions" >官方文档<i class="fas fa-external-link-alt"></i></a>提供的zsh-autosuggestions安装步骤</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/zsh-users/zsh-autosuggestions $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/plugins/zsh-autosuggestions</span><br></pre></td></tr></table></figure>
+
+<p>Add the plugin to the list of plugins for Oh My Zsh to load (inside ~/.zshrc):</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">plugins=( </span><br><span class="line">    # other plugins...</span><br><span class="line">    zsh-autosuggestions</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>Start a new terminal session.</p>
+<p>就不翻译了，大家照着做就可以体验一下智能推荐的历史命令补全，点击方向键<code>-&gt;</code>即可补全，屡试不爽！（不过，我试用过后发现不是很实用，反而会不方便，于是，就在配置中取消了）大家各有所需，可以自由选择。</p>
+<h2 id="Iterm2水印"><a href="#Iterm2水印" class="headerlink" title="Iterm2水印"></a>Iterm2水印</h2><p>Iterm2还可以有更多个性化的设置，比如我们可以将远端服务器的连接信息放到profiles里面，然后通过快捷键直接连上远端服务器，这样就不用自己手动写命令，很是方便。但是这样会有一个问题，当有多个远端服务器的时候，我们不知道当前是在哪一个服务器上面。这该如何优雅解决呢？<br>我来告诉你，iterm2支持在终端添加一个自定义的水印来显示当前的位置！设置方式如下图所示：<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20211223171122.png"
+                      alt="badge"
+                ><br>效果就是右上角有水印可以标注我们现在访问的是哪一个服务器。<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20211223171300.png"
+                     
+                ></p>
+<h2 id="效果图中笑脸😀的配置"><a href="#效果图中笑脸😀的配置" class="headerlink" title="效果图中笑脸😀的配置"></a>效果图中笑脸😀的配置</h2><p>细心的朋友会发现，我的终端左侧有一个笑脸，这是因为，我想告诉大家：我们面对bug要保持微笑、乐观的心态，设置方法如下:<br>我们进入主题目录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd ~/.oh-my-zsh/themes</span><br></pre></td></tr></table></figure>
+
+<p>编辑当前使用的主题：<strong>agnoster</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim agnoster.zsh-theme</span><br></pre></td></tr></table></figure>
+
+<p>找到<strong>prompt_context</strong>，按照下图增加表情：<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20211223172419.png"
+                      alt="表情符号"
+                ></p>
+<h2 id="字体乱码"><a href="#字体乱码" class="headerlink" title="字体乱码"></a>字体乱码</h2><p>细心的朋友还会发现，自带的终端、idea、vscode会出现字体乱码的现象，解决办法就是通过更换字体包来支持这些特殊符号。</p>
+<ul>
+<li>自带终端</li>
+</ul>
+<p>打开terminal的偏好设置修改字体包为<strong>Meslo</strong>：<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20211223172845.png"
+                      alt="terminal"
+                ><br>正常效果如下：<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20211223173019.png"
+                      alt="正常效果"
+                ></p>
+<ul>
+<li>vscode </li>
+</ul>
+<p>同理，我们也需要修改vscode的字体包为<strong>Meslo</strong><br>打开vscode的设置，然后搜索<code>terminal font</code>修改如下图所示:<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20211223173347.png"
+                      alt="terminal font"
+                ></p>
+<ul>
+<li>idea</li>
+</ul>
+<p>再同理，我们也需要修改idea的字体包为<strong>Meslo</strong><br>打开idea的设置，然后搜索<code>console font</code> 修改如下图:<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20211223173516.png"
+                      alt="idea的设置"
+                ></p>
+<h2 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h2><p>文中提到的跳转链接总结如下：</p>
+<ul>
+<li>Powerline：<a class="link"   target="_blank" rel="noopener" href="https://powerline.readthedocs.io/en/latest/overview.html" >https://powerline.readthedocs.io/en/latest/overview.html<i class="fas fa-external-link-alt"></i></a></li>
+<li>Powerline 字体库：<a class="link"   target="_blank" rel="noopener" href="https://github.com/powerline/fonts" >https://github.com/powerline/fonts<i class="fas fa-external-link-alt"></i></a></li>
+<li>Iterm2更多配色：<a class="link"   target="_blank" rel="noopener" href="https://iterm2colorschemes.com/" >https://iterm2colorschemes.com/<i class="fas fa-external-link-alt"></i></a></li>
+<li>oh-my-zsh更多主题：<a class="link"   target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh/wiki/Themes" >https://github.com/ohmyzsh/ohmyzsh/wiki/Themes<i class="fas fa-external-link-alt"></i></a></li>
+<li>zsh-syntax-highlighting官方文档：<a class="link"   target="_blank" rel="noopener" href="https://github.com/zsh-users/zsh-syntax-highlighting" >https://github.com/zsh-users/zsh-syntax-highlighting<i class="fas fa-external-link-alt"></i></a></li>
+<li>zsh-autosuggestions官方文档：<a class="link"   target="_blank" rel="noopener" href="https://github.com/zsh-users/zsh-autosuggestions" >https://github.com/zsh-users/zsh-autosuggestions<i class="fas fa-external-link-alt"></i></a></li>
+</ul>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>当我们费劲千辛万苦终于搞定终端的样式后，你会发现这一切努力都是值得的！因为她现在不仅像花瓶一样好看，而且变得比以前更加实用！你更加离不开她啦！</p>
+<p>请大家持续关注微信公众号：<strong>程序员小明</strong>！！！一个非著名程序员的日常。<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/coderxm_qrcode.jpeg"
+                      alt="程序员小明"
+                ><br>PS:配置过程中有遇到文中没提到的问题，欢迎讨论！</p>
+
+                </div>
+
+                
+                    <div class="post-copyright-info">
+                        <div class="article-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="post-title border-box text-ellipsis">
+                「实用」打造自我感觉非常漂亮的Mac终端
+            </div>
+
+            <div class="post-link border-box text-ellipsis">
+                p/37910.html
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">小明</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2021-12-14 16:57</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-content="复制版权信息" data-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                    </div>
+                
+
+                
+                    <ul class="post-tags-box">
+                        
+                            <li class="tag-item">
+                                <a href="/tags/Mac/"><i class="icon fas fa-hashtag"></i>Mac</a>&nbsp;
+                            </li>
+                        
+                            <li class="tag-item">
+                                <a href="/tags/Iterm2/"><i class="icon fas fa-hashtag"></i>Iterm2</a>&nbsp;
+                            </li>
+                        
+                            <li class="tag-item">
+                                <a href="/tags/Zsh/"><i class="icon fas fa-hashtag"></i>Zsh</a>&nbsp;
+                            </li>
+                        
+                    </ul>
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/p/8569.html"
+                                   title="2021年终总结"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">2021年终总结</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/p/2702.html"
+                                   title="「实用」使用阿里云的镜像仓库存储自己的镜像"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">「实用」使用阿里云的镜像仓库存储自己的镜像</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <script data-pjax src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"></script>
+        <div id="waline-comment"></div>
+        <script data-pjax>
+          function loadWaline() {
+            Waline.init({
+              el: '#waline-comment',
+              serverURL: 'https://comment.mynamecoder.com',
+              lang: 'zh-CN' || 'zh-CN',
+              comment: '.post-comments-count',
+              reaction: 'true' === 'true'
+            })
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              loadWaline()
+            }, 1000)
+          } else {
+            window.addEventListener('DOMContentLoaded', loadWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%88%E6%9E%9C%E5%AF%B9%E6%AF%94"><span class="nav-text">效果对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95"><span class="nav-text">配置方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85oh-my-zsh"><span class="nav-text">安装oh-my-zsh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E7%BE%8E%E5%8C%96%E7%A5%9E%E5%99%A8%EF%BC%9APowerline"><span class="nav-text">安装美化神器：Powerline</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iterm2%E6%9B%B4%E6%8D%A2%E5%AD%97%E4%BD%93"><span class="nav-text">iterm2更换字体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Iterm2%E6%9B%B4%E6%8D%A2%E9%85%8D%E8%89%B2"><span class="nav-text">Iterm2更换配色</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E4%B8%BB%E9%A2%98"><span class="nav-text">设置主题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE"><span class="nav-text">设置语法高亮</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A1%A5%E5%85%A8%E6%8F%92%E4%BB%B6"><span class="nav-text">代码补全插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Iterm2%E6%B0%B4%E5%8D%B0"><span class="nav-text">Iterm2水印</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%88%E6%9E%9C%E5%9B%BE%E4%B8%AD%E7%AC%91%E8%84%B8%F0%9F%98%80%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-text">效果图中笑脸😀的配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E4%BD%93%E4%B9%B1%E7%A0%81"><span class="nav-text">字体乱码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E9%93%BE%E6%8E%A5"><span class="nav-text">相关链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%90%8E"><span class="nav-text">最后</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box shields">
+        
+            <div class="info-item">
+                
+                <a class="shields-item">
+                    <img src="https://img.shields.io/badge/Since-2018_--_2024-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item" href="/">
+                        <img src="https://img.shields.io/badge/WebMaster-小明-dodgerblue?style=flat-square">
+                    </a>
+                
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       href="https://beian.miit.gov.cn"
+                    >
+                        <img src="https://img.shields.io/badge/ICP-京ICP备19029015号-dodgerblue?style=flat-square">
+                    </a>
+                
+                <a class="shields-item" href="https://hexo.io" target="_blank">
+                    <img src="https://img.shields.io/badge/Powered_by-Hexo-dodgerblue?style=flat-square">
+                </a>
+                <a class="shields-item" href="https://github.com/XPoet/hexo-theme-keep" target="_blank">
+                    <img class="shields-keep-version" src="https://img.shields.io/badge/Theme-Keep-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       rel="nofollow"
+                       href="https://github.com/WhenCoding"
+                    >
+                        <img src="https://img.shields.io/badge/Deploy_in-GitHub Pages-dodgerblue?style=flat-square">
+                    </a>
+                
+            </div>
+            
+                <div class="info-item">
+                    
+                        
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item shields">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-box border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%88%E6%9E%9C%E5%AF%B9%E6%AF%94"><span class="nav-text">效果对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95"><span class="nav-text">配置方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85oh-my-zsh"><span class="nav-text">安装oh-my-zsh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E7%BE%8E%E5%8C%96%E7%A5%9E%E5%99%A8%EF%BC%9APowerline"><span class="nav-text">安装美化神器：Powerline</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iterm2%E6%9B%B4%E6%8D%A2%E5%AD%97%E4%BD%93"><span class="nav-text">iterm2更换字体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Iterm2%E6%9B%B4%E6%8D%A2%E9%85%8D%E8%89%B2"><span class="nav-text">Iterm2更换配色</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E4%B8%BB%E9%A2%98"><span class="nav-text">设置主题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE"><span class="nav-text">设置语法高亮</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A1%A5%E5%85%A8%E6%8F%92%E4%BB%B6"><span class="nav-text">代码补全插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Iterm2%E6%B0%B4%E5%8D%B0"><span class="nav-text">Iterm2水印</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%88%E6%9E%9C%E5%9B%BE%E4%B8%AD%E7%AC%91%E8%84%B8%F0%9F%98%80%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-text">效果图中笑脸😀的配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E4%BD%93%E4%B9%B1%E7%A0%81"><span class="nav-text">字体乱码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E9%93%BE%E6%8E%A5"><span class="nav-text">相关链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%90%8E"><span class="nav-text">最后</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/local-search.js"></script>
+
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/toc.js"></script>
+        
+    
+    
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

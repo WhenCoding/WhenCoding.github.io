@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享">
+    <meta name="description" content="Spring Boot, Spring Cloud,日常开发, ElasticSearch, 微服务, 并发编程, 源码分析,Java,程序员小明">
+    <meta name="author" content="小明">
+    
+    <title>
+        
+            确定了，今天带一个看板娘回家 |
+        
+        程序员小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/brands.min.css">
+    
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"mynamecoder.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":null,"favicon":"/images/logo.svg","avatar":"/images/avatar.png","font_size":null,"font_family":"Optima-Regular,PingFangTC-light","hover":{"shadow":true,"scale":true},"first_screen":{"enable":false,"header_transparent":true,"background_img":"https://img.mynamecoder.com/20230224112801.jpeg","description":"||","font_color":"","hitokoto":true},"scroll":{"progress_bar":false,"percent":false}},"local_search":{"enable":true,"preload":true},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":true,"use":"waline","valine":{"appid":"RYD6fM3F1jQ4aTSXOzbclYi6-9Nh9j0Va","appkey":"mjF7jJLYlbIcPU2mUOoh0I88","server_urls":null,"meta":["nick","mail","link"],"placeholder":"说点什么"},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":"https://comment.mynamecoder.com","reaction":true,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":false,"min2read":false},"img_align":"left","copyright_info":true},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"version":"3.7.7"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1566816837076058" crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+            <a class="site-name border-box" href="/">
+               程序员小明
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                标签
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >
+                                友链
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links">友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+
+            <div class="article-content-bottom border-box">
+                
+                    <div class="article-title">
+                        确定了，今天带一个看板娘回家
+                    </div>
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/avatar.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">小明</span>
+                                
+                                    <span class="author-label">Lv6</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2023-03-09 16:57:09</span>
+                <span class="mobile">2023-03-09 16:57</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Tue Jan 09 2024 07:29:49 GMT+0000">2024-01-09 07:29:49</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item article-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul>
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="article-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul>
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%B7%A5%E5%85%B7/">工具</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <p>💃 内容为王，但谁还不是一个颜控？</p>
+<span id="more"></span>
+<p>有一说一，向来我自己的站点风格都尽力保持简约大方，没有多余的功能模块，也没有花里胡哨的css和js，就是简简单单的，希望给人一种大家闺秀的感觉。但这样，难免会缺少邻家小妹的秀气，宛如房间里缺少绿植，少了些许灵动。于是，我决定走出去观赏哈大佬们的博客，只有这样才可以让愚笨的我找到些许灵感，进而让我的寒舍蓬荜生辉。</p>
+<p>💃 <strong>对不起，我看上你家的老板娘了</strong></p>
+<p>怀着初心，四处寻觅，在TX交友网站<a class="link"   target="_blank" rel="noopener" href="https://github.com/" >「Github」<i class="fas fa-external-link-alt"></i></a>停留良久，尤其是基于<a class="link"   target="_blank" rel="noopener" href="https://hexo.io/themes/" >Hexo的主题<i class="fas fa-external-link-alt"></i></a>更是让人眼花缭乱。</p>
+<blockquote>
+<p>乱花渐欲迷人眼，浅草才能没马蹄。 —— 钱塘湖春行(白居易)</p>
+</blockquote>
+<p>为了维持现有的博客风格，自然是不能大修大改。正在踌躇时，一篇博文引起了我的注意，当然现在我已经想不起来具体文章内容，只记得左下角有一个可可爱爱的女孩像花一样冲着我笑，还很调皮。我坦白，当时我就……瞬间有了灵感。</p>
+<div>
+<video src= "https://file.mynamecoder.com/live2d_api/live2d-demo.mp4" width="200" height="250"  muted autoplay loop></video>
+</div>
+
+<p>是不是很二次元！<a class="link"   target="_blank" rel="noopener" href="https://mi.js.org/live2d-widget/demo/demo.html" >点击完整体验<i class="fas fa-external-link-alt"></i></a> 当时我猜想，这个姑娘应该是该网站的老板娘，如果把她带走放置到我的网站，岂不是会增加些许灵气？</p>
+<p>💃 <strong>一见钟情，我带走了别人的看板娘</strong></p>
+<p>说干就干，查了相关资料，原来这个叫做<a class="link"   target="_blank" rel="noopener" href="https://www.live2d.com/" >Live2D<i class="fas fa-external-link-alt"></i></a></p>
+<blockquote>
+<p>是一种应用于电子游戏的绘图渲染技术，技术由日本Cybernoids公司开发。通过一系列的连续图像和人物建模来生成一种类似三维模型的二维图像，对于以动画风格为主的冒险游戏来说非常有用。</p>
+</blockquote>
+<p>集成到网页中后，学术名叫<strong>看板娘</strong>，hexo官方已经存在插件<a class="link"   target="_blank" rel="noopener" href="https://github.com/EYHN/hexo-helper-live2d.git" >hexo-helper-live2d<i class="fas fa-external-link-alt"></i></a>，但是5年前就已经停止更新，没有新的模型，不推荐大家使用。</p>
+<p>看着看着我就打开了控制台……<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20230310114431.jpg"
+                     
+                ><br>分析了一下网络请求，原来看板娘分两块内容：</p>
+<ul>
+<li>框架</li>
+<li>模型</li>
+</ul>
+<p>所以，首先我们得先把框架集成到项目中，然后再将模型文件引入进来。</p>
+<h5 id="看板娘框架"><a href="#看板娘框架" class="headerlink" title="看板娘框架"></a>看板娘框架</h5><p>我又在TX交友网站<a class="link"   target="_blank" rel="noopener" href="https://github.com/" >「Github」<i class="fas fa-external-link-alt"></i></a>根据关键词检索了一番，发现一个不错的框架<a class="link"   target="_blank" rel="noopener" href="https://github.com/WhenCoding/live2d-widget" >stevenjoezhang/live2d-widget<i class="fas fa-external-link-alt"></i></a>，支持的模型也很可爱，目前这个框架已经开源，我已经fork。感谢该作者，说明文档也写的很全面，此处不再赘述如何使用，主要有两种集成方式：</p>
+<table>
+<thead>
+<tr>
+<th align="center">方式</th>
+<th align="center">优点</th>
+<th align="center">缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">直接引用JS</td>
+<td align="center">一键引入、方便快捷、节省生命</td>
+<td align="center">不支持自定义</td>
+</tr>
+<tr>
+<td align="center">魔改框架✅</td>
+<td align="center">将源码下载后，魔改该框架，这样更契合你的网站</td>
+<td align="center">花点时间理解框架</td>
+</tr>
+</tbody></table>
+<p>我当然选择了魔改框架，因为我要为我的网站高级定制看板娘。</p>
+<h5 id="看板娘模型"><a href="#看板娘模型" class="headerlink" title="看板娘模型"></a>看板娘模型</h5><p>当你看懂这个框架之后，会发现，虽然这个框架不提供模型，但是，很明显<code>cdnPath</code>就是访问模型的路径。模型的静态资源已经放入到cdn上面了，速度却还是很慢。所以，接下来，我有一个想法：把静态资源爬下来，放到国内的cdn上。<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20230310215816.jpg"
+                     
+                ><br>通过分析网络请求，发现前三个请求都是<code>json</code>格式的配置文件：</p>
+<ul>
+<li><code>model_list.json</code>是展示该模型库所有的模型列表</li>
+<li><code>waifu-tips.json</code> 是控制看板娘框架不同交互的提示语，在框架中控制，不属于模型库</li>
+<li><code>index.json</code>指的是当前展示的模型需要哪些配置</li>
+<li>剩下的网络请求路径全部依托于<code>index.json</code>里面的配置内容</li>
+</ul>
+<p>所以，我们可以得出结论，如果想要爬取这个模型库，那我们按以下步骤：<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20230310224059.png"
+                     
+                ><br>人生苦短，我用python写了一个脚本爬取，主要用到的库是<code>requests</code>、<code>os</code>，在写的过程中发现一个趣事：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># mkdirs竟然可以支持创建带有上级路径的文件夹</span><br><span class="line">path = &#x27;/pic/../video&#x27;</span><br><span class="line">os.path.mkdirs(path) # 会创建video的文件夹</span><br><span class="line"># abspath可以计算绝对路径，比如输入`/pic/../video/xx.mp4`</span><br><span class="line">path = &#x27;/pic/../video/xx.mp4&#x27;</span><br><span class="line">print(os.path.abspath(path)) # 输出`/video/xx.mp4`</span><br></pre></td></tr></table></figure>
+<p><a class="link"   target="_blank" rel="noopener" href="https://github.com/WhenCoding/python-demo/tree/master/common/live2d" >爬取live2d模型代码<i class="fas fa-external-link-alt"></i></a>我已经上传到Github上面，大家可以参考。这个仓库会更新一些平时写的脚本，老哥们感兴趣的话，可以star⭐️。<br>经过爬取，我整理了一下模型库，总共有27个模型，并将各个模型的名字也标注出来：<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20230312225005.png"
+                     
+                ><br>模型库我已经上传到<a class="link"   target="_blank" rel="noopener" href="https://github.com/WhenCoding/live2d_models" >WhenCoding/live2d_models<i class="fas fa-external-link-alt"></i></a>，推荐大家可以将这些模型都上传自己的cdn服务（大小70M+，不适合放入项目中），然后在<code>model_list.json</code>配置自己喜欢的模型，cdn服务我一直用的是七牛云，一个月不到1块钱（可能是没什么访问量😒）<br><a target="_blank" rel="noopener" href="https://s.qiniu.com/zY77jy"><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20230312230900.jpg"
+                     
+                ></a><br>访问速度很快，服务稳定，价格便宜，方便管理（比如防盗链等设置），现在可以点击我的<a class="link"   target="_blank" rel="noopener" href="https://s.qiniu.com/zY77jy" >推广链接<i class="fas fa-external-link-alt"></i></a>进行试用。<br>当前我的网站就配置了6个模型<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20230313000544.jpeg"
+                      width=400 height=400
+                ></p>
+<p>好啦，大家如果感兴趣可以带一个看板娘回家，如果在配置过程中遇到什么问题，可以关注微信公众号、留言、进群交流。</p>
+<h5 id="关注获取更多资源"><a href="#关注获取更多资源" class="headerlink" title="关注获取更多资源"></a>关注获取更多资源</h5><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/coderxm_qrcode.jpeg"
+                      width="200" height="200"  align="center" 
+                >
+                </div>
+
+                
+                    <div class="post-copyright-info">
+                        <div class="article-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="post-title border-box text-ellipsis">
+                确定了，今天带一个看板娘回家
+            </div>
+
+            <div class="post-link border-box text-ellipsis">
+                p/4059.html
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">小明</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2023-03-09 16:57</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-content="复制版权信息" data-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                    </div>
+                
+
+                
+                    <ul class="post-tags-box">
+                        
+                            <li class="tag-item">
+                                <a href="/tags/%E5%B7%A5%E5%85%B7/"><i class="icon fas fa-hashtag"></i>工具</a>&nbsp;
+                            </li>
+                        
+                    </ul>
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/p/10018.html"
+                                   title="Python常用API总结【小白必看】"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Python常用API总结【小白必看】</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/p/22086.html"
+                                   title="常用Github表情大全"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">常用Github表情大全</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <script data-pjax src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"></script>
+        <div id="waline-comment"></div>
+        <script data-pjax>
+          function loadWaline() {
+            Waline.init({
+              el: '#waline-comment',
+              serverURL: 'https://comment.mynamecoder.com',
+              lang: 'zh-CN' || 'zh-CN',
+              comment: '.post-comments-count',
+              reaction: 'true' === 'true'
+            })
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              loadWaline()
+            }, 1000)
+          } else {
+            window.addEventListener('DOMContentLoaded', loadWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E5%A8%98%E6%A1%86%E6%9E%B6"><span class="nav-text">看板娘框架</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E5%A8%98%E6%A8%A1%E5%9E%8B"><span class="nav-text">看板娘模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%B3%E6%B3%A8%E8%8E%B7%E5%8F%96%E6%9B%B4%E5%A4%9A%E8%B5%84%E6%BA%90"><span class="nav-text">关注获取更多资源</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box shields">
+        
+            <div class="info-item">
+                
+                <a class="shields-item">
+                    <img src="https://img.shields.io/badge/Since-2018_--_2024-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item" href="/">
+                        <img src="https://img.shields.io/badge/WebMaster-小明-dodgerblue?style=flat-square">
+                    </a>
+                
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       href="https://beian.miit.gov.cn"
+                    >
+                        <img src="https://img.shields.io/badge/ICP-京ICP备19029015号-dodgerblue?style=flat-square">
+                    </a>
+                
+                <a class="shields-item" href="https://hexo.io" target="_blank">
+                    <img src="https://img.shields.io/badge/Powered_by-Hexo-dodgerblue?style=flat-square">
+                </a>
+                <a class="shields-item" href="https://github.com/XPoet/hexo-theme-keep" target="_blank">
+                    <img class="shields-keep-version" src="https://img.shields.io/badge/Theme-Keep-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       rel="nofollow"
+                       href="https://github.com/WhenCoding"
+                    >
+                        <img src="https://img.shields.io/badge/Deploy_in-GitHub Pages-dodgerblue?style=flat-square">
+                    </a>
+                
+            </div>
+            
+                <div class="info-item">
+                    
+                        
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item shields">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-box border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E5%A8%98%E6%A1%86%E6%9E%B6"><span class="nav-text">看板娘框架</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E5%A8%98%E6%A8%A1%E5%9E%8B"><span class="nav-text">看板娘模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%B3%E6%B3%A8%E8%8E%B7%E5%8F%96%E6%9B%B4%E5%A4%9A%E8%B5%84%E6%BA%90"><span class="nav-text">关注获取更多资源</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/local-search.js"></script>
+
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/toc.js"></script>
+        
+    
+    
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

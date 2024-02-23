@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享">
+    <meta name="description" content="Spring Boot, Spring Cloud,日常开发, ElasticSearch, 微服务, 并发编程, 源码分析,Java,程序员小明">
+    <meta name="author" content="小明">
+    
+    <title>
+        
+            「日志」Redis开启事务 |
+        
+        程序员小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/brands.min.css">
+    
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"mynamecoder.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":null,"favicon":"/images/logo.svg","avatar":"/images/avatar.png","font_size":null,"font_family":"Optima-Regular,PingFangTC-light","hover":{"shadow":true,"scale":true},"first_screen":{"enable":false,"header_transparent":true,"background_img":"https://img.mynamecoder.com/20230224112801.jpeg","description":"||","font_color":"","hitokoto":true},"scroll":{"progress_bar":false,"percent":false}},"local_search":{"enable":true,"preload":true},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":true,"use":"waline","valine":{"appid":"RYD6fM3F1jQ4aTSXOzbclYi6-9Nh9j0Va","appkey":"mjF7jJLYlbIcPU2mUOoh0I88","server_urls":null,"meta":["nick","mail","link"],"placeholder":"说点什么"},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":"https://comment.mynamecoder.com","reaction":true,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":false,"min2read":false},"img_align":"left","copyright_info":true},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"version":"3.7.7"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1566816837076058" crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+            <a class="site-name border-box" href="/">
+               程序员小明
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                标签
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >
+                                友链
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links">友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+
+            <div class="article-content-bottom border-box">
+                
+                    <div class="article-title">
+                        「日志」Redis开启事务
+                    </div>
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/avatar.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">小明</span>
+                                
+                                    <span class="author-label">Lv6</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2021-09-05 23:11:07</span>
+                <span class="mobile">2021-09-05 23:11</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Tue Jan 09 2024 07:29:49 GMT+0000">2024-01-09 07:29:49</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item article-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul>
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="article-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul>
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Redis/">Redis</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <blockquote>
+<p>日常开发中往往会有一些业务场景，需要支持一个key多个序列化操作，比如维护一个大小为2的队列，当有新元素过来时，需要先获取队列中的第一个元素与新数据比较，当满足条件时，再操作队列，左边lpush，右边rpop，就这样循环往复，保证该队列是有序的，并且第一个元素永远是最新的。这个场景对应的一系列操作在高并发的场景下，就需要通过redis的事务保证顺序执行。</p>
+</blockquote>
+<h2 id="redis的事务"><a href="#redis的事务" class="headerlink" title="redis的事务"></a>redis的事务</h2><p>Redis 事务可以一次执行多个命令，本质是一组命令的集合。一个事务中的所有命令都会序列化，按顺序地串行化执行而不会被其它命令插入，不许加塞。<br>Redis 的事务在形式上看起来也差不多，分为三个阶段</p>
+<ul>
+<li>开启事务（multi）</li>
+<li>命令入队（业务操作）</li>
+<li>执行事务（exec）或取消事务（discard）<br>举例如下：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt; multi</span><br><span class="line">OK</span><br><span class="line">&gt; lpush xiaoming hello</span><br><span class="line">QUEUED</span><br><span class="line">&gt; lpush xiaoming world</span><br><span class="line">QUEUED</span><br><span class="line">&gt; exec</span><br><span class="line">1) &quot;OK&quot;</span><br><span class="line">2) &quot;1&quot;</span><br><span class="line">3) &quot;OK&quot;</span><br><span class="line">4) &quot;2&quot;</span><br><span class="line">5) &quot;OK&quot;</span><br></pre></td></tr></table></figure>
+
+<p>上面的指令演示了一个完整的事务过程，所有的指令在 exec 之前不执行，而是缓存在服务器的一个事务队列中，服务器一旦收到 exec 指令，才开执行整个事务队列，执行完毕后一次性返回所有指令的运行结果。<br>Redis 事务可以一次执行多个命令，本质是一组命令的集合。一个事务中的所有命令都会序列化，按顺序地串行化执行而不会被其它命令插入，不许加塞。<br>可以保证一个队列中，一次性、顺序性、排他性的执行一系列命令（Redis 事务的主要作用其实就是串联多个命令防止别的命令插队）<br>官方文档是这么说的</p>
+<blockquote>
+<p>事务可以一次执行多个命令， 并且带有以下两个重要的保证：</p>
+<ul>
+<li>事务是一个单独的隔离操作：事务中的所有命令都会序列化、按顺序地执行。事务在执行的过程中，不会被其他客户端发送来的命令请求所打断。</li>
+<li>事务是一个原子操作：事务中的命令要么全部被执行，要么全部都不执行</li>
+</ul>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MULTI</td>
+<td>标记一个事务块的开始</td>
+</tr>
+<tr>
+<td>EXEC</td>
+<td>执行所有事务块内的命令</td>
+</tr>
+<tr>
+<td>DISCARD</td>
+<td>取消事务，放弃执行事务块内的所有命令</td>
+</tr>
+<tr>
+<td>WATCH</td>
+<td>监视一个（或多个）key，如果在事务执行之前这个（或多个）key被其他命令所改动，那么事务将被打断</td>
+</tr>
+<tr>
+<td>UNWATCH</td>
+<td>取消 WATCH 命令对所有 keys 的监视</td>
+</tr>
+</tbody></table>
+<h2 id="事务中的错误"><a href="#事务中的错误" class="headerlink" title="事务中的错误"></a>事务中的错误</h2><p>我们用 Redis 事务的时候，可能会遇上以下两种错误：</p>
+<ul>
+<li><p>事务在执行 EXEC 之前，入队的命令可能会出错。比如说，命令可能会产生语法错误（参数数量错误，参数名错误等等），或者其他更严重的错误，比如内存不足（如果服务器使用 maxmemory 设置了最大内存限制的话）。</p>
+</li>
+<li><p>命令可能在 EXEC 调用之后失败。举个例子，事务中的命令可能处理了错误类型的键，比如将列表命令用在了字符串键上面，诸如此类。</p>
+</li>
+</ul>
+<p>Redis 针对如上两种错误采用了不同的处理策略：</p>
+<ul>
+<li><p>对于发生在 EXEC 执行之前的错误，服务器会对命令入队失败的情况进行记录，并在客户端调用 EXEC 命令时，拒绝执行并自动放弃这个事务（Redis 2.6.5 之前的做法是检查命令入队所得的返回值：如果命令入队时返回 QUEUED ，那么入队成功；否则，就是入队失败）</p>
+</li>
+<li><p>对于那些在 EXEC 命令执行之后所产生的错误， 并没有对它们进行特别处理： 即使事务中有某个/某些命令在执行时产生了错误， 事务中的其他命令仍然会继续执行。</p>
+</li>
+</ul>
+<p>接下来我们实际操作一下：</p>
+<h3 id="事务执行EXEC前发生错误"><a href="#事务执行EXEC前发生错误" class="headerlink" title="事务执行EXEC前发生错误"></a>事务执行EXEC前发生错误</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;multi</span><br><span class="line">&quot;OK&quot;</span><br><span class="line">&gt;lpush xiaoming hello</span><br><span class="line">&quot;QUEUED&quot;</span><br><span class="line">&gt;lpush xiaoming</span><br><span class="line">&quot;ERR wrong number of arguments for &#x27;lpush&#x27; command&quot;</span><br><span class="line">0&gt;exec</span><br><span class="line">&quot;EXECABORT Transaction discarded because of previous errors.&quot;</span><br><span class="line">0&gt;</span><br></pre></td></tr></table></figure>
+<p>某一条操作记录报错的话，exec 后所有操作都不会成功</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">0&gt;multi</span><br><span class="line">&quot;OK&quot;</span><br><span class="line">set xiaoming hello </span><br><span class="line">&quot;QUEUED&quot;</span><br><span class="line">0&gt;decr xiaoming</span><br><span class="line">&quot;QUEUED&quot;</span><br><span class="line">set coder hello</span><br><span class="line">&quot;QUEUED&quot;</span><br><span class="line">0&gt;exec</span><br><span class="line">1) &quot;OK&quot;</span><br><span class="line">2) &quot;OK&quot;</span><br><span class="line">3) &quot;OK&quot;</span><br><span class="line">4) &quot;ERR value is not an integer or out of range&quot;</span><br><span class="line">5) &quot;OK&quot;</span><br><span class="line">6) &quot;OK&quot;</span><br><span class="line">7) &quot;OK&quot;</span><br><span class="line">0&gt;mget xiaoming coder</span><br><span class="line">1) &quot;hello&quot;</span><br><span class="line">2) &quot;hello&quot;</span><br></pre></td></tr></table></figure>
+
+<p>示例中 <code>xiaoming</code> 被设置为 String 类型，<code>decr xiaoming</code> 可以放入操作队列中，因为只有在执行的时候才可以判断出语句错误，其他正确的会被正常执行。</p>
+<h2 id="为什么-Redis-不支持回滚"><a href="#为什么-Redis-不支持回滚" class="headerlink" title="为什么 Redis 不支持回滚"></a>为什么 Redis 不支持回滚</h2><p>如果你有使用关系式数据库的经验，那么 “Redis 在事务失败时不进行回滚，而是继续执行余下的命令”这种做法可能会让你觉得有点奇怪。</p>
+<p>以下是官方的自夸：</p>
+<blockquote>
+<p>Redis 命令只会因为错误的语法而失败（并且这些问题不能在入队时发现），或是命令用在了错误类型的键上面：这也就是说，从实用性的角度来说，失败的命令是由编程错误造成的，而这些错误应该在开发的过程中被发现，而不应该出现在生产环境中。<br>因为不需要对回滚进行支持，所以 Redis 的内部可以保持简单且快速。<br>有种观点认为 Redis 处理事务的做法会产生 bug ， 然而需要注意的是， 在通常情况下， 回滚并不能解决编程错误带来的问题。 举个例子， 如果你本来想通过 INCR 命令将键的值加上 1 ， 却不小心加上了 2 ， 又或者对错误类型的键执行了 INCR ， 回滚是没有办法处理这些情况的。<br>鉴于没有任何机制能避免程序员自己造成的错误， 并且这类错误通常不会在生产环境中出现， 所以 Redis 选择了更简单、更快速的无回滚方式来处理事务。</p>
+</blockquote>
+<h2 id="带-Watch-的事务"><a href="#带-Watch-的事务" class="headerlink" title="带 Watch 的事务"></a>带 Watch 的事务</h2><p>WATCH 命令用于在事务开始之前监视任意数量的键： 当调用 EXEC 命令执行事务时， 如果任意一个被监视的键已经被其他客户端修改了， 那么整个事务将被打断，不再执行， 直接返回失败。</p>
+<p>WATCH命令可以被调用多次。 对键的监视从 WATCH 执行之后开始生效， 直到调用 EXEC 为止。</p>
+<p>用户还可以在单个 WATCH 命令中监视任意多个键， 就像这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">redis&gt; WATCH key1 key2 key3 </span><br><span class="line">OK </span><br></pre></td></tr></table></figure>
+
+<p>当 EXEC 被调用时， 不管事务是否成功执行， 对所有键的监视都会被取消。另外，当客户端断开连接时，该客户端对键的监视也会被取消。</p>
+<p>我们看个简单的例子，用 watch 监控我的账号余额（一周100零花钱），正常消费</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">0&gt;set balance 100</span><br><span class="line">&quot;OK&quot;</span><br><span class="line">0&gt;watch balance </span><br><span class="line">&quot;OK&quot;</span><br><span class="line">0&gt;multi</span><br><span class="line">&quot;OK&quot;</span><br><span class="line">0&gt;decrby balance 20</span><br><span class="line">&quot;QUEUED&quot;</span><br><span class="line">0&gt;decrby balance 30</span><br><span class="line">&quot;QUEUED&quot;</span><br><span class="line">0&gt;exec</span><br><span class="line">1) &quot;OK&quot;</span><br><span class="line">2) &quot;80&quot;</span><br><span class="line">3) &quot;OK&quot;</span><br><span class="line">4) &quot;50&quot;</span><br><span class="line">5) &quot;OK&quot;</span><br></pre></td></tr></table></figure>
+
+<p>上面的示例好像没有体现出来watch的作用，我们再举个生动的例子。<br>辛苦搬砖一天的小明，洗漱过后，躺在床上打开王者荣耀，犹豫再三是否要首充6块钱，迟迟没付款。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">0&gt;set balance 100</span><br><span class="line">&quot;OK&quot;</span><br><span class="line">0&gt;watch balance</span><br><span class="line">&quot;OK&quot;</span><br><span class="line">0&gt;multi </span><br><span class="line">&quot;OK&quot;</span><br><span class="line">&gt;decrby balance 6</span><br><span class="line">&quot;QUEUED&quot;</span><br></pre></td></tr></table></figure>
+<p>而此时此刻，我对象在一旁观看主播带货，喜欢上了两支口红，并且在李佳琪”上链接！“的口令下，果断立即下单。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0&gt;decrby balance 100</span><br><span class="line">&quot;0&quot;</span><br></pre></td></tr></table></figure>
+
+<p>毫不知情的我，这个时候终于决定结账，却发现</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0&gt;exec</span><br><span class="line">(空)</span><br></pre></td></tr></table></figure>
+
+<p>扣款失败，到底发生了什么呢？</p>
+<p>原来watch指令，类似乐观锁，事务提交时，如果 key 的值已被别的客户端改变，比如某个 list 已被别的客户端修改过了，整个事务队列都不会被执行。（当然也可以用 Redis 实现分布式锁来保证安全性，属于悲观锁）</p>
+<p>通过 watch 命令在事务执行之前监控了多个 keys，倘若在 watch 之后有任何 key 的值发生变化，exec 命令执行的事务都将被放弃，同时返回 Null 应答以通知调用者事务执行失败。</p>
+<blockquote>
+<p>悲观锁<br>悲观锁(Pessimistic Lock)，顾名思义，就是很悲观，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会 block 直到它拿到锁。传统的关系型数据库里边就用到了很多这种锁机制，比如行锁，表锁等，读锁，写锁等，都是在做操作之前先上锁</p>
+</blockquote>
+<blockquote>
+<p>乐观锁<br>乐观锁(Optimistic Lock)，顾名思义，就是很乐观，每次去拿数据的时候都认为别人不会修改，所以不会上锁，但是在更新的时候会判断一下在此期间别人有没有去更新这个数据，可以使用版本号等机制。乐观锁适用于多读的应用类型，这样可以提高吞吐量。乐观锁策略：提交版本必须大于记录当前版本才能执行更新</p>
+</blockquote>
+<p>WATCH 命令的实现原理<br>在代表数据库的 server.h/redisDb 结构类型中， 都保存了一个 watched_keys 字典， 字典的键是这个数据库被监视的键， 而字典的值是一个链表， 链表中保存了所有监视这个键的客户端，如下图。<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20210923002716.png"
+                     
+                ></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">typedef struct redisDb &#123;</span><br><span class="line">    dict *dict;                 /* The keyspace for this DB */</span><br><span class="line">    dict *expires;              /* Timeout of keys with a timeout set */</span><br><span class="line">    dict *blocking_keys;        /* Keys with clients waiting for data (BLPOP)*/</span><br><span class="line">    dict *ready_keys;           /* Blocked keys that received a PUSH */</span><br><span class="line">    dict *watched_keys;         /* WATCHED keys for MULTI/EXEC CAS */</span><br><span class="line">    int id;                     /* Database ID */</span><br><span class="line">    long long avg_ttl;          /* Average TTL, just for stats */</span><br><span class="line">    unsigned long expires_cursor; /* Cursor of the active expire cycle. */</span><br><span class="line">    list *defrag_later;         /* List of key names to attempt to defrag one by one, gradually. */</span><br><span class="line">&#125; redisDb;</span><br><span class="line"></span><br><span class="line">list *watched_keys;     /* Keys WATCHED for MULTI/EXEC CAS */</span><br></pre></td></tr></table></figure>
+
+<p>WATCH 命令的作用， 就是将当前客户端和要监视的键在 watched_keys 中进行关联。</p>
+<p>举个例子， 如果当前客户端为 client99 ， 那么当客户端执行 WATCH key2 key3 时， 前面展示的 watched_keys 将被修改成这个样子：<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20210923002651.png"
+                     
+                ></p>
+<p>通过 watched_keys 字典， 如果程序想检查某个键是否被监视， 那么它只要检查字典中是否存在这个键即可； 如果程序要获取监视某个键的所有客户端， 那么只要取出键的值（一个链表）， 然后对链表进行遍历即可。</p>
+<p>在任何对数据库键空间（key space）进行修改的命令成功执行之后 （比如 FLUSHDB、SET 、DEL、LPUSH、 SADD，诸如此类）， multi.c/touchWatchedKey 函数都会被调用 —— 它会去 watched_keys 字典， 看是否有客户端在监视已经被命令修改的键， 如果有的话， 程序将所有监视这个/这些被修改键的客户端的 REDIS_DIRTY_CAS 选项打开：</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20210923002750.png"
+                     
+                ></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">void multiCommand(client *c) &#123;</span><br><span class="line">    // 不能在事务中嵌套事务</span><br><span class="line">    if (c-&gt;flags &amp; CLIENT_MULTI) &#123;</span><br><span class="line">        addReplyError(c,&quot;MULTI calls can not be nested&quot;);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    // 打开事务 FLAG</span><br><span class="line">    c-&gt;flags |= CLIENT_MULTI;</span><br><span class="line">    addReply(c,shared.ok);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/* &quot;Touch&quot; a key, so that if this key is being WATCHed by some client the</span><br><span class="line"> * next EXEC will fail. */</span><br><span class="line">void touchWatchedKey(redisDb *db, robj *key) &#123;</span><br><span class="line">    list *clients;</span><br><span class="line">    listIter li;</span><br><span class="line">    listNode *ln;</span><br><span class="line">    // 字典为空，没有任何键被监视</span><br><span class="line">    if (dictSize(db-&gt;watched_keys) == 0) return;</span><br><span class="line">    // 获取所有监视这个键的客户端</span><br><span class="line">    clients = dictFetchValue(db-&gt;watched_keys, key);</span><br><span class="line">    if (!clients) return;</span><br><span class="line"></span><br><span class="line">    // 遍历所有客户端，打开他们的 CLIENT_DIRTY_CAS 标识</span><br><span class="line">    listRewind(clients,&amp;li);</span><br><span class="line">    while((ln = listNext(&amp;li))) &#123;</span><br><span class="line">        client *c = listNodeValue(ln);</span><br><span class="line"></span><br><span class="line">        c-&gt;flags |= CLIENT_DIRTY_CAS;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当客户端发送 EXEC 命令、触发事务执行时， 服务器会对客户端的状态进行检查：</p>
+<p>如果客户端的 CLIENT_DIRTY_CAS 选项已经被打开，那么说明被客户端监视的键至少有一个已经被修改了，事务的安全性已经被破坏。服务器会放弃执行这个事务，直接向客户端返回空回复，表示事务执行失败。<br>如果 CLIENT_DIRTY_CAS 选项没有被打开，那么说明所有监视键都安全，服务器正式执行事务。</p>
+<h2 id="小总结："><a href="#小总结：" class="headerlink" title="小总结："></a>小总结：</h2><h3 id="3-个阶段"><a href="#3-个阶段" class="headerlink" title="3 个阶段"></a>3 个阶段</h3><p>开启：以 MULTI 开始一个事务<br>入队：将多个命令入队到事务中，接到这些命令并不会立即执行，而是放到等待执行的事务队列里面<br>执行：由 EXEC 命令触发事务</p>
+<h3 id="3-个特性"><a href="#3-个特性" class="headerlink" title="3 个特性"></a>3 个特性</h3><p>单独的隔离操作：事务中的所有命令都会序列化、按顺序地执行。事务在执行的过程中，不会被其他客户端发送来的命令请求所打断。</p>
+<p>没有隔离级别的概念：队列中的命令没有提交之前都不会实际的被执行，因为事务提交前任何指令都不会被实际执行，也就不存在”事务内的查询要看到事务里的更新，在事务外查询不能看到”这个让人万分头痛的问题</p>
+<p>不保证原子性：Redis 同一个事务中如果有一条命令执行失败，其后的命令仍然会被执行，没有回滚<br>在传统的关系式数据库中，常常用 ACID 性质来检验事务功能的安全性。Redis 事务保证了其中的一致性（C）和隔离性（I），但并不保证原子性（A）和持久性（D）。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>Redis 事务在发送每个指令到事务缓存队列时都要经过一次网络读写，当一个事务内部的指令较多时，需要的网络 IO 时间也会线性增长。所以通常 Redis 的客户端在执行事务时都会结合 pipeline 一起使用，这样可以将多次 IO 操作压缩为单次 IO 操作。</p>
+
+                </div>
+
+                
+                    <div class="post-copyright-info">
+                        <div class="article-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="post-title border-box text-ellipsis">
+                「日志」Redis开启事务
+            </div>
+
+            <div class="post-link border-box text-ellipsis">
+                p/65482.html
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">小明</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2021-09-05 23:11</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-content="复制版权信息" data-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                    </div>
+                
+
+                
+                    <ul class="post-tags-box">
+                        
+                            <li class="tag-item">
+                                <a href="/tags/Redis/"><i class="icon fas fa-hashtag"></i>Redis</a>&nbsp;
+                            </li>
+                        
+                    </ul>
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/p/1a81.html"
+                                   title="「记录」日常开发当中遇到的一些问题"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">「记录」日常开发当中遇到的一些问题</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/p/63927.html"
+                                   title="通过shell脚本一键安装JDK8"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">通过shell脚本一键安装JDK8</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <script data-pjax src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"></script>
+        <div id="waline-comment"></div>
+        <script data-pjax>
+          function loadWaline() {
+            Waline.init({
+              el: '#waline-comment',
+              serverURL: 'https://comment.mynamecoder.com',
+              lang: 'zh-CN' || 'zh-CN',
+              comment: '.post-comments-count',
+              reaction: 'true' === 'true'
+            })
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              loadWaline()
+            }, 1000)
+          } else {
+            window.addEventListener('DOMContentLoaded', loadWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#redis%E7%9A%84%E4%BA%8B%E5%8A%A1"><span class="nav-text">redis的事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E4%B8%AD%E7%9A%84%E9%94%99%E8%AF%AF"><span class="nav-text">事务中的错误</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E6%89%A7%E8%A1%8CEXEC%E5%89%8D%E5%8F%91%E7%94%9F%E9%94%99%E8%AF%AF"><span class="nav-text">事务执行EXEC前发生错误</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-Redis-%E4%B8%8D%E6%94%AF%E6%8C%81%E5%9B%9E%E6%BB%9A"><span class="nav-text">为什么 Redis 不支持回滚</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A6-Watch-%E7%9A%84%E4%BA%8B%E5%8A%A1"><span class="nav-text">带 Watch 的事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="nav-text">小总结：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%B8%AA%E9%98%B6%E6%AE%B5"><span class="nav-text">3 个阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%B8%AA%E7%89%B9%E6%80%A7"><span class="nav-text">3 个特性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%90%8E"><span class="nav-text">最后</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box shields">
+        
+            <div class="info-item">
+                
+                <a class="shields-item">
+                    <img src="https://img.shields.io/badge/Since-2018_--_2024-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item" href="/">
+                        <img src="https://img.shields.io/badge/WebMaster-小明-dodgerblue?style=flat-square">
+                    </a>
+                
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       href="https://beian.miit.gov.cn"
+                    >
+                        <img src="https://img.shields.io/badge/ICP-京ICP备19029015号-dodgerblue?style=flat-square">
+                    </a>
+                
+                <a class="shields-item" href="https://hexo.io" target="_blank">
+                    <img src="https://img.shields.io/badge/Powered_by-Hexo-dodgerblue?style=flat-square">
+                </a>
+                <a class="shields-item" href="https://github.com/XPoet/hexo-theme-keep" target="_blank">
+                    <img class="shields-keep-version" src="https://img.shields.io/badge/Theme-Keep-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       rel="nofollow"
+                       href="https://github.com/WhenCoding"
+                    >
+                        <img src="https://img.shields.io/badge/Deploy_in-GitHub Pages-dodgerblue?style=flat-square">
+                    </a>
+                
+            </div>
+            
+                <div class="info-item">
+                    
+                        
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item shields">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-box border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#redis%E7%9A%84%E4%BA%8B%E5%8A%A1"><span class="nav-text">redis的事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E4%B8%AD%E7%9A%84%E9%94%99%E8%AF%AF"><span class="nav-text">事务中的错误</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E6%89%A7%E8%A1%8CEXEC%E5%89%8D%E5%8F%91%E7%94%9F%E9%94%99%E8%AF%AF"><span class="nav-text">事务执行EXEC前发生错误</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-Redis-%E4%B8%8D%E6%94%AF%E6%8C%81%E5%9B%9E%E6%BB%9A"><span class="nav-text">为什么 Redis 不支持回滚</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A6-Watch-%E7%9A%84%E4%BA%8B%E5%8A%A1"><span class="nav-text">带 Watch 的事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="nav-text">小总结：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%B8%AA%E9%98%B6%E6%AE%B5"><span class="nav-text">3 个阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%B8%AA%E7%89%B9%E6%80%A7"><span class="nav-text">3 个特性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%90%8E"><span class="nav-text">最后</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/local-search.js"></script>
+
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/toc.js"></script>
+        
+    
+    
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

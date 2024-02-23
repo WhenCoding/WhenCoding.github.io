@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享">
+    <meta name="description" content="Spring Boot, Spring Cloud,日常开发, ElasticSearch, 微服务, 并发编程, 源码分析,Java,程序员小明">
+    <meta name="author" content="小明">
+    
+    <title>
+        
+            开发随记 |
+        
+        程序员小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/brands.min.css">
+    
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"mynamecoder.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":null,"favicon":"/images/logo.svg","avatar":"/images/avatar.png","font_size":null,"font_family":"Optima-Regular,PingFangTC-light","hover":{"shadow":true,"scale":true},"first_screen":{"enable":false,"header_transparent":true,"background_img":"https://img.mynamecoder.com/20230224112801.jpeg","description":"||","font_color":"","hitokoto":true},"scroll":{"progress_bar":false,"percent":false}},"local_search":{"enable":true,"preload":true},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":true,"use":"waline","valine":{"appid":"RYD6fM3F1jQ4aTSXOzbclYi6-9Nh9j0Va","appkey":"mjF7jJLYlbIcPU2mUOoh0I88","server_urls":null,"meta":["nick","mail","link"],"placeholder":"说点什么"},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":"https://comment.mynamecoder.com","reaction":true,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":false,"min2read":false},"img_align":"left","copyright_info":true},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"version":"3.7.7"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1566816837076058" crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+            <a class="site-name border-box" href="/">
+               程序员小明
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                标签
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >
+                                友链
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links">友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+                <div class="article-content-top border-box">
+                    <div class="cover-article-title">
+                        开发随记
+                    </div>
+                    <img class="post-cover" src="https://img.mynamecoder.com/20230920094112.jpg" alt="开发随记">
+                </div>
+            
+
+            <div class="article-content-bottom border-box has-cover">
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/avatar.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">小明</span>
+                                
+                                    <span class="author-label">Lv6</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2023-10-23 23:00:00</span>
+                <span class="mobile">2023-10-23 23:00</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Mon Jan 22 2024 08:43:50 GMT+0000">2024-01-22 08:43:50</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item article-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul>
+                    
+                            <li class="category-item">
+                                
+                                <a href="/categories/%E6%97%A5%E5%B8%B8%E5%BC%80%E5%8F%91/">日常开发</a>
+                            </li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="article-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul>
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E6%97%A5%E5%B8%B8%E5%BC%80%E5%8F%91/">日常开发</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+                        <div class="article-aging-tips"
+                             data-update-date="Mon Jan 22 2024 08:43:50 GMT+0000"
+                             data-aging-days="10"
+                        >
+                            <i class="fa-solid fa-circle-exclamation"></i>本文距离上次更新已过去 <span class="days">0</span> 天，部分内容可能已经过时，请注意甄别。
+                        </div>
+                    
+
+                    <p>📒 记录每日开发过程中的一些碎片，持续更新</p>
+<span id="more"></span>
+
+
+<h2 id="pip-查看包信息"><a href="#pip-查看包信息" class="headerlink" title="pip 查看包信息"></a>pip 查看包信息</h2><p>命令显示已安装包的信息（包名与版本号）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip list  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>再用命令显示该安装的包的相关信息，其中包括它的安装路径。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip show package_name</span><br></pre></td></tr></table></figure>
+<p>实际上包通常被安装在python安装目录下的lib\site-packages目录下</p>
+<h2 id="Mac微信聊天记录所在目录"><a href="#Mac微信聊天记录所在目录" class="headerlink" title="Mac微信聊天记录所在目录"></a>Mac微信聊天记录所在目录</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Mac日历与iPhone日历不无法同步问题"><a href="#Mac日历与iPhone日历不无法同步问题" class="headerlink" title="Mac日历与iPhone日历不无法同步问题"></a>Mac日历与iPhone日历不无法同步问题</h2><ul>
+<li>升级一下系统为最新</li>
+</ul>
+<ul>
+<li>~/Library/Preferences 目录下，删除 com.apple.iCal.plist ；</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/Library/Preferences </span><br><span class="line">rm -rf com.apple.iCal.plist </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>打开日历 App，账户-退出icloud账户，关闭日历程序</p>
+</li>
+<li><p>重新登录，提示同步本地日历到云端</p>
+</li>
+</ul>
+<h2 id="MacOS-字体-font-文件的-存放路径"><a href="#MacOS-字体-font-文件的-存放路径" class="headerlink" title="MacOS: 字体(font)文件的 存放路径"></a>MacOS: 字体(font)文件的 存放路径</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/System/Library/Fonts</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="mybatis输出最终sql"><a href="#mybatis输出最终sql" class="headerlink" title="mybatis输出最终sql"></a>mybatis输出最终sql</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SimpleExecutor</span><br></pre></td></tr></table></figure>
+<p>可以通过debug形式获取变量的值</p>
+<h2 id="修改Linux环境变量"><a href="#修改Linux环境变量" class="headerlink" title="修改Linux环境变量"></a>修改Linux环境变量</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 最后面追加</span><br><span class="line">vi /etc/profile</span><br><span class="line"># 立即生效</span><br><span class="line">source /etc/profile</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="Jenkins"><a href="#Jenkins" class="headerlink" title="Jenkins"></a>Jenkins</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1、重启Jenkies</span><br><span class="line">http://localhost:8080/restart</span><br><span class="line"></span><br><span class="line">2、重新加载配置信息</span><br><span class="line"> http://localhost:8080/reload</span><br></pre></td></tr></table></figure>
+
+<h2 id="openresty工作流程"><a href="#openresty工作流程" class="headerlink" title="openresty工作流程"></a>openresty工作流程</h2><p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20230223233907.png"
+                     
+                ></p>
+<h2 id="NullPointerException异常在Java中没有堆栈"><a href="#NullPointerException异常在Java中没有堆栈" class="headerlink" title="NullPointerException异常在Java中没有堆栈"></a>NullPointerException异常在Java中没有堆栈</h2><p>使用的HotSpot JVM，为了达到更好的性能，执行了很多优化，默认空指针异常堆栈跟踪不打印。因此，要获得堆栈追溯，需要通过选项<code>-XX:-OmitStackTraceInFastThrow</code>设置启动参数。</p>
+<h2 id="lua"><a href="#lua" class="headerlink" title="lua"></a>lua</h2><p>lua脚本变量命名千万不要带“-”，尤其是在openresty引用该脚本的场景下注意日志错误，忘不掉那个午休被惊醒的场景。</p>
+<h2 id="数据库连接工具"><a href="#数据库连接工具" class="headerlink" title="数据库连接工具"></a>数据库连接工具</h2><h4 id="Mac"><a href="#Mac" class="headerlink" title="Mac"></a><strong>Mac</strong></h4><p>Sequel Pro、Navicat（好用且破费）、DBeaver</p>
+<h4 id="win"><a href="#win" class="headerlink" title="win"></a><strong>win</strong></h4><p> HeidiSQL</p>
+<h2 id="hosts文件所在目录"><a href="#hosts文件所在目录" class="headerlink" title="hosts文件所在目录"></a>hosts文件所在目录</h2><h4 id="Mac-1"><a href="#Mac-1" class="headerlink" title="Mac"></a><strong>Mac</strong></h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/hosts</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="win-1"><a href="#win-1" class="headerlink" title="win"></a>win</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c:\Windows\System32\divers\etc\hosts</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Tomcat存放目录"><a href="#Tomcat存放目录" class="headerlink" title="Tomcat存放目录"></a>Tomcat存放目录</h2><h4 id="Mac-2"><a href="#Mac-2" class="headerlink" title="Mac"></a>Mac</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/Library</span><br></pre></td></tr></table></figure>
+
+<h3 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h3><p>自定义</p>
+<h2 id="redis查看工具Redis-client"><a href="#redis查看工具Redis-client" class="headerlink" title="redis查看工具Redis client"></a>redis查看工具Redis client</h2><h4 id="Mac-3"><a href="#Mac-3" class="headerlink" title="Mac"></a>Mac</h4><p>Redis Desktop Manager</p>
+<h2 id="Mysql"><a href="#Mysql" class="headerlink" title="Mysql"></a>Mysql</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT IGNORE 忽略导致错误的行，如果有则不插入也不报错，并将其余行插入到表中。</span><br></pre></td></tr></table></figure>
+
+<h3 id="redis-cli"><a href="#redis-cli" class="headerlink" title="redis-cli"></a>redis-cli</h3><h4 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -h 域名/ip</span><br></pre></td></tr></table></figure>
+
+<h4 id="list"><a href="#list" class="headerlink" title="list"></a>list</h4><p>获取列表长度</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LLen key</span><br></pre></td></tr></table></figure>
+
+<p>获取前10个</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LRANGE key 0 10</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="SpringBoot"><a href="#SpringBoot" class="headerlink" title="SpringBoot"></a>SpringBoot</h2><h3 id="Spring-Boot-启动加载数据-CommandLineRunner"><a href="#Spring-Boot-启动加载数据-CommandLineRunner" class="headerlink" title="Spring Boot 启动加载数据 CommandLineRunner"></a>Spring Boot 启动加载数据 CommandLineRunner</h3><p><a class="link"   target="_blank" rel="noopener" href="https://blog.csdn.net/catoop/article/details/50501710" >https://blog.csdn.net/catoop/article/details/50501710<i class="fas fa-external-link-alt"></i></a></p>
+<h3 id="springboot中-scheduled开关机制"><a href="#springboot中-scheduled开关机制" class="headerlink" title="springboot中@scheduled开关机制"></a>springboot中@scheduled开关机制</h3><h4 id="配置类"><a href="#配置类" class="headerlink" title="配置类"></a>配置类</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">@EnableScheduling</span><br><span class="line">@ConditionalOnProperty(prefix = &quot;scheduling&quot;, name = &quot;enabled&quot;, havingValue = &quot;true&quot;)</span><br><span class="line">public class SchedulingConfig &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scheduling.enabled=true</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="idea-打开cpu监控如何关闭"><a href="#idea-打开cpu监控如何关闭" class="headerlink" title="idea 打开cpu监控如何关闭"></a>idea 打开cpu监控如何关闭</h2><p>view-&gt;tool windows-&gt;coverage-&gt;关闭application</p>
+<h2 id="mac查看图片如何来回切换"><a href="#mac查看图片如何来回切换" class="headerlink" title="mac查看图片如何来回切换"></a>mac查看图片如何来回切换</h2><p>按住空格，通过方向键切换</p>
+<h2 id="tail命令"><a href="#tail命令" class="headerlink" title="tail命令"></a>tail命令</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tail -f ./catalina.out | grep &#x27;舆情秘书&#x27; -A 10</span><br></pre></td></tr></table></figure>
+
+<h3 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">① grep -E &quot;word1|word2|word3&quot; file.txt</span><br><span class="line">满足任意条件（word1、word2和word3之一）将匹配。</span><br><span class="line">② grep word1 file.txt | grep word2 |grep word3</span><br><span class="line">必须同时满足三个条件（word1、word2和word3）才匹配。</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="idea自动导入包"><a href="#idea自动导入包" class="headerlink" title="idea自动导入包"></a>idea自动导入包</h2><p>Preference（快捷键：command+,）-&gt;maven-&gt;import maven projects automaticallly</p>
+<h2 id="idea忽略-iml"><a href="#idea忽略-iml" class="headerlink" title="idea忽略*.iml"></a>idea忽略*.iml</h2><ol>
+<li><code>Editor-&gt;File Types=&gt;Ignore files and folders增加*.iml;</code></li>
+<li><code>在lgnore files and folesrs中输入.idea;注意要&quot;;&quot;结尾。你就可以隐藏.idea文件夹了</code></li>
+</ol>
+<h2 id="idea查看properties中文变成unicode码如何解决"><a href="#idea查看properties中文变成unicode码如何解决" class="headerlink" title="idea查看properties中文变成unicode码如何解决"></a>idea查看properties中文变成unicode码如何解决</h2><p>Preference（快捷键：command+,）-&gt;搜索File Encoding-&gt;Transparent native-to-ascii conversion勾选框，勾选之后点击确认。</p>
+<h2 id="idea-好用的插件"><a href="#idea-好用的插件" class="headerlink" title="idea 好用的插件"></a>idea 好用的插件</h2><h3 id="Free-Mybatis-plugin"><a href="#Free-Mybatis-plugin" class="headerlink" title="Free Mybatis plugin"></a>Free Mybatis plugin</h3><p>A idea plugin for mybatis free-idea-mybatis is an enchange plugin for idea to supoort mybatis</p>
+<h3 id="SequenceDiagram"><a href="#SequenceDiagram" class="headerlink" title="SequenceDiagram"></a>SequenceDiagram</h3><p>生成一个方法逻辑的时序图，深度可以自定义，能够很方便地分析代码逻辑，很实用，尤其是当你刚开始接手别人的代码时……</p>
+<h2 id="清除ios输入法预测的记录"><a href="#清除ios输入法预测的记录" class="headerlink" title="清除ios输入法预测的记录"></a>清除ios输入法预测的记录</h2><p>设置》通用》还原》还原键盘词典。</p>
+<h2 id="redis-查看当前发布订阅命令"><a href="#redis-查看当前发布订阅命令" class="headerlink" title="redis 查看当前发布订阅命令"></a>redis 查看当前发布订阅命令</h2><p>pubsub channels</p>
+<h2 id="imovie"><a href="#imovie" class="headerlink" title="imovie"></a>imovie</h2><h3 id="导出"><a href="#导出" class="headerlink" title="导出"></a>导出</h3><p>文件-&gt;分享-&gt;文件-&gt;选择视频或者音频</p>
+<h2 id="Mac-4"><a href="#Mac-4" class="headerlink" title="Mac"></a>Mac</h2><h3 id="移动（剪切）"><a href="#移动（剪切）" class="headerlink" title="移动（剪切）"></a>移动（剪切）</h3><ul>
+<li>command+c</li>
+<li>command+option+v</li>
+</ul>
+<h3 id="Visual-Studio-Code-Dock没有图标"><a href="#Visual-Studio-Code-Dock没有图标" class="headerlink" title="Visual Studio Code Dock没有图标"></a>Visual Studio Code Dock没有图标</h3><p>最近发现使用Visual Studio Code在Dock上居然找不到图标（bug）。<br>打开<code>terminal</code>命令行工具，输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">killall Dock</span><br></pre></td></tr></table></figure>
+
+<p>回车，这样Dock就可以自动重启，vs code的图标在Dock中也恢复正常显示。</p>
+<h2 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h2><p>统计log中关键词出现的次数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat localhost_access_log.txt | grep &#x27;192.168.185.112&#x27; | wc | awk &#x27;&#123;print $1&#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+<h3 id="curl"><a href="#curl" class="headerlink" title="curl"></a>curl</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -d &quot;userid=69129&amp;KK_TYPE=01&quot; http://192.168.185.63:8080/SubjectTree/getTree.do</span><br></pre></td></tr></table></figure>
+
+<h3 id="cat"><a href="#cat" class="headerlink" title="cat"></a>cat</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat localhost_access_log.txt | grep &#x27;192.168.185.112&#x27; | wc -l</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat localhost_access_log.txt | grep &#x27;192.168.185.112&#x27; | wc | awk &#x27;&#123;print $1&#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+<h3 id="关机命令"><a href="#关机命令" class="headerlink" title="关机命令"></a>关机命令</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">init 0</span><br></pre></td></tr></table></figure>
+
+<h3 id="用户组控制目录权限"><a href="#用户组控制目录权限" class="headerlink" title="用户组控制目录权限"></a>用户组控制目录权限</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown tomcat:tomcat yqms_error.log</span><br></pre></td></tr></table></figure>
+
+<h3 id="SSH下用vim打开文件，文件显示不全"><a href="#SSH下用vim打开文件，文件显示不全" class="headerlink" title="SSH下用vim打开文件，文件显示不全"></a>SSH下用vim打开文件，文件显示不全</h3><p>执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stty rows 200 columns 250</span><br></pre></td></tr></table></figure>
+
+<h3 id="vim显示行号"><a href="#vim显示行号" class="headerlink" title="vim显示行号"></a>vim显示行号</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set number</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置ssh免登录"><a href="#配置ssh免登录" class="headerlink" title="配置ssh免登录"></a>配置ssh免登录</h3><p>首先确认当前用户本地是否存在公钥私钥对：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd ~/.ssh</span><br></pre></td></tr></table></figure>
+
+<p>如果存在跳过这一步，如果不存在使用<code>ssh-keygen</code>即可生成公钥私钥对（一直回车，我们不需要使用密码保护私钥对）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen</span><br></pre></td></tr></table></figure>
+
+<p>我们发现当前用户目录下生成以下文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">authorized_keys</span><br><span class="line">id_rsa</span><br><span class="line">id_rsa.pub</span><br><span class="line">known_hosts</span><br></pre></td></tr></table></figure>
+
+<p>至此，我们使用<code>ssh-copy-id</code>将公钥复制到远程机器中，即可通过ssh免密访问服务器、scp免密上传文件，类似的应用场景还有github代码管理也有用到，确实非常方便。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-copy-id -p 端口号 -i ~/.ssh/id_rsa.pub 用户名@ip地址</span><br></pre></td></tr></table></figure>
+
+<h3 id="tail"><a href="#tail" class="headerlink" title="tail"></a>tail</h3><h4 id="根据关键词筛选日志"><a href="#根据关键词筛选日志" class="headerlink" title="根据关键词筛选日志"></a>根据关键词筛选日志</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tail -f -n 100 log | grep 关键词</span><br></pre></td></tr></table></figure>
+
+<h3 id="netstat"><a href="#netstat" class="headerlink" title="netstat"></a>netstat</h3><p>查看端口号占用情况</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -tunlp</span><br></pre></td></tr></table></figure>
+
+<p>查看端口被哪个进程使用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -anp|grep 8080</span><br></pre></td></tr></table></figure>
+
+<p>在一次启动jar包的服务中，通过以上方法如果找不到端口号占用情况，通过删除nohup文件解决</p>
+<h3 id="ps"><a href="#ps" class="headerlink" title="ps"></a>ps</h3><h4 id="根据“java”执行命令的查看进程"><a href="#根据“java”执行命令的查看进程" class="headerlink" title="根据“java”执行命令的查看进程"></a>根据“java”执行命令的查看进程</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps ax | grep java</span><br></pre></td></tr></table></figure>
+
+<h4 id="杀死同名全部进程方法"><a href="#杀死同名全部进程方法" class="headerlink" title="杀死同名全部进程方法"></a>杀死同名全部进程方法</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -ef|grep phantomjs |grep -v grep|awk &#x27;&#123;print $2&#125;&#x27;|xargs kill -9</span><br></pre></td></tr></table></figure>
+
+<h4 id="ls"><a href="#ls" class="headerlink" title="ls"></a>ls</h4><p>统计当前目录文档数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls | wc -l</span><br></pre></td></tr></table></figure>
+
+<h4 id="df"><a href="#df" class="headerlink" title="df"></a>df</h4><p>统计磁盘使用情况</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df -h</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="jenkins"><a href="#jenkins" class="headerlink" title="jenkins"></a>jenkins</h2><ul>
+<li><p>jenkins SSH插件如果不指定目录位置，默认目录是<code>/root</code>下，需要注意，目前推荐使用默认，方便统一管理。</p>
+</li>
+<li><p>当配置SSH插件脚本时，需要注意在目标服务器上执行脚本（ssh exec command）时，使用以下命令才能正常使用脚本，启动应用</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source /etc/profile</span><br></pre></td></tr></table></figure>
+
+                </div>
+
+                
+                    <div class="post-copyright-info">
+                        <div class="article-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="post-title border-box text-ellipsis">
+                开发随记
+            </div>
+
+            <div class="post-link border-box text-ellipsis">
+                p/7e8c.html
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">小明</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2023-10-23 23:00</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-content="复制版权信息" data-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                    </div>
+                
+
+                
+                    <ul class="post-tags-box">
+                        
+                            <li class="tag-item">
+                                <a href="/tags/%E6%97%A5%E5%B8%B8%E5%BC%80%E5%8F%91/"><i class="icon fas fa-hashtag"></i>日常开发</a>&nbsp;
+                            </li>
+                        
+                    </ul>
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/p/46863.html"
+                                   title="安利一个Mac下好用的抓包工具-Charles"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">安利一个Mac下好用的抓包工具-Charles</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/p/39079.html"
+                                   title="SpringBoot启动流程"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">SpringBoot启动流程</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <script data-pjax src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"></script>
+        <div id="waline-comment"></div>
+        <script data-pjax>
+          function loadWaline() {
+            Waline.init({
+              el: '#waline-comment',
+              serverURL: 'https://comment.mynamecoder.com',
+              lang: 'zh-CN' || 'zh-CN',
+              comment: '.post-comments-count',
+              reaction: 'true' === 'true'
+            })
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              loadWaline()
+            }, 1000)
+          } else {
+            window.addEventListener('DOMContentLoaded', loadWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#pip-%E6%9F%A5%E7%9C%8B%E5%8C%85%E4%BF%A1%E6%81%AF"><span class="nav-text">pip 查看包信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mac%E5%BE%AE%E4%BF%A1%E8%81%8A%E5%A4%A9%E8%AE%B0%E5%BD%95%E6%89%80%E5%9C%A8%E7%9B%AE%E5%BD%95"><span class="nav-text">Mac微信聊天记录所在目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mac%E6%97%A5%E5%8E%86%E4%B8%8EiPhone%E6%97%A5%E5%8E%86%E4%B8%8D%E6%97%A0%E6%B3%95%E5%90%8C%E6%AD%A5%E9%97%AE%E9%A2%98"><span class="nav-text">Mac日历与iPhone日历不无法同步问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MacOS-%E5%AD%97%E4%BD%93-font-%E6%96%87%E4%BB%B6%E7%9A%84-%E5%AD%98%E6%94%BE%E8%B7%AF%E5%BE%84"><span class="nav-text">MacOS: 字体(font)文件的 存放路径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mybatis%E8%BE%93%E5%87%BA%E6%9C%80%E7%BB%88sql"><span class="nav-text">mybatis输出最终sql</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9Linux%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-text">修改Linux环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Jenkins"><span class="nav-text">Jenkins</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#openresty%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-text">openresty工作流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NullPointerException%E5%BC%82%E5%B8%B8%E5%9C%A8Java%E4%B8%AD%E6%B2%A1%E6%9C%89%E5%A0%86%E6%A0%88"><span class="nav-text">NullPointerException异常在Java中没有堆栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lua"><span class="nav-text">lua</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E5%B7%A5%E5%85%B7"><span class="nav-text">数据库连接工具</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Mac"><span class="nav-text">Mac</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#win"><span class="nav-text">win</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hosts%E6%96%87%E4%BB%B6%E6%89%80%E5%9C%A8%E7%9B%AE%E5%BD%95"><span class="nav-text">hosts文件所在目录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Mac-1"><span class="nav-text">Mac</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#win-1"><span class="nav-text">win</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tomcat%E5%AD%98%E6%94%BE%E7%9B%AE%E5%BD%95"><span class="nav-text">Tomcat存放目录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Mac-2"><span class="nav-text">Mac</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Windows"><span class="nav-text">Windows</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#redis%E6%9F%A5%E7%9C%8B%E5%B7%A5%E5%85%B7Redis-client"><span class="nav-text">redis查看工具Redis client</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Mac-3"><span class="nav-text">Mac</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mysql"><span class="nav-text">Mysql</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#redis-cli"><span class="nav-text">redis-cli</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5"><span class="nav-text">连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#list"><span class="nav-text">list</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringBoot"><span class="nav-text">SpringBoot</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring-Boot-%E5%90%AF%E5%8A%A8%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE-CommandLineRunner"><span class="nav-text">Spring Boot 启动加载数据 CommandLineRunner</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#springboot%E4%B8%AD-scheduled%E5%BC%80%E5%85%B3%E6%9C%BA%E5%88%B6"><span class="nav-text">springboot中@scheduled开关机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="nav-text">配置类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-text">配置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#idea-%E6%89%93%E5%BC%80cpu%E7%9B%91%E6%8E%A7%E5%A6%82%E4%BD%95%E5%85%B3%E9%97%AD"><span class="nav-text">idea 打开cpu监控如何关闭</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mac%E6%9F%A5%E7%9C%8B%E5%9B%BE%E7%89%87%E5%A6%82%E4%BD%95%E6%9D%A5%E5%9B%9E%E5%88%87%E6%8D%A2"><span class="nav-text">mac查看图片如何来回切换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tail%E5%91%BD%E4%BB%A4"><span class="nav-text">tail命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#grep"><span class="nav-text">grep</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#idea%E8%87%AA%E5%8A%A8%E5%AF%BC%E5%85%A5%E5%8C%85"><span class="nav-text">idea自动导入包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#idea%E5%BF%BD%E7%95%A5-iml"><span class="nav-text">idea忽略*.iml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#idea%E6%9F%A5%E7%9C%8Bproperties%E4%B8%AD%E6%96%87%E5%8F%98%E6%88%90unicode%E7%A0%81%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3"><span class="nav-text">idea查看properties中文变成unicode码如何解决</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#idea-%E5%A5%BD%E7%94%A8%E7%9A%84%E6%8F%92%E4%BB%B6"><span class="nav-text">idea 好用的插件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Free-Mybatis-plugin"><span class="nav-text">Free Mybatis plugin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SequenceDiagram"><span class="nav-text">SequenceDiagram</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%85%E9%99%A4ios%E8%BE%93%E5%85%A5%E6%B3%95%E9%A2%84%E6%B5%8B%E7%9A%84%E8%AE%B0%E5%BD%95"><span class="nav-text">清除ios输入法预测的记录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#redis-%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E5%91%BD%E4%BB%A4"><span class="nav-text">redis 查看当前发布订阅命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#imovie"><span class="nav-text">imovie</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%87%BA"><span class="nav-text">导出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mac-4"><span class="nav-text">Mac</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%BB%E5%8A%A8%EF%BC%88%E5%89%AA%E5%88%87%EF%BC%89"><span class="nav-text">移动（剪切）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Visual-Studio-Code-Dock%E6%B2%A1%E6%9C%89%E5%9B%BE%E6%A0%87"><span class="nav-text">Visual Studio Code Dock没有图标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux"><span class="nav-text">Linux</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#curl"><span class="nav-text">curl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cat"><span class="nav-text">cat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E6%9C%BA%E5%91%BD%E4%BB%A4"><span class="nav-text">关机命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%BB%84%E6%8E%A7%E5%88%B6%E7%9B%AE%E5%BD%95%E6%9D%83%E9%99%90"><span class="nav-text">用户组控制目录权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSH%E4%B8%8B%E7%94%A8vim%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%EF%BC%8C%E6%96%87%E4%BB%B6%E6%98%BE%E7%A4%BA%E4%B8%8D%E5%85%A8"><span class="nav-text">SSH下用vim打开文件，文件显示不全</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vim%E6%98%BE%E7%A4%BA%E8%A1%8C%E5%8F%B7"><span class="nav-text">vim显示行号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEssh%E5%85%8D%E7%99%BB%E5%BD%95"><span class="nav-text">配置ssh免登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tail"><span class="nav-text">tail</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E5%85%B3%E9%94%AE%E8%AF%8D%E7%AD%9B%E9%80%89%E6%97%A5%E5%BF%97"><span class="nav-text">根据关键词筛选日志</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#netstat"><span class="nav-text">netstat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ps"><span class="nav-text">ps</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E2%80%9Cjava%E2%80%9D%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4%E7%9A%84%E6%9F%A5%E7%9C%8B%E8%BF%9B%E7%A8%8B"><span class="nav-text">根据“java”执行命令的查看进程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9D%80%E6%AD%BB%E5%90%8C%E5%90%8D%E5%85%A8%E9%83%A8%E8%BF%9B%E7%A8%8B%E6%96%B9%E6%B3%95"><span class="nav-text">杀死同名全部进程方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ls"><span class="nav-text">ls</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#df"><span class="nav-text">df</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jenkins"><span class="nav-text">jenkins</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box shields">
+        
+            <div class="info-item">
+                
+                <a class="shields-item">
+                    <img src="https://img.shields.io/badge/Since-2018_--_2024-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item" href="/">
+                        <img src="https://img.shields.io/badge/WebMaster-小明-dodgerblue?style=flat-square">
+                    </a>
+                
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       href="https://beian.miit.gov.cn"
+                    >
+                        <img src="https://img.shields.io/badge/ICP-京ICP备19029015号-dodgerblue?style=flat-square">
+                    </a>
+                
+                <a class="shields-item" href="https://hexo.io" target="_blank">
+                    <img src="https://img.shields.io/badge/Powered_by-Hexo-dodgerblue?style=flat-square">
+                </a>
+                <a class="shields-item" href="https://github.com/XPoet/hexo-theme-keep" target="_blank">
+                    <img class="shields-keep-version" src="https://img.shields.io/badge/Theme-Keep-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       rel="nofollow"
+                       href="https://github.com/WhenCoding"
+                    >
+                        <img src="https://img.shields.io/badge/Deploy_in-GitHub Pages-dodgerblue?style=flat-square">
+                    </a>
+                
+            </div>
+            
+                <div class="info-item">
+                    
+                        
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item shields">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-box border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#pip-%E6%9F%A5%E7%9C%8B%E5%8C%85%E4%BF%A1%E6%81%AF"><span class="nav-text">pip 查看包信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mac%E5%BE%AE%E4%BF%A1%E8%81%8A%E5%A4%A9%E8%AE%B0%E5%BD%95%E6%89%80%E5%9C%A8%E7%9B%AE%E5%BD%95"><span class="nav-text">Mac微信聊天记录所在目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mac%E6%97%A5%E5%8E%86%E4%B8%8EiPhone%E6%97%A5%E5%8E%86%E4%B8%8D%E6%97%A0%E6%B3%95%E5%90%8C%E6%AD%A5%E9%97%AE%E9%A2%98"><span class="nav-text">Mac日历与iPhone日历不无法同步问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MacOS-%E5%AD%97%E4%BD%93-font-%E6%96%87%E4%BB%B6%E7%9A%84-%E5%AD%98%E6%94%BE%E8%B7%AF%E5%BE%84"><span class="nav-text">MacOS: 字体(font)文件的 存放路径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mybatis%E8%BE%93%E5%87%BA%E6%9C%80%E7%BB%88sql"><span class="nav-text">mybatis输出最终sql</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9Linux%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-text">修改Linux环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Jenkins"><span class="nav-text">Jenkins</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#openresty%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-text">openresty工作流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NullPointerException%E5%BC%82%E5%B8%B8%E5%9C%A8Java%E4%B8%AD%E6%B2%A1%E6%9C%89%E5%A0%86%E6%A0%88"><span class="nav-text">NullPointerException异常在Java中没有堆栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lua"><span class="nav-text">lua</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E5%B7%A5%E5%85%B7"><span class="nav-text">数据库连接工具</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Mac"><span class="nav-text">Mac</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#win"><span class="nav-text">win</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hosts%E6%96%87%E4%BB%B6%E6%89%80%E5%9C%A8%E7%9B%AE%E5%BD%95"><span class="nav-text">hosts文件所在目录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Mac-1"><span class="nav-text">Mac</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#win-1"><span class="nav-text">win</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tomcat%E5%AD%98%E6%94%BE%E7%9B%AE%E5%BD%95"><span class="nav-text">Tomcat存放目录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Mac-2"><span class="nav-text">Mac</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Windows"><span class="nav-text">Windows</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#redis%E6%9F%A5%E7%9C%8B%E5%B7%A5%E5%85%B7Redis-client"><span class="nav-text">redis查看工具Redis client</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Mac-3"><span class="nav-text">Mac</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mysql"><span class="nav-text">Mysql</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#redis-cli"><span class="nav-text">redis-cli</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5"><span class="nav-text">连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#list"><span class="nav-text">list</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringBoot"><span class="nav-text">SpringBoot</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring-Boot-%E5%90%AF%E5%8A%A8%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE-CommandLineRunner"><span class="nav-text">Spring Boot 启动加载数据 CommandLineRunner</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#springboot%E4%B8%AD-scheduled%E5%BC%80%E5%85%B3%E6%9C%BA%E5%88%B6"><span class="nav-text">springboot中@scheduled开关机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="nav-text">配置类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-text">配置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#idea-%E6%89%93%E5%BC%80cpu%E7%9B%91%E6%8E%A7%E5%A6%82%E4%BD%95%E5%85%B3%E9%97%AD"><span class="nav-text">idea 打开cpu监控如何关闭</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mac%E6%9F%A5%E7%9C%8B%E5%9B%BE%E7%89%87%E5%A6%82%E4%BD%95%E6%9D%A5%E5%9B%9E%E5%88%87%E6%8D%A2"><span class="nav-text">mac查看图片如何来回切换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tail%E5%91%BD%E4%BB%A4"><span class="nav-text">tail命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#grep"><span class="nav-text">grep</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#idea%E8%87%AA%E5%8A%A8%E5%AF%BC%E5%85%A5%E5%8C%85"><span class="nav-text">idea自动导入包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#idea%E5%BF%BD%E7%95%A5-iml"><span class="nav-text">idea忽略*.iml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#idea%E6%9F%A5%E7%9C%8Bproperties%E4%B8%AD%E6%96%87%E5%8F%98%E6%88%90unicode%E7%A0%81%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3"><span class="nav-text">idea查看properties中文变成unicode码如何解决</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#idea-%E5%A5%BD%E7%94%A8%E7%9A%84%E6%8F%92%E4%BB%B6"><span class="nav-text">idea 好用的插件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Free-Mybatis-plugin"><span class="nav-text">Free Mybatis plugin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SequenceDiagram"><span class="nav-text">SequenceDiagram</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%85%E9%99%A4ios%E8%BE%93%E5%85%A5%E6%B3%95%E9%A2%84%E6%B5%8B%E7%9A%84%E8%AE%B0%E5%BD%95"><span class="nav-text">清除ios输入法预测的记录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#redis-%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E5%91%BD%E4%BB%A4"><span class="nav-text">redis 查看当前发布订阅命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#imovie"><span class="nav-text">imovie</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%87%BA"><span class="nav-text">导出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mac-4"><span class="nav-text">Mac</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%BB%E5%8A%A8%EF%BC%88%E5%89%AA%E5%88%87%EF%BC%89"><span class="nav-text">移动（剪切）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Visual-Studio-Code-Dock%E6%B2%A1%E6%9C%89%E5%9B%BE%E6%A0%87"><span class="nav-text">Visual Studio Code Dock没有图标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux"><span class="nav-text">Linux</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#curl"><span class="nav-text">curl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cat"><span class="nav-text">cat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E6%9C%BA%E5%91%BD%E4%BB%A4"><span class="nav-text">关机命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%BB%84%E6%8E%A7%E5%88%B6%E7%9B%AE%E5%BD%95%E6%9D%83%E9%99%90"><span class="nav-text">用户组控制目录权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSH%E4%B8%8B%E7%94%A8vim%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%EF%BC%8C%E6%96%87%E4%BB%B6%E6%98%BE%E7%A4%BA%E4%B8%8D%E5%85%A8"><span class="nav-text">SSH下用vim打开文件，文件显示不全</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vim%E6%98%BE%E7%A4%BA%E8%A1%8C%E5%8F%B7"><span class="nav-text">vim显示行号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEssh%E5%85%8D%E7%99%BB%E5%BD%95"><span class="nav-text">配置ssh免登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tail"><span class="nav-text">tail</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E5%85%B3%E9%94%AE%E8%AF%8D%E7%AD%9B%E9%80%89%E6%97%A5%E5%BF%97"><span class="nav-text">根据关键词筛选日志</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#netstat"><span class="nav-text">netstat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ps"><span class="nav-text">ps</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E2%80%9Cjava%E2%80%9D%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4%E7%9A%84%E6%9F%A5%E7%9C%8B%E8%BF%9B%E7%A8%8B"><span class="nav-text">根据“java”执行命令的查看进程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9D%80%E6%AD%BB%E5%90%8C%E5%90%8D%E5%85%A8%E9%83%A8%E8%BF%9B%E7%A8%8B%E6%96%B9%E6%B3%95"><span class="nav-text">杀死同名全部进程方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ls"><span class="nav-text">ls</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#df"><span class="nav-text">df</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jenkins"><span class="nav-text">jenkins</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/local-search.js"></script>
+
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/toc.js"></script>
+        
+    
+    
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

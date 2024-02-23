@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享">
+    <meta name="description" content="Spring Boot, Spring Cloud,日常开发, ElasticSearch, 微服务, 并发编程, 源码分析,Java,程序员小明">
+    <meta name="author" content="小明">
+    
+    <title>
+        
+            「规范」如何优雅地代码分层？ |
+        
+        程序员小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/brands.min.css">
+    
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"mynamecoder.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":null,"favicon":"/images/logo.svg","avatar":"/images/avatar.png","font_size":null,"font_family":"Optima-Regular,PingFangTC-light","hover":{"shadow":true,"scale":true},"first_screen":{"enable":false,"header_transparent":true,"background_img":"https://img.mynamecoder.com/20230224112801.jpeg","description":"||","font_color":"","hitokoto":true},"scroll":{"progress_bar":false,"percent":false}},"local_search":{"enable":true,"preload":true},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":true,"use":"waline","valine":{"appid":"RYD6fM3F1jQ4aTSXOzbclYi6-9Nh9j0Va","appkey":"mjF7jJLYlbIcPU2mUOoh0I88","server_urls":null,"meta":["nick","mail","link"],"placeholder":"说点什么"},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":"https://comment.mynamecoder.com","reaction":true,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":false,"min2read":false},"img_align":"left","copyright_info":true},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"version":"3.7.7"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1566816837076058" crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+            <a class="site-name border-box" href="/">
+               程序员小明
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                标签
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >
+                                友链
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links">友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+                <div class="article-content-top border-box">
+                    <div class="cover-article-title">
+                        「规范」如何优雅地代码分层？
+                    </div>
+                    <img class="post-cover" src="https://img.mynamecoder.com/brown-and-white-dog-4633734_640.jpg" alt="「规范」如何优雅地代码分层？">
+                </div>
+            
+
+            <div class="article-content-bottom border-box has-cover">
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/avatar.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">小明</span>
+                                
+                                    <span class="author-label">Lv6</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2020-04-12 11:47:46</span>
+                <span class="mobile">2020-04-12 11:47</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Thu Jan 18 2024 08:35:59 GMT+0000">2024-01-18 08:35:59</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item article-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul>
+                    
+                            <li class="category-item">
+                                
+                                <a href="/categories/Java/">Java</a>
+                            </li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="article-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul>
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Java/">Java</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <h2 id="1、背景"><a href="#1、背景" class="headerlink" title="1、背景"></a><strong>1、背景</strong></h2><p>说起应用分层，大部分人都会认为这个不是很简单嘛 就controller，service, mapper三层。看起来简单，很多人其实并没有把他们职责划分开，在很多代码中，controller做的逻辑比service还多,service往往当成透传了，这其实是很多人开发代码都没有注意到的地方，反正功能也能用，至于放哪无所谓呗。这样往往造成后面代码无法复用，层级关系混乱，对后续代码的维护非常麻烦。</p>
+<span id="more"></span>
+<p>的确在这些人眼中分层只是一个形式，前辈们的代码这么写的，其他项目代码这么写的，那么我也这么跟着写。</p>
+<p>但是在真正的团队开发中每个人的习惯都不同，写出来的代码必然带着自己的标签，有的人习惯controller写大量的业务逻辑，有的人习惯在service中之间调用远程服务，这样就导致了每个人的开发代码风格完全不同，后续其他人修改的时候，一看，我靠这个人写的代码和我平常的习惯完全不同，修改的时候到底是按着自己以前的习惯改，还是跟着前辈们走，这又是个艰难的选择，选择一旦有偏差，你的后辈又维护你的代码的时候，恐怕就要骂人了。</p>
+<p>所以一个好的应用分层需要具备以下几点:</p>
+<ul>
+<li>方便后续代码进行维护扩展；</li>
+<li>分层的效果需要让整个团队都接受；</li>
+<li>各个层职责边界清晰。</li>
+</ul>
+<h2 id="2、应用分层模型"><a href="#2、应用分层模型" class="headerlink" title="2、应用分层模型"></a>2、应用分层模型</h2><p>在项目开发中，一个良好的工程架构是必须的。工程架构就像一个骨架，写代码就是在这个骨架上增添血肉，这个骨架会影响到整体的模块划分，功能划分，即会影响到代码的解耦和聚合，将会很大程度上决定一个项目写得好不好。</p>
+<p>这里要分享的是我个人在开发时所采取的工程架构，以及相关的思想。不同的人对于工程架构的理解会不同，实际上也很难分出哪种好，哪种坏，只要符合自己的设计思想，并且能够有效的进行开发，那就是好的一种架构方式。</p>
+<h3 id="2-1、分层"><a href="#2-1、分层" class="headerlink" title="2.1、分层"></a>2.1、分层</h3><p>我整体上的思想为《阿里巴巴 Java 开发手册》中所描述的分层模型。如下：</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200411234541.png"
+                     
+                >应用分层图</p>
+<blockquote>
+<p>在这里插一嘴哈，在这里我使用的流程图工具是<strong>ProcessOn</strong>，是一款在线画图工具，非常适合画各种示意图，体验极佳，如果大家想尝试一下，可以使用我的<a class="link"   target="_blank" rel="noopener" href="https://www.processon.com/i/5a967fdce4b01965e7301910" >邀请链接<i class="fas fa-external-link-alt"></i></a>注册使用～</p>
+</blockquote>
+<p>接下来将自底向上的讲解我对各层的理解和设计，还有我自己所增加的层。</p>
+<h3 id="2-2、通用工具层"><a href="#2-2、通用工具层" class="headerlink" title="2.2、通用工具层"></a>2.2、通用工具层</h3><p>通用工具层其实为对业务无关的，通用的工具类，例如日期处理的工作累，一些数据格式的序列化与反序列化工具。类似于 apache commons 包和 guava 包。</p>
+<h3 id="2-3、分层领域模型"><a href="#2-3、分层领域模型" class="headerlink" title="2.3、分层领域模型"></a>2.3、分层领域模型</h3><p>领域模型，也就是我们之前常见的各种数据实体，用 DDD 的术语来说，这种在分层模型中的领域模型称为贫血领域模型。<br>贫血领域模型只作为数据载体，只有 getter/setter 方法，而不包含业务方法。</p>
+<p>对于分层领域模型，会进一步进行划分规约，主要也是参考自《阿里巴巴 Java 开发手册》具体如下：</p>
+<ul>
+<li><strong>DO(Data Object)</strong> : 数据对象，对数据源数据的映射，如数据库表，ElasticSearch 索引的数据结构。所在包一般命名为 data 。</li>
+<li><strong>DTO(Data Transfer Object)</strong> : 数据传输对象，业务层向外传输的对象。如果在某个业务中需要多次查询获取不同的数据对象，最后将会把这多个数据对象组合成一个 DTO 并对外传输。所在包命名为 dto 。</li>
+<li><strong>BO(Business Object)</strong> : 业务对象，由 Service 层输出的封装业务逻辑的对象。即对象除了数据外，还会包含一定的业务逻辑，也可以说是充血领域模型。但是我一般不会使用。</li>
+<li><strong>AO(Application Object)</strong> : 应用对象，在 Web 层与 Service 层之间抽象的复用对象模型，极为贴近展示层，复用度不高。比较少用。</li>
+<li><strong>VO(View Object)</strong> : 显示层对象，通常是 Web 向模板渲染引擎层传输的对象。现在的项目多数为前后端分离，后端只需要返回 JSON ，那么可以理解为 JSON 即是需要渲染成的“模板”。我一般会将这类对象命名为 xxxResponse ，所在包命名为 response 。</li>
+<li><strong>Query</strong> : 数据查询对象，数据查询对象，各层接收上层的查询请求。其实一般用于 Controller 接受传过来的参数，可以将其都命名为 xxxQuery ，而我个人习惯将放在 request body 的参数（即 @RequestBody）包装为 xxxRequest ，而如果使用表单传输过来的参数（即 @RequestParam）包装为 xxxForm ，并分别放在包 request 和包 form 下。</li>
+</ul>
+<p>其实贫血领域模型只是作为数据的载体，在一开始我觉得没必要进行具体的分类，基本上都是往一个包内丢，但是当项目规模上来后，各种各样的数据实体开始增加，慢慢的变得混乱。对数据对象的分类是为了更好的定义每个数据的作用以及在后续能够快速的定位到对应的数据对象。</p>
+<h3 id="2-4、Helper"><a href="#2-4、Helper" class="headerlink" title="2.4、Helper"></a>2.4、Helper</h3><p>开发中会遇到一些很基础的，通用的业务逻辑，例如我们可能会根据每个用户的信息生成一个唯一的 account id 。又或者说有一个用户排名的需求，我们将从用户的相关信息中计算出一个分数，从而根据这个分数进行排名。那么这时候我们可能会将这些逻辑写在 User 数据对象或是其他相应对应的数据对象下。<br>而我个人来说，不希望数据对象包含业务逻辑，所以我会将这些通用的业务逻辑都抽出来，放到 Manager 中进行统一管理。如会将生成 account id 的逻辑放在 AccountIdGenerator 中，将计算排名分数的逻辑放在 RankCalculator 中。<br>我将这些类都归为 Helper ，用于提供底层的业务计算逻辑。而为什么不放在通用工具层中呢？因为这些 Helper 其实都是依赖于特定的领域，即特定的业务。而通用工具类则是业务无关的，任何系统，只要有需要都可以引用。</p>
+<h3 id="2-5、DAO"><a href="#2-5、DAO" class="headerlink" title="2.5、DAO"></a>2.5、DAO</h3><p>DAO 就不用过多解释了，数据访问对象，用于对数据库的访问。但是我个人不会将 DAO 只局限于数据库，对于不同的数据源的交互，如 HBase ，ElasticSearch ，本地缓存甚至 Redis 我都会定义相对应的 DAO 进行访问。<br>这样的定义，其实是想将数据 CURD 的逻辑和业务逻辑进行分离，将获 CRUD 封装在 DAO 中，业务逻辑即放在业务层中。</p>
+<p>之前接手了一个项目，项目将 Redis 视为中间件，将相关的逻辑都封装在 xxxRedisService 中，包括 CRUD 和一些业务逻辑。随着项目的发展，一些其实可以归类到一起的业务，变得有些放在了 RedisService 中，一些放在了业务层的 Service 中，可想而知十分混乱，还导致了一些 BUG 的出现。</p>
+<h3 id="2-6、Service-和-Manager"><a href="#2-6、Service-和-Manager" class="headerlink" title="2.6、Service 和 Manager"></a>2.6、Service 和 Manager</h3><p>Service 的作用不用多说明，为具体业务逻辑的封装层。</p>
+<p>具体要说明的是 Manager ，《阿里巴巴 Java 开发手册》中定义如下:</p>
+<ol>
+<li>对第三方平台封装的层，预处理返回结果及转化异常信息</li>
+<li>对 Service 层通用能力的下沉，如缓存方案、中间件通用处理</li>
+<li>与 DAO 层交互，对多个 DAO 的组合复用</li>
+</ol>
+<p>可以将 Manager 理解为对通用逻辑的封装，避免 Service 与 Service 进行相互调用，以及对通用逻辑的管理。</p>
+<p>在开发中，我们经常会遇到 AService 中的某个业务可以提供给 BService 调用，从而让 BService 调用 AService 的方法，认为是 Service 之间具有共同的业务。其实 Service 之间没有共同的业务，而是<strong>具备通用的逻辑</strong>，这时应该将其抽离出来放在 Manager 中。无论何种工程架构都好，我都不赞同 Service 与 Service 之间的相互调用。</p>
+<p>在实际开发中，我会对 Manager 进行更细一点的划分。大致将其分为用于项务类，所封装的是由 Service 下沉的通用业务。<br>而另一种则是一些偏向于工具、计算的类，例如某个业务使用了策略模式，所编写的策略类则属于这一类。<br>我会将业务类的用 @Service 注释，而偏工具类的则用 @Component 注释。这样做的原因还是避免业务之间的相互调用，相互耦合。</p>
+<p>这里可能会想，为什么不将 Helper 的逻辑也放在 Manager 层中？原因在于 Helper 的逻辑比 Manager 更加基础，有可能在 DAO 中都会调用 Helper 的相关逻辑，如果放在 Manager 中，就会出现底层依赖上层的问题。</p>
+<h3 id="2-7、接口层"><a href="#2-7、接口层" class="headerlink" title="2.7、接口层"></a>2.7、接口层</h3><p>最后的一层，则是暴露给外部调用的层。可以是 Spring 体系中的 Controller ，也可以是 gRPC 。<br>这一层将组织、调用我们所定义的 Service ，进行业务处理。</p>
+<h2 id="3、分层模型的优点以及缺点"><a href="#3、分层模型的优点以及缺点" class="headerlink" title="3、分层模型的优点以及缺点"></a>3、分层模型的优点以及缺点</h2><p>无论什么工程架构，都会有其优点以及缺点，在选择工程架构时，其实就是对优点缺点的衡量。</p>
+<h3 id="3-1、优点"><a href="#3-1、优点" class="headerlink" title="3.1、优点"></a>3.1、优点</h3><p>其实无论什么架构，特别是对业务工程来说，最希望架构带来的是解耦以及内聚。<br>通过分层，在一定程度上对项目内的各个模块进行了解耦内聚，依赖关系十分明确，再怎么写，只要符合规约，总是上层依赖于下层。而且分层的规约十分简单，在多人协作的情况下大部分情况都可以很好的遵守规约。</p>
+<h3 id="3-2、缺点"><a href="#3-2、缺点" class="headerlink" title="3.2、缺点"></a>3.2、缺点</h3><p>简单是一个优点，也是一个缺点。分层虽然在一定程度上进行了解耦，但是粒度十分粗，只要不出现下层依赖上层的情况，都可以认为是符合规约的，在这种情况下，很容易导致代码的分散、功能的碎片化，明明是同一类业务功能的代码，却分散在多个类，多个层次之间。在项目不断迭代时变得巨大时，慢慢就会变得混乱，然后就是一轮重构。<br>归根到底就是太松懈了，导致开发人员很容易就是在项目中随便找个地方写，还很容易导致由大量的复制粘贴所产生重复代码。</p>
+<p>在学校开设的软件工程课中，设计一个系统，首先是组织架构的了解，然后从中抽出数据流，然后再在数据流中抽出业务流，进行根据业务流进行开发。而采用分层模型的化，往往在数据流中就可以开始开发，采用分层模型的话，每个业务其实可以简单的抽象成数据在各层之间的流动。<br>这可以说是一个优点，简化了业务的理解，实现快速的开发，我在比较紧的排期下也由这么做过，扫一眼业务，构思好数据流的流动后就动手了。但这也是一个很严重的缺点，我见过不少功能性 BUG ，就是由于对业务的不充分理解所导致的，而且由于没有对业务流程充分理解后就开发，后续的扩展和修复，看起来就是不断的修修补补。</p>
+<p>上面，我除了《阿里巴巴 Java 开发手册》所写的内容外，还添加了不少细节，其实所想要做的就是尽量减少这种功能碎片化的问题。</p>
+<h2 id="4、与充血领域模型的对比"><a href="#4、与充血领域模型的对比" class="headerlink" title="4、与充血领域模型的对比"></a>4、与充血领域模型的对比</h2><p>既然是说工程架构，就不得不提 DDD 这一个概念。</p>
+<p>为什么我说的是“与充血领域模型的对比”而不是“与 DDD 的对比”呢？是因为 DDD 是比分层模型更加高层的一种概念，它是一个产品服务，整个团队开发的一种指导思想，而不是一种工程代码上的规约。</p>
+<p>DDD 可以分为两大方向，一个是战略层面上的，即之前提到的是一种开发的指导思想，定义、划分服务的领域，规定统一语言提高沟通效率等，这也是可以用于使用分层领域模型的项目开发中的。如果要与分层模型对比的话，其实是 DDD 的战术层面，即充血领域模型。</p>
+<p>充血领域模型其实是回归于面向对象的思想。在目前的分层模型中，哪怕是用 Java 这种面向对象的语言去写，其实总体上还是一种过程式的编程，在 DDD 中称为事务脚本。</p>
+<p>充血领域模型是重领域，轻 Service 的。以之前生成 account id 以及排名的例子，在充血领域模型中，User 类将会有 generateAccountId 方法和 ranking 方法来完成这一逻辑。<br>完全的面向对象，就可以充分的发挥面向对象的特性。面向对象的特性在书上为：<em>继承、多态，封装</em>。前两者能够实现归一化，使模块泛化通用，封装即会使模块划分明确，能够很好的实现解耦和内聚。比起分层模型，使用充血领域模型可以很好的解决上面提到的代码分散，碎片化的问题。</p>
+<p>充血领域模型的优点是面向对象的优点，但是面向对象的缺点也成为这种模型的缺点。首先，万物皆可抽象在我看来就是伪命题，因为现实世界中总有事务是难以进行抽象的，或者抽象起来不优雅，总是有一种硬是抽象的感觉。<br>在知乎中有一个很好的回答，描述了面向对象的弊端</p>
+<p>相信很多人在初接触 DDD 时，都会去搜索充血领域模型实践的例子。其实在学校学习 Java Web 开发时，书本中写道的 MVC 结构其实在一定程度上也是充血领域模型，Model 除了是数据的载体外，还包含业务逻辑，通过 Controller 对 Model 的选择以及调用完成业务。假如用这种结构开发，当项目庞大后，我觉得首先遇到的问题应该就是依赖问题，复杂的业务必然牵扯到各方各面，自然也就有复杂的依赖关系产生，甚至会有为了完成业务而产生很“脏”的实现，这是难以避免的。</p>
+<p>我个人觉得充血领域模型目前还是只适合于个人，很小的团队中使用，例如 2 到 3 个人的团队，因为抽象本身就是一个非常复杂的过程，随着需求迭代，之前的抽象还不一定正确，如果在较为多人的多人协作中，各种奇奇怪怪的写法都会出现，必然也会有随便找个“地”写的情况出现，这种情况比在分层模型中更为致命。</p>
+<h2 id="5、总结"><a href="#5、总结" class="headerlink" title="5、总结"></a>5、总结</h2><p>还是那句话，工程架构无分好坏，只有适合与不适合，问题的来与在于业务的复杂，计算机始终在某些方面难以映射到现实世界。所以我个人建议好好的理解好自己目前所用到的工程架构，尽量做到扬长避短。</p>
+
+                </div>
+
+                
+                    <div class="post-copyright-info">
+                        <div class="article-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="post-title border-box text-ellipsis">
+                「规范」如何优雅地代码分层？
+            </div>
+
+            <div class="post-link border-box text-ellipsis">
+                p/46081.html
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">小明</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2020-04-12 11:47</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-content="复制版权信息" data-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                    </div>
+                
+
+                
+                    <ul class="post-tags-box">
+                        
+                            <li class="tag-item">
+                                <a href="/tags/Java/"><i class="icon fas fa-hashtag"></i>Java</a>&nbsp;
+                            </li>
+                        
+                    </ul>
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/p/44518.html"
+                                   title="Java中的try，如何开启新姿势？"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Java中的try，如何开启新姿势？</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/p/63677.html"
+                                   title="「SpringBoot」如何优雅地管理SpringBoot项目"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">「SpringBoot」如何优雅地管理SpringBoot项目</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <script data-pjax src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"></script>
+        <div id="waline-comment"></div>
+        <script data-pjax>
+          function loadWaline() {
+            Waline.init({
+              el: '#waline-comment',
+              serverURL: 'https://comment.mynamecoder.com',
+              lang: 'zh-CN' || 'zh-CN',
+              comment: '.post-comments-count',
+              reaction: 'true' === 'true'
+            })
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              loadWaline()
+            }, 1000)
+          } else {
+            window.addEventListener('DOMContentLoaded', loadWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E8%83%8C%E6%99%AF"><span class="nav-text">1、背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E5%BA%94%E7%94%A8%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B"><span class="nav-text">2、应用分层模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1%E3%80%81%E5%88%86%E5%B1%82"><span class="nav-text">2.1、分层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2%E3%80%81%E9%80%9A%E7%94%A8%E5%B7%A5%E5%85%B7%E5%B1%82"><span class="nav-text">2.2、通用工具层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3%E3%80%81%E5%88%86%E5%B1%82%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B"><span class="nav-text">2.3、分层领域模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4%E3%80%81Helper"><span class="nav-text">2.4、Helper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5%E3%80%81DAO"><span class="nav-text">2.5、DAO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6%E3%80%81Service-%E5%92%8C-Manager"><span class="nav-text">2.6、Service 和 Manager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-7%E3%80%81%E6%8E%A5%E5%8F%A3%E5%B1%82"><span class="nav-text">2.7、接口层</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BC%98%E7%82%B9%E4%BB%A5%E5%8F%8A%E7%BC%BA%E7%82%B9"><span class="nav-text">3、分层模型的优点以及缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1%E3%80%81%E4%BC%98%E7%82%B9"><span class="nav-text">3.1、优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2%E3%80%81%E7%BC%BA%E7%82%B9"><span class="nav-text">3.2、缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81%E4%B8%8E%E5%85%85%E8%A1%80%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="nav-text">4、与充血领域模型的对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81%E6%80%BB%E7%BB%93"><span class="nav-text">5、总结</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box shields">
+        
+            <div class="info-item">
+                
+                <a class="shields-item">
+                    <img src="https://img.shields.io/badge/Since-2018_--_2024-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item" href="/">
+                        <img src="https://img.shields.io/badge/WebMaster-小明-dodgerblue?style=flat-square">
+                    </a>
+                
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       href="https://beian.miit.gov.cn"
+                    >
+                        <img src="https://img.shields.io/badge/ICP-京ICP备19029015号-dodgerblue?style=flat-square">
+                    </a>
+                
+                <a class="shields-item" href="https://hexo.io" target="_blank">
+                    <img src="https://img.shields.io/badge/Powered_by-Hexo-dodgerblue?style=flat-square">
+                </a>
+                <a class="shields-item" href="https://github.com/XPoet/hexo-theme-keep" target="_blank">
+                    <img class="shields-keep-version" src="https://img.shields.io/badge/Theme-Keep-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       rel="nofollow"
+                       href="https://github.com/WhenCoding"
+                    >
+                        <img src="https://img.shields.io/badge/Deploy_in-GitHub Pages-dodgerblue?style=flat-square">
+                    </a>
+                
+            </div>
+            
+                <div class="info-item">
+                    
+                        
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item shields">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-box border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E8%83%8C%E6%99%AF"><span class="nav-text">1、背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E5%BA%94%E7%94%A8%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B"><span class="nav-text">2、应用分层模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1%E3%80%81%E5%88%86%E5%B1%82"><span class="nav-text">2.1、分层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2%E3%80%81%E9%80%9A%E7%94%A8%E5%B7%A5%E5%85%B7%E5%B1%82"><span class="nav-text">2.2、通用工具层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3%E3%80%81%E5%88%86%E5%B1%82%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B"><span class="nav-text">2.3、分层领域模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4%E3%80%81Helper"><span class="nav-text">2.4、Helper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5%E3%80%81DAO"><span class="nav-text">2.5、DAO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6%E3%80%81Service-%E5%92%8C-Manager"><span class="nav-text">2.6、Service 和 Manager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-7%E3%80%81%E6%8E%A5%E5%8F%A3%E5%B1%82"><span class="nav-text">2.7、接口层</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BC%98%E7%82%B9%E4%BB%A5%E5%8F%8A%E7%BC%BA%E7%82%B9"><span class="nav-text">3、分层模型的优点以及缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1%E3%80%81%E4%BC%98%E7%82%B9"><span class="nav-text">3.1、优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2%E3%80%81%E7%BC%BA%E7%82%B9"><span class="nav-text">3.2、缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81%E4%B8%8E%E5%85%85%E8%A1%80%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="nav-text">4、与充血领域模型的对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81%E6%80%BB%E7%BB%93"><span class="nav-text">5、总结</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/local-search.js"></script>
+
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/toc.js"></script>
+        
+    
+    
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

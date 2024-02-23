@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享">
+    <meta name="description" content="Spring Boot, Spring Cloud,日常开发, ElasticSearch, 微服务, 并发编程, 源码分析,Java,程序员小明">
+    <meta name="author" content="小明">
+    
+    <title>
+        
+            如何使用Freemarker生成Word文件 |
+        
+        程序员小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/brands.min.css">
+    
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"mynamecoder.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":null,"favicon":"/images/logo.svg","avatar":"/images/avatar.png","font_size":null,"font_family":"Optima-Regular,PingFangTC-light","hover":{"shadow":true,"scale":true},"first_screen":{"enable":false,"header_transparent":true,"background_img":"https://img.mynamecoder.com/20230224112801.jpeg","description":"||","font_color":"","hitokoto":true},"scroll":{"progress_bar":false,"percent":false}},"local_search":{"enable":true,"preload":true},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":true,"use":"waline","valine":{"appid":"RYD6fM3F1jQ4aTSXOzbclYi6-9Nh9j0Va","appkey":"mjF7jJLYlbIcPU2mUOoh0I88","server_urls":null,"meta":["nick","mail","link"],"placeholder":"说点什么"},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":"https://comment.mynamecoder.com","reaction":true,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":false,"min2read":false},"img_align":"left","copyright_info":true},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"version":"3.7.7"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1566816837076058" crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+            <a class="site-name border-box" href="/">
+               程序员小明
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                标签
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >
+                                友链
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links">友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+                <div class="article-content-top border-box">
+                    <div class="cover-article-title">
+                        如何使用Freemarker生成Word文件
+                    </div>
+                    <img class="post-cover" src="https://img.mynamecoder.com/key-5105878_640.jpg" alt="如何使用Freemarker生成Word文件">
+                </div>
+            
+
+            <div class="article-content-bottom border-box has-cover">
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/avatar.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">小明</span>
+                                
+                                    <span class="author-label">Lv6</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2020-09-14 13:37:10</span>
+                <span class="mobile">2020-09-14 13:37</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Thu Jan 18 2024 08:35:59 GMT+0000">2024-01-18 08:35:59</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item article-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul>
+                    
+                            <li class="category-item">
+                                
+                                <a href="/categories/SpringBoot/">SpringBoot</a>
+                            </li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="article-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul>
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/SpringBoot/">SpringBoot</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Freemarker/">Freemarker</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Docx/">Docx</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>一天，产品经理递给我了一份word报告，我定睛一看</p>
+<p>这个文档有大大小小的标题层级，还有排版好的段落、各种一目了然的饼图、走势图，当然还少不了颜色循环交替的报表。精致程度不亚于小明同学的学习报告。</p>
+<span id="more"></span>
+
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/webp.png"
+                     
+                ></p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><blockquote>
+<p>鲁迅：身为一名Java程序员，任何时候都不要忘记站在巨人的肩膀上。</p>
+</blockquote>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200907151347.png"
+                     
+                ><br>通过某歌搜索关键词：<strong>java+word+导出</strong>，我立马得出了很多成熟的方案，通过横向、纵向比较，再结合本次报告样式比较多、用户可灵活选择不同模块导出的特点，最终，我决定使用<strong>Freemarker</strong> 动态替换模版数据来导出word文档。至于导出文档的最终格式，有两种选择：<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200903160210.png"
+                     
+                ></p>
+<p>那到底使用<strong>doc</strong>还是<strong>docx</strong>格式的文档？<br>每当人生当中每次面临选择我都很慎重。最终我选择使用<strong>docx</strong>格式（原因文末会讲），但是为了让大家有更多的选择，满足更多的业务场景，借此机会，小明会给大家分别介绍使用<strong>freemarker</strong>导出两种格式的word文档方式。</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><blockquote>
+<p> FreeMarker是一个基于Java的模板引擎，最初专注于使用MVC软件架构生成动态网页。但是，它是一个通用的模板引擎，不依赖于servlets或HTTP或HTML，因此它通常还用于生成源代码，配置文件或电子邮件。</p>
+</blockquote>
+<p>此时，我们用它动态生成xml文件，进而导出word文档。<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200903154144.png"
+                     
+                ><br>整体流程如下：<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200903152139.png"
+                     
+                ></p>
+<h2 id="准备-1"><a href="#准备-1" class="headerlink" title="准备"></a>准备</h2><ul>
+<li>WPS<blockquote>
+<p> 由金山软件股份有限公司发布，用于办公软件最常用的文字编辑、表格、演示稿等功能。</p>
+</blockquote>
+</li>
+</ul>
+<p>对，就是这个国产的办公软件。我也是第一次发现在导出文档这件事上，它如多年好友般友好。（word解析后的xml文件阅读性很强，一般人我不告诉他）</p>
+<ul>
+<li>开发工具（IDEA、Visual Studio Code等）<br>你喜欢的，顺手的，就是最好的。<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="集成Freemarker模版引擎"><a href="#集成Freemarker模版引擎" class="headerlink" title="集成Freemarker模版引擎"></a>集成Freemarker模版引擎</h3>本次项目使用的框架依旧是Springboot，这个框架在集成各个组件表现都很便捷，不再赘述，这次集成Freemarker也不例外。</li>
+<li>首先我们在项目中增添依赖<code>spring-boot-starter-freemarker</code><br>pom.xml文件如下所示：<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-freemarker<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li>按照默认约定，我们可以在resources下创建一个templates文件夹（查看FreeMarkerProperties源码可以发现默认目录就是这个），用于存放模版文档。<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200903164916.png"
+                     
+                ></li>
+<li>application.yml增加配置<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">freemarker:</span></span><br><span class="line">    <span class="attr">template-loader-path:</span> <span class="string">classpath:/templates</span></span><br><span class="line">    <span class="attr">cache:</span> <span class="literal">false</span> <span class="comment"># 开发环境缓存关闭</span></span><br><span class="line">    <span class="attr">suffix:</span> <span class="string">xml</span></span><br><span class="line">    <span class="attr">charset:</span> <span class="string">UTF-8</span></span><br></pre></td></tr></table></figure>
+<h3 id="生成doc格式的文档"><a href="#生成doc格式的文档" class="headerlink" title="生成doc格式的文档"></a>生成doc格式的文档</h3>这里先拿使用freemarker导出doc格式的word文档举例。</li>
+<li>首先将docxTemplate.docx（调整好样式的模版文档）另存为WORD 2003 XML文档(*.xml)<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200903162724.png"
+                     
+                ><br>此处命名为docTemplete.xml，使用编辑工具首次打开时，会发现这个文档里面是压缩的xml，因此我们首先需要格式化一下。<blockquote>
+<p> 注意：如果你使用的是<strong>Visual Studio Code</strong>开发工具，一定要检查你所使用的xml格式化插件，是否会优化你的xml标签 。比如：<code>&lt;w:rPr&gt;</code>会变成<code>&lt;rPr&gt;</code>。使用<strong>Visual Studio Code</strong>的同学，oh my god ! 小明在这里推荐大家使用这个插件：XML Language Support by Red Hat</p>
+</blockquote>
+</li>
+<li>现在，我们就使用freemarker语法编辑docTemplete.xml，比如使用占位符<code>$&#123;&#125;</code>替换当前文档中的文本，以达到动态生成文本的目的，直接上代码。<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">public static Configuration getConfiguration()&#123;</span><br><span class="line">        //创建配置实例</span><br><span class="line">        Configuration configuration = new Configuration(Configuration.VERSION_2_3_28);</span><br><span class="line">        //设置编码</span><br><span class="line">        configuration.setDefaultEncoding(&quot;utf-8&quot;);</span><br><span class="line">        configuration.setClassForTemplateLoading(WordUtil.class, &quot;/templates&quot;);</span><br><span class="line">        return configuration;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 生成doc文件</span><br><span class="line">     *</span><br><span class="line">     * @param ftlFileName 模板ftl文件的名称</span><br><span class="line">     * @param params      动态传入的数据参数</span><br><span class="line">     * @param outFilePath 生成的最终doc文件的保存完整路径</span><br><span class="line">     */</span><br><span class="line">    public void ftlToDoc(String ftlFileName, Map params, String outFilePath) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            /** 加载模板文件 **/</span><br><span class="line">            Template template = configuration.getTemplate(ftlFileName);</span><br><span class="line">            /** 指定输出word文件的路径 **/</span><br><span class="line">            File docFile = new File(outFilePath);</span><br><span class="line">            FileOutputStream fos = new FileOutputStream(docFile);</span><br><span class="line">            Writer bufferedWriter = new BufferedWriter(new OutputStreamWriter(fos, &quot;utf-8&quot;), 10240);</span><br><span class="line">            template.process(params, bufferedWriter);</span><br><span class="line">            if (bufferedWriter != null) &#123;</span><br><span class="line">                bufferedWriter.close();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (TemplateException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; catch (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="生成docx格式的文档"><a href="#生成docx格式的文档" class="headerlink" title="生成docx格式的文档"></a>生成docx格式的文档</h3></li>
+<li>*高能预警！** 在成功使用Freemarker动态导出doc格式的文档之后，相信大家和我的心情一样非常激动。但以上操作只是一个小铺垫，接下来我们来看看如何实现docx格式的文档导出，小明相信一定会让各位看官大跌眼镜！不，大开眼界！<br>首先，告诉大家一个秘密：<strong>docx格式的文档其实是一个ZIP格式的压缩文件哦！</strong> 什么？你不信？验证如下：</li>
+<li>windows的小伙伴<br>将docx文档修改为ZIP格式（修改.docx后缀名为.zip），然后通过解压工具解压。</li>
+<li>MacOS的小伙伴<br>直接使用<code>unzip</code>命令解压word文档，解压过后我们会发现该文档其实还有自己的<strong>目录结构</strong>！<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200907100322.png"
+                      alt="震惊！"
+                ><br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200907101744.png"
+                     
+                ><br>当然，这么多文件我们不必一一知悉，只需关注小明红线标注的文件和目录即可：</li>
+<li>document.xml文件用于存放核心数据，文字，表格，图片引用等</li>
+<li>media目录用于存放所有文档的图片</li>
+<li>_rels目录下的document.xml.rels里存放的是配置信息，比如图片引用关系，即在document.xml中引用id对应media中的哪个图片。</li>
+<li>获取zip里的document.xml文档以及_rels文件夹下的document.xml.rels文档</li>
+<li>显而易见，如果我们要想根据数据动态导出不同的word文档，只需要：通过freemarker将本次数据填充到document.xml中，并将图片配置信息填充至document.xml.rels文档里，再用文件流把本次图片写入到media目录下替换已经存在的图片，最后把填充过内容的document.xml、document.xml.rels以及media用流的方式写入zip即可输出docx文档！上代码。<blockquote>
+<p> 好吧，限于篇幅，代码见文末 Github地址</p>
+</blockquote>
+<h2 id="问题及解决方案"><a href="#问题及解决方案" class="headerlink" title="问题及解决方案"></a>问题及解决方案</h2>当然，大家在第一次尝试去干某一件事时，都不一定是一蹴而就的。就比如在导出word时，就可能会遇到以下问题。​</li>
+</ul>
+<h3 id="特殊字符"><a href="#特殊字符" class="headerlink" title="特殊字符"></a>特殊字符</h3><p><strong>问题</strong>：有些文本数据中难免含有特殊字符，如：<code>&lt; &gt; @ ! $ &amp;</code> 等等。</p>
+<p><strong>解决方案</strong>：这些特殊字符如果不进行转义，就会引起word打不开的现象，比如表格中的超链接的<code>&amp;</code>符号，就需要替换为<code>&amp;amp;</code>，如果你的文档用office打开时提示文件损坏，九成是因为特殊符号引起的，我们可以打开documet.xml定位报错位置；当然还有终极方案，我们可以利用Freemarker的语法直接在模板中使用<code>&lt;![CDATA[  ]]&gt; </code> 处理。比如:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;w:t&gt;&lt;![CDATA[ $&#123;article.title&#125; ]]&gt;&lt;/w:t&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="图片变形"><a href="#图片变形" class="headerlink" title="图片变形"></a>图片变形</h3><p><strong>问题</strong>：因为echarts生成的图表是响应式的，不同的屏幕大小、分辨率，会造成每次前端传过来的图片宽高比例不一致，如果还直接将图片按照之前的比例放进文档，会造成生成后文档中的图片变形。</p>
+<p><strong>思路</strong>：首先将文档中的图片设置为原图，然后锁定宽高比，将图片调整到合适大小，解压文档从<code>document.xml</code>，得到此时word中该图片宽高对应的值，如下所示：<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/20200913163808.png"
+                     
+                ></p>
+<p>要想保证不同像素比例的宽高在文档中不变形，我们需要固定<code>cy</code>的值，然后根据固定比例动态求得当前像素比例图片在word中代表的宽<code>cx</code>的值。计算方法如下所示：<br>公式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a/b = x/y</span><br></pre></td></tr></table></figure>
+
+<h3 id="解决适配问题"><a href="#解决适配问题" class="headerlink" title="解决适配问题"></a>解决适配问题</h3><p>生成的文档发现安卓手机用微信打开不能正常展示，但是用wps打开另存就可以正常打开！所以，我想是否可以通过poi解析后然后输出解决？验证后，答案是可以的！</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">try &#123;</span><br><span class="line">    // 读取原始Word文档</span><br><span class="line">    FileInputStream fis = new FileInputStream(&quot;/Users/xin/Desktop/test/20230424110753.docx&quot;);</span><br><span class="line">    XWPFDocument document = new XWPFDocument(fis);</span><br><span class="line">    fis.close();</span><br><span class="line"></span><br><span class="line">    // 将文档另存为docx格式</span><br><span class="line">    FileOutputStream fos = new FileOutputStream(&quot;/Users/xin/Desktop/test/20230424110753-new.docx&quot;);</span><br><span class="line">    document.write(fos);</span><br><span class="line">    fos.close();</span><br><span class="line"></span><br><span class="line">    System.out.println(&quot;文档转换成功！&quot;);</span><br><span class="line">&#125; catch (Exception ex) &#123;</span><br><span class="line">    System.out.println(&quot;文档转换失败：&quot; + ex.getMessage());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="常用的语法"><a href="#常用的语法" class="headerlink" title="常用的语法"></a>常用的语法</h3><h4 id="字符串是否为空"><a href="#字符串是否为空" class="headerlink" title="字符串是否为空"></a>字符串是否为空</h4><p>freemarker中显示某对象使用${name}.??但如果name为null，freemarker就会报错。<br>如果需要判断对象是否为空：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;#if name??&gt;</span><br><span class="line">      不为空</span><br><span class="line">      &lt;#else&gt;</span><br><span class="line">          为空</span><br><span class="line">  &lt;/#if&gt;</span><br></pre></td></tr></table></figure>
+<p>当然也可以通过设置默认值来避免对象为空的错误(<strong>力荐</strong>)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;name!&#x27;&#x27;&#125;</span><br></pre></td></tr></table></figure>
+<p>如果<code>name</code>为空，就以默认值（”!”后的字符）显示。<br><code>$&#123;user.name&#125;</code>即name为user的属性，<code>user</code>、<code>name</code>都有可能为空，那么可以写成<code>$&#123;(user.name)!&#39;&#39;&#125;</code>,如果<code>user</code>或者<code>name</code>为null，都显示为空。</p>
+<h4 id="包含"><a href="#包含" class="headerlink" title="包含"></a>包含</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;#if showModules?seq_contains(&quot;1&quot;) &gt; hello &lt;/#if&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="判断是否为true"><a href="#判断是否为true" class="headerlink" title="判断是否为true"></a>判断是否为true</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">建议使用其他类型</span><br></pre></td></tr></table></figure>
+<h4 id="判断集合是否为空"><a href="#判断集合是否为空" class="headerlink" title="判断集合是否为空"></a>判断集合是否为空</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;#if hotWordList ?? &amp;&amp; (hotWordList?size &gt; 0) &gt;不为空&lt;/#if&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="遍历集合"><a href="#遍历集合" class="headerlink" title="遍历集合"></a>遍历集合</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;#list firstMedia as fm&gt;$&#123;fm.mediaName&#125;&lt;/#list&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="判断奇偶"><a href="#判断奇偶" class="headerlink" title="判断奇偶"></a>判断奇偶</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;#if fm?item_parity = &quot;odd&quot; &gt;</span><br><span class="line">奇数</span><br><span class="line">    &lt;#else&gt;</span><br><span class="line">        偶数</span><br><span class="line">&lt;/#if&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="判断数值"><a href="#判断数值" class="headerlink" title="判断数值"></a>判断数值</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;#if rw.readNum != 0&gt;</span><br><span class="line">    &lt;span&gt;#&#123;rw.readNum&#125;&lt;/span&gt;</span><br><span class="line">    &lt;#else &gt;</span><br><span class="line">        &lt;div class=&quot;td&quot;&gt;</span><br><span class="line">            &lt;i class=&quot;iconfont icon-fair&quot;&gt;&lt;/i&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">&lt;/#if&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="字符串转数字"><a href="#字符串转数字" class="headerlink" title="字符串转数字"></a>字符串转数字</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$&#123;&quot;111.11&quot;?number&#125;</span><br><span class="line">结果为111.11  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>其中，a表示图片在word中宽的数值，b代表图片在word中高的数值，x表示前端传过来图片的宽（单位：像素），y表示前端传过来图片的高（单位：像素）。因此，已知b、x、y,根据公式，我们即可求出a；</p>
+<h2 id="我就是文末"><a href="#我就是文末" class="headerlink" title="我就是文末"></a>我就是文末</h2><p>当然，还有用一些其他注意事项：</p>
+<ul>
+<li>如果word中的模块比较多的话，使用Freemarker语法要仔细一点；</li>
+<li>为什么小明最终选择导出docx格式的文档呢？（还不是因为产品经理的需求嘛）因为doc格式的文档，小明尝试导出后，发现该文档并不是一个合法的doc文档，体现在：不能在手机上（微信、钉钉）正常预览，office提示以xml形式打开等。因此在导出doc文档时，通过Freemaker填充document.xml后得到的并不是一个合法的word文档，查了相关资料，还需要借助第三方工具进行签名，而签名还需要在windows系统下才能完成，但是我们平时用的生产环境都是Linux……因此，考虑再三，再三权衡，最终选择导出docx格式的文档。这种方式再适合不过，而且还能保证在当前主流APP上都能正常预览。</li>
+<li>敲黑板！导出docx文档最重要的一个思想是将本次数据写入覆盖模版文件（在商业中，相当于借壳上市），重新输出一个zip格式压缩的文件，这个文件就是我们最终想要的文档。</li>
+</ul>
+<p>以上，就是小明word导出的前前后后，如果你也曾经遇到过或者现在正好遇到word文档导出开发的问题，欢迎一起讨论交流。</p>
+<h2 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h2><p>我上传了工具类，包含doc、docx 的导出，以及导出word文档时特殊符号转义，还有图片Base64转换成文件输出的方法。<br>GitHub地址：<a class="link"   target="_blank" rel="noopener" href="https://github.com/WhenCoding/coder-xiaoming/blob/master/src/main/java/com/xm/coder/util/WordUtil.java" >https://github.com/WhenCoding/coder-xiaoming/blob/master/src/main/java/com/xm/coder/util/WordUtil.java<i class="fas fa-external-link-alt"></i></a></p>
+
+                </div>
+
+                
+                    <div class="post-copyright-info">
+                        <div class="article-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="post-title border-box text-ellipsis">
+                如何使用Freemarker生成Word文件
+            </div>
+
+            <div class="post-link border-box text-ellipsis">
+                p/8425.html
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">小明</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2020-09-14 13:37</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-content="复制版权信息" data-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                    </div>
+                
+
+                
+                    <ul class="post-tags-box">
+                        
+                            <li class="tag-item">
+                                <a href="/tags/SpringBoot/"><i class="icon fas fa-hashtag"></i>SpringBoot</a>&nbsp;
+                            </li>
+                        
+                            <li class="tag-item">
+                                <a href="/tags/Freemarker/"><i class="icon fas fa-hashtag"></i>Freemarker</a>&nbsp;
+                            </li>
+                        
+                            <li class="tag-item">
+                                <a href="/tags/Docx/"><i class="icon fas fa-hashtag"></i>Docx</a>&nbsp;
+                            </li>
+                        
+                    </ul>
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/p/35755.html"
+                                   title="Linux服务器的晴雨表——top命令"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Linux服务器的晴雨表——top命令</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/p/38722.html"
+                                   title="解决SpringBoot jar包中的文件读取问题"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">解决SpringBoot jar包中的文件读取问题</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <script data-pjax src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"></script>
+        <div id="waline-comment"></div>
+        <script data-pjax>
+          function loadWaline() {
+            Waline.init({
+              el: '#waline-comment',
+              serverURL: 'https://comment.mynamecoder.com',
+              lang: 'zh-CN' || 'zh-CN',
+              comment: '.post-comments-count',
+              reaction: 'true' === 'true'
+            })
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              loadWaline()
+            }, 1000)
+          } else {
+            window.addEventListener('DOMContentLoaded', loadWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-text">准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-text">思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87-1"><span class="nav-text">准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E6%88%90Freemarker%E6%A8%A1%E7%89%88%E5%BC%95%E6%93%8E"><span class="nav-text">集成Freemarker模版引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90doc%E6%A0%BC%E5%BC%8F%E7%9A%84%E6%96%87%E6%A1%A3"><span class="nav-text">生成doc格式的文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90docx%E6%A0%BC%E5%BC%8F%E7%9A%84%E6%96%87%E6%A1%A3"><span class="nav-text">生成docx格式的文档</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-text">问题及解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6"><span class="nav-text">特殊字符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%E5%8F%98%E5%BD%A2"><span class="nav-text">图片变形</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E9%80%82%E9%85%8D%E9%97%AE%E9%A2%98"><span class="nav-text">解决适配问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E8%AF%AD%E6%B3%95"><span class="nav-text">常用的语法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BA"><span class="nav-text">字符串是否为空</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8C%85%E5%90%AB"><span class="nav-text">包含</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E4%B8%BAtrue"><span class="nav-text">判断是否为true</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E9%9B%86%E5%90%88%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BA"><span class="nav-text">判断集合是否为空</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%81%8D%E5%8E%86%E9%9B%86%E5%90%88"><span class="nav-text">遍历集合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E5%A5%87%E5%81%B6"><span class="nav-text">判断奇偶</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E6%95%B0%E5%80%BC"><span class="nav-text">判断数值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E6%95%B0%E5%AD%97"><span class="nav-text">字符串转数字</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%91%E5%B0%B1%E6%98%AF%E6%96%87%E6%9C%AB"><span class="nav-text">我就是文末</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E9%93%BE%E6%8E%A5"><span class="nav-text">相关链接</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box shields">
+        
+            <div class="info-item">
+                
+                <a class="shields-item">
+                    <img src="https://img.shields.io/badge/Since-2018_--_2024-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item" href="/">
+                        <img src="https://img.shields.io/badge/WebMaster-小明-dodgerblue?style=flat-square">
+                    </a>
+                
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       href="https://beian.miit.gov.cn"
+                    >
+                        <img src="https://img.shields.io/badge/ICP-京ICP备19029015号-dodgerblue?style=flat-square">
+                    </a>
+                
+                <a class="shields-item" href="https://hexo.io" target="_blank">
+                    <img src="https://img.shields.io/badge/Powered_by-Hexo-dodgerblue?style=flat-square">
+                </a>
+                <a class="shields-item" href="https://github.com/XPoet/hexo-theme-keep" target="_blank">
+                    <img class="shields-keep-version" src="https://img.shields.io/badge/Theme-Keep-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       rel="nofollow"
+                       href="https://github.com/WhenCoding"
+                    >
+                        <img src="https://img.shields.io/badge/Deploy_in-GitHub Pages-dodgerblue?style=flat-square">
+                    </a>
+                
+            </div>
+            
+                <div class="info-item">
+                    
+                        
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item shields">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-box border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-text">准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-text">思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87-1"><span class="nav-text">准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E6%88%90Freemarker%E6%A8%A1%E7%89%88%E5%BC%95%E6%93%8E"><span class="nav-text">集成Freemarker模版引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90doc%E6%A0%BC%E5%BC%8F%E7%9A%84%E6%96%87%E6%A1%A3"><span class="nav-text">生成doc格式的文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90docx%E6%A0%BC%E5%BC%8F%E7%9A%84%E6%96%87%E6%A1%A3"><span class="nav-text">生成docx格式的文档</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-text">问题及解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6"><span class="nav-text">特殊字符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%E5%8F%98%E5%BD%A2"><span class="nav-text">图片变形</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E9%80%82%E9%85%8D%E9%97%AE%E9%A2%98"><span class="nav-text">解决适配问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E8%AF%AD%E6%B3%95"><span class="nav-text">常用的语法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BA"><span class="nav-text">字符串是否为空</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8C%85%E5%90%AB"><span class="nav-text">包含</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E4%B8%BAtrue"><span class="nav-text">判断是否为true</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E9%9B%86%E5%90%88%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BA"><span class="nav-text">判断集合是否为空</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%81%8D%E5%8E%86%E9%9B%86%E5%90%88"><span class="nav-text">遍历集合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E5%A5%87%E5%81%B6"><span class="nav-text">判断奇偶</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E6%95%B0%E5%80%BC"><span class="nav-text">判断数值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E6%95%B0%E5%AD%97"><span class="nav-text">字符串转数字</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%91%E5%B0%B1%E6%98%AF%E6%96%87%E6%9C%AB"><span class="nav-text">我就是文末</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E9%93%BE%E6%8E%A5"><span class="nav-text">相关链接</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/local-search.js"></script>
+
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/toc.js"></script>
+        
+    
+    
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

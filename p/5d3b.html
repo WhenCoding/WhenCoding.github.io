@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享">
+    <meta name="description" content="Spring Boot, Spring Cloud,日常开发, ElasticSearch, 微服务, 并发编程, 源码分析,Java,程序员小明">
+    <meta name="author" content="小明">
+    
+    <title>
+        
+            常用的几个消息组件 |
+        
+        程序员小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/brands.min.css">
+    
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"mynamecoder.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":null,"favicon":"/images/logo.svg","avatar":"/images/avatar.png","font_size":null,"font_family":"Optima-Regular,PingFangTC-light","hover":{"shadow":true,"scale":true},"first_screen":{"enable":false,"header_transparent":true,"background_img":"https://img.mynamecoder.com/20230224112801.jpeg","description":"||","font_color":"","hitokoto":true},"scroll":{"progress_bar":false,"percent":false}},"local_search":{"enable":true,"preload":true},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":true,"use":"waline","valine":{"appid":"RYD6fM3F1jQ4aTSXOzbclYi6-9Nh9j0Va","appkey":"mjF7jJLYlbIcPU2mUOoh0I88","server_urls":null,"meta":["nick","mail","link"],"placeholder":"说点什么"},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":"https://comment.mynamecoder.com","reaction":true,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":false,"min2read":false},"img_align":"left","copyright_info":true},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"version":"3.7.7"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1566816837076058" crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+            <a class="site-name border-box" href="/">
+               程序员小明
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                标签
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >
+                                友链
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links">友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+
+            <div class="article-content-bottom border-box">
+                
+                    <div class="article-title">
+                        常用的几个消息组件
+                    </div>
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/avatar.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">小明</span>
+                                
+                                    <span class="author-label">Lv6</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2019-05-20 21:39:21</span>
+                <span class="mobile">2019-05-20 21:39</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Tue Jan 09 2024 07:29:49 GMT+0000">2024-01-09 07:29:49</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item article-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul>
+                    
+                            <li class="category-item">
+                                
+                                <a href="/categories/MQ/">MQ</a>
+                            </li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="article-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul>
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/mq/">mq</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <h2 id="MQ背景-amp-选型"><a href="#MQ背景-amp-选型" class="headerlink" title="MQ背景&amp;选型"></a>MQ背景&amp;选型</h2><p>消息队列作为高并发系统的核心组件之一，能够帮助业务系统解构提升开发效率和系统稳定性。主要具有以下优势：</p>
+<ul>
+<li>削峰填谷（主要解决瞬时写压力大于应用服务能力导致消息丢失、系统奔溃等问题）</li>
+<li>系统解耦（解决不同重要程度、不同能力级别系统之间依赖导致一死全死）</li>
+<li>提升性能（当存在一对多调用时，可以发一条消息给消息系统，让消息系统通知相关系统）</li>
+<li>蓄流压测（线上有些链路不好压测，可以通过堆积一定量消息再放开来压测）</li>
+</ul>
+<p>目前主流的MQ主要是Rocketmq、kafka、Rabbitmq，Rocketmq相比于Rabbitmq、kafka具有主要优势特性有：</p>
+<ul>
+<li>支持事务型消息（消息发送和DB操作保持两方的最终一致性，rabbitmq和kafka不支持）</li>
+<li>支持结合rocketmq的多个系统之间数据最终一致性（多方事务，二方事务是前提）</li>
+<li>支持18个级别的延迟消息（rabbitmq和kafka不支持）</li>
+<li>支持指定次数和时间间隔的失败消息重发（kafka不支持，rabbitmq需要手动确认）</li>
+<li>支持consumer端tag过滤，减少不必要的网络传输（rabbitmq和kafka不支持）</li>
+<li>支持重复消费（rabbitmq不支持，kafka支持）<br>Rocketmq、kafka、Rabbitmq的详细对比，请参照下表格：<br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://i.ibb.co/n7mLmNY/12619159-ebd12b24d5ae33d9.png"
+                      alt="三个mq的对比"
+                ><h2 id="RocketMQ集群概述"><a href="#RocketMQ集群概述" class="headerlink" title="RocketMQ集群概述"></a>RocketMQ集群概述</h2><h3 id="RocketMQ集群部署结构"><a href="#RocketMQ集群部署结构" class="headerlink" title="RocketMQ集群部署结构"></a>RocketMQ集群部署结构</h3><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://i.ibb.co/xfC6HKh/12619159-a858d38e0b38c406.png"
+                      alt="RocketMQ集群部署结构"
+                ></li>
+</ul>
+<h4 id="Name-Server"><a href="#Name-Server" class="headerlink" title="Name Server"></a>Name Server</h4><p>Name Server是一个几乎无状态节点，可集群部署，节点之间无任何信息同步。</p>
+<h4 id="Broker"><a href="#Broker" class="headerlink" title="Broker"></a>Broker</h4><p>Broker部署相对复杂，Broker分为Master与Slave，一个Master可以对应多个Slave，但是一个Slave只能对应一个Master，Master与Slave的对应关系通过指定相同的Broker Name，不同的Broker Id来定义，BrokerId为0表示Master，非0表示Slave。Master也可以部署多个。<br>每个Broker与Name Server集群中的所有节点建立长连接，定时(每隔30s)注册Topic信息到所有Name Server。Name Server定时(每隔10s)扫描所有存活broker的连接，如果Name Server超过2分钟没有收到心跳，则Name Server断开与Broker的连接。</p>
+<h4 id="Producer"><a href="#Producer" class="headerlink" title="Producer"></a>Producer</h4><p>Producer与Name Server集群中的其中一个节点(随机选择)建立长连接，定期从Name Server取Topic路由信息，并向提供Topic服务的Master建立长连接，且定时向Master发送心跳。Producer完全无状态，可集群部署。<br>Producer每隔30s（由ClientConfig的pollNameServerInterval）从Name server获取所有topic队列的最新情况，这意味着如果Broker不可用，Producer最多30s能够感知，在此期间内发往Broker的所有消息都会失败。<br>Producer每隔30s（由ClientConfig中heartbeatBrokerInterval决定）向所有关联的broker发送心跳，Broker每隔10s中扫描所有存活的连接，如果Broker在2分钟内没有收到心跳数据，则关闭与Producer的连接。</p>
+<h4 id="Consumer"><a href="#Consumer" class="headerlink" title="Consumer"></a>Consumer</h4><p>Consumer与Name Server集群中的其中一个节点(随机选择)建立长连接，定期从Name Server取Topic路由信息，并向提供Topic服务的Master、Slave建立长连接，且定时向Master、Slave发送心跳。Consumer既可以从Master订阅消息，也可以从Slave订阅消息，订阅规则由Broker配置决定。<br>Consumer每隔30s从Name server获取topic的最新队列情况，这意味着Broker不可用时，Consumer最多最需要30s才能感知。<br>Consumer每隔30s（由ClientConfig中heartbeatBrokerInterval决定）向所有关联的broker发送心跳，Broker每隔10s扫描所有存活的连接，若某个连接2分钟内没有发送心跳数据，则关闭连接；并向该Consumer Group的所有Consumer发出通知，Group内的Consumer重新分配队列，然后继续消费。<br>当Consumer得到master宕机通知后，转向slave消费，slave不能保证master的消息100%都同步过来了，因此会有少量的消息丢失。但是一旦master恢复，未同步过去的消息会被最终消费掉。<br>消费者队列是消费者连接之后（或者之前有连接过）才创建的。我们将原生的消费者标识由 {IP}@{消费者group}扩展为 {IP}@{消费者group}{topic}{tag}，（例如xxx.xxx.xxx.xxx@mqtest_producer-group_2m2sTest_tag-zyk）。任何一个元素不同，都认为是不同的消费端，每个消费端会拥有一份自己消费队列（默认是broker队列数量*broker数量）。新挂载的消费者队列中拥有commitlog中的所有数据。<br>如果有需要，可以查看Rocketmq更多源码解析</p>
+<h2 id="Rocketmq如何支持分布式事务消息"><a href="#Rocketmq如何支持分布式事务消息" class="headerlink" title="Rocketmq如何支持分布式事务消息"></a>Rocketmq如何支持分布式事务消息</h2><p><strong>场景</strong><br>A（存在DB操作）、B（存在DB操作）两方需要保证分布式事务一致性，通过引入中间层MQ，A和MQ保持事务一致性（异常情况下通过MQ反查A接口实现check），B和MQ保证事务一致（通过重试），从而达到最终事务一致性。<br>原理：大事务 = 小事务 + 异步</p>
+<h3 id="MQ与DB一致性原理（两方事务）"><a href="#MQ与DB一致性原理（两方事务）" class="headerlink" title="MQ与DB一致性原理（两方事务）"></a>MQ与DB一致性原理（两方事务）</h3><p><strong>流程图</strong><br><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://i.ibb.co/mHVYNLt/12619159-6f4f6754d6f02058.png"
+                      alt="流程图"
+                ><br>上图是RocketMQ提供的保证MQ消息、DB事务一致性的方案。<br>MQ消息、DB操作一致性方案：</p>
+<ul>
+<li>发送消息到MQ服务器，此时消息状态为SEND_OK。此消息为consumer不可见。</li>
+<li>执行DB操作；DB执行成功Commit DB操作，DB执行失败Rollback DB操作。</li>
+<li>如果DB执行成功，回复MQ服务器，将状态为COMMIT_MESSAGE；如果DB执行失败，回复MQ服务器，将状态改为ROLLBACK_MESSAGE。注意此过程有可能失败。</li>
+<li>MQ内部提供一个名为“事务状态服务”的服务，此服务会检查事务消息的状态，如果发现消息未COMMIT，则通过Producer启动时注册的TransactionCheckListener来回调业务系统，业务系统在checkLocalTransactionState方法中检查DB事务状态，如果成功，则回复COMMIT_MESSAGE，否则回复ROLLBACK_MESSAGE。<br>说明：<br>上面以DB为例，其实此处可以是任何业务或者数据源。<br>以上SEND_OK、COMMIT_MESSAGE、ROLLBACK_MESSAGE均是client jar提供的状态，在MQ服务器内部是一个数字。</li>
+</ul>
+<p>TransactionCheckListener 是在消息的commit或者rollback消息丢失的情况下才会回调（上图中灰色部分）。这种消息丢失只存在于断网或者rocketmq集群挂了的情况下。当rocketmq集群挂了，如果采用异步刷盘，存在1s内数据丢失风险，异步刷盘场景下保障事务没有意义。所以如果要核心业务用Rocketmq解决分布式事务问题，建议选择同步刷盘模式。</p>
+<h2 id="多系统之间数据一致性（多方事务）"><a href="#多系统之间数据一致性（多方事务）" class="headerlink" title="多系统之间数据一致性（多方事务）"></a>多系统之间数据一致性（多方事务）</h2><p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://i.ibb.co/KmFwTpZ/moreside.png"
+                      alt="多方事务"
+                ></p>
+<p>当需要保证多方（超过2方）的分布式一致性，上面的两方事务一致性（通过Rocketmq的事务性消息解决）已经无法支持。这个时候需要引入TCC模式思想（Try-Confirm-Cancel，不清楚的自行百度）。<br>以上图交易系统为例：</p>
+<ul>
+<li>交易系统创建订单（往DB插入一条记录），同时发送订单创建消息。通过RocketMq事务性消息保证一致性</li>
+<li>接着执行完成订单所需的同步核心RPC服务（非核心的系统通过监听MQ消息自行处理，处理结果不会影响交易状态）。执行成功更改订单状态，同时发送MQ消息。</li>
+<li>交易系统接受自己发送的订单创建消息，通过定时调度系统创建延时回滚任务（或者使用RocketMq的重试功能，设置第二次发送时间为定时任务的延迟创建时间。在非消息堵塞的情况下，消息第一次到达延迟为1ms左右，这时可能RPC还未执行完，订单状态还未设置为完成，第二次消费时间可以指定）。延迟任务先通过查询订单状态判断订单是否完成，完成则不创建回滚任务，否则创建。 PS：多个RPC可以创建一个回滚任务，通过一个消费组接受一次消息就可以；也可以通过创建多个消费组，一个消息消费多次，每次消费创建一个RPC的回滚任务。  回滚任务失败，通过MQ的重发来重试。<br>以上是交易系统和其他系统之间保持最终一致性的解决方案。<h3 id="案例分析"><a href="#案例分析" class="headerlink" title="案例分析"></a>案例分析</h3></li>
+</ul>
+<h4 id="单机环境下的事务示意图"><a href="#单机环境下的事务示意图" class="headerlink" title="单机环境下的事务示意图"></a>单机环境下的事务示意图</h4><p>如下为A给B转账的例子。</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>动作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>锁定B的账户</td>
+</tr>
+<tr>
+<td>2</td>
+<td>锁定B的账户</td>
+</tr>
+<tr>
+<td>3</td>
+<td>检查A账户是否有1元</td>
+</tr>
+<tr>
+<td>4</td>
+<td>A的账户扣减1元</td>
+</tr>
+<tr>
+<td>5</td>
+<td>给B的账户加1元</td>
+</tr>
+<tr>
+<td>6</td>
+<td>解锁B的账户</td>
+</tr>
+<tr>
+<td>7</td>
+<td>解锁A的账户</td>
+</tr>
+</tbody></table>
+<p>以上过程在代码层面甚至可以简化到在一个事物中执行两条sql语句。</p>
+<h4 id="分布式环境下事务"><a href="#分布式环境下事务" class="headerlink" title="分布式环境下事务"></a>分布式环境下事务</h4><p>和单机事务不同，A、B账户可能不在同一个DB中，此时无法像在单机情况下使用事物来实现。此时可以通过一下方式实现，将转账操作分成两个操作。</p>
+<ul>
+<li>A账户</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>动作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>锁定A的账户</td>
+</tr>
+<tr>
+<td>2</td>
+<td>检查A账户是否有1元</td>
+</tr>
+<tr>
+<td>3</td>
+<td>A的账户扣减1元</td>
+</tr>
+<tr>
+<td>4</td>
+<td>解锁A的账户</td>
+</tr>
+</tbody></table>
+<ul>
+<li>MQ消息</li>
+</ul>
+<p>A账户数据发生变化时，发送MQ消息，MQ服务器将消息推送给转账系统，转账系统来给B账号加钱。</p>
+<ul>
+<li>B账户</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>动作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>锁定B的账户</td>
+</tr>
+<tr>
+<td>2</td>
+<td>给B的账户加1元</td>
+</tr>
+<tr>
+<td>3</td>
+<td>解锁B的账户</td>
+</tr>
+</tbody></table>
+<h2 id="顺序消息"><a href="#顺序消息" class="headerlink" title="顺序消息"></a>顺序消息</h2><h3 id="顺序消息缺陷"><a href="#顺序消息缺陷" class="headerlink" title="顺序消息缺陷"></a>顺序消息缺陷</h3><p>发送顺序消息无法利用集群<code>Fail Over</code>特性消费，顺序消息的并行度依赖于队列数量，存在队列热点问题，个别队列由于哈希不均导致消息过多，消费速度跟不上，产生消息堆积问题遇到消息失败的消息，无法跳过，当前队列消费暂停。</p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>produce在发送消息的时候，把消息发到同一个队列（<code>queue</code>）中,消费者注册消息监听器为<code>MessageListenerOrderly</code>，这样就可以保证消费端只有一个线程去消费消息。<br>注意：把消息发到同一个队列（<code>queue</code>），不是同一个<code>topic</code>，默认情况下一个<code>topic</code>包括4个<code>queue</code></p>
+<h3 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h3><p>可以通过实现发送消息的队列选择器方法，实现部分顺序消息。<br>举例：比如一个数据库通过MQ来同步，只需要保证每个表的数据是同步的就可以。解析<code>binlog</code>，将表名作为队列选择器的参数，这样就可以保证每个表的数据到同一个队列里面，从而保证表数据的顺序消费。</p>
+<h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2><h3 id="Producer-1"><a href="#Producer-1" class="headerlink" title="Producer"></a>Producer</h3><ul>
+<li><p>  Topic<br>一个应用尽可能用一个<code>Topic</code>，消息子类型用tags来标识，tags可以由应用自由设置。只有发送消息设置了tags，消费方在订阅消息时，才可以利用<code>tags</code> 在<code>broker</code>做消息过滤。</p>
+</li>
+<li><p>  key<br>每个消息在业务层面的唯一标识码，要设置到 <code>keys</code> 字段，方便将来定位消息丢失问题。服务器会为每个消息创建索引(哈希索引)，应用可以通过 <code>topic</code>，key来查询这条消息内容，以及消息被谁消费。由于是哈希索引，请务必保证<code>key</code> 尽可能唯一，这样可以避免潜在的哈希冲突。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//订单Id</span><br><span class="line">String orderId= &quot;20034568923546&quot;;</span><br><span class="line">message.setKeys(orderId);</span><br></pre></td></tr></table></figure></li>
+<li><p>  日志<br>消息发送成功或者失败，要打印消息日志，务必要打印 <code>send result</code> 和<code>key</code> 字段。</p>
+</li>
+<li><p> <code>send</code><br><code>send</code>消息方法，只要不抛异常，就代表发送成功。但是发送成功会有多个状态，在<code>sendResult</code>里定义。<br><code>SEND_OK</code>：消息发送成功<br><code>FLUSH_DISK_TIMEOUT</code>：消息发送成功，但是服务器刷盘超时，消息已经进入服务器队列，只有此时服务器宕机，消息才会丢失<br><code>FLUSH_SLAVE_TIMEOUT</code>：消息发送成功，但是服务器同步到Slave时超时，消息已经进入服务器队列，只有此时服务器宕机，消息才会丢失<br><code>SLAVE_NOT_AVAILABLE</code>：消息发送成功，但是此时slave不可用，消息已经进入服务器队列，只有此时服务器宕机，消息才会丢失</p>
+<h3 id="Consumer-1"><a href="#Consumer-1" class="headerlink" title="Consumer"></a>Consumer</h3></li>
+<li><p> 幂等<br>RocketMQ使用的消息原语是<code>At Least Once</code>，所以<code>consumer</code>可能多次收到同一个消息，此时务必做好幂等。</p>
+</li>
+<li><p>  日志<br>消费时记录日志，以便后续定位问题。</p>
+</li>
+<li><p>  批量消费<br>尽量使用批量方式消费方式，可以很大程度上提高消费吞吐量。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2></li>
+<li><p> 博客<br>分布式开放消息系统(RocketMQ)的原理与实践<br><a class="link"   target="_blank" rel="noopener" href="http://www.jianshu.com/p/453c6e7ff81c" >http://www.jianshu.com/p/453c6e7ff81c<i class="fas fa-external-link-alt"></i></a><br>RocketMQ事务消费和顺序消费详解<br><a class="link"   target="_blank" rel="noopener" href="http://www.cnblogs.com/520playboy/p/6750023.html" >http://www.cnblogs.com/520playboy/p/6750023.html<i class="fas fa-external-link-alt"></i></a><br>ZeroCopy<br><a class="link"   target="_blank" rel="noopener" href="http://www.linuxjournal.com/article/6345" >http://www.linuxjournal.com/article/6345<i class="fas fa-external-link-alt"></i></a><br>IO方式的性能数据<br><a class="link"   target="_blank" rel="noopener" href="http://stblog.baidu-tech.com/?p=851" >http://stblog.baidu-tech.com/?p=851<i class="fas fa-external-link-alt"></i></a></p>
+</li>
+</ul>
+<h3 id="欢迎关注获取更多资源"><a href="#欢迎关注获取更多资源" class="headerlink" title="欢迎关注获取更多资源"></a>欢迎关注获取更多资源</h3><p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/coderxm_qrcode.jpeg"
+                      alt="程序员小明"
+                ></p>
+
+                </div>
+
+                
+                    <div class="post-copyright-info">
+                        <div class="article-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="post-title border-box text-ellipsis">
+                常用的几个消息组件
+            </div>
+
+            <div class="post-link border-box text-ellipsis">
+                p/5d3b.html
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">小明</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2019-05-20 21:39</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-content="复制版权信息" data-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                    </div>
+                
+
+                
+                    <ul class="post-tags-box">
+                        
+                            <li class="tag-item">
+                                <a href="/tags/mq/"><i class="icon fas fa-hashtag"></i>mq</a>&nbsp;
+                            </li>
+                        
+                    </ul>
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/p/d69c.html"
+                                   title="公众号开发入门：查询用户是否已经关注公众号？"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">公众号开发入门：查询用户是否已经关注公众号？</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/p/f00a.html"
+                                   title="JDK 1.8 处理时间常用举例"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">JDK 1.8 处理时间常用举例</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <script data-pjax src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"></script>
+        <div id="waline-comment"></div>
+        <script data-pjax>
+          function loadWaline() {
+            Waline.init({
+              el: '#waline-comment',
+              serverURL: 'https://comment.mynamecoder.com',
+              lang: 'zh-CN' || 'zh-CN',
+              comment: '.post-comments-count',
+              reaction: 'true' === 'true'
+            })
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              loadWaline()
+            }, 1000)
+          } else {
+            window.addEventListener('DOMContentLoaded', loadWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MQ%E8%83%8C%E6%99%AF-amp-%E9%80%89%E5%9E%8B"><span class="nav-text">MQ背景&amp;选型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RocketMQ%E9%9B%86%E7%BE%A4%E6%A6%82%E8%BF%B0"><span class="nav-text">RocketMQ集群概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RocketMQ%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2%E7%BB%93%E6%9E%84"><span class="nav-text">RocketMQ集群部署结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Name-Server"><span class="nav-text">Name Server</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Broker"><span class="nav-text">Broker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Producer"><span class="nav-text">Producer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Consumer"><span class="nav-text">Consumer</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rocketmq%E5%A6%82%E4%BD%95%E6%94%AF%E6%8C%81%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E6%B6%88%E6%81%AF"><span class="nav-text">Rocketmq如何支持分布式事务消息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQ%E4%B8%8EDB%E4%B8%80%E8%87%B4%E6%80%A7%E5%8E%9F%E7%90%86%EF%BC%88%E4%B8%A4%E6%96%B9%E4%BA%8B%E5%8A%A1%EF%BC%89"><span class="nav-text">MQ与DB一致性原理（两方事务）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E7%B3%BB%E7%BB%9F%E4%B9%8B%E9%97%B4%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%EF%BC%88%E5%A4%9A%E6%96%B9%E4%BA%8B%E5%8A%A1%EF%BC%89"><span class="nav-text">多系统之间数据一致性（多方事务）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%E5%88%86%E6%9E%90"><span class="nav-text">案例分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83%E4%B8%8B%E7%9A%84%E4%BA%8B%E5%8A%A1%E7%A4%BA%E6%84%8F%E5%9B%BE"><span class="nav-text">单机环境下的事务示意图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E7%8E%AF%E5%A2%83%E4%B8%8B%E4%BA%8B%E5%8A%A1"><span class="nav-text">分布式环境下事务</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E6%B6%88%E6%81%AF"><span class="nav-text">顺序消息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E6%B6%88%E6%81%AF%E7%BC%BA%E9%99%B7"><span class="nav-text">顺序消息缺陷</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A9%E5%B1%95"><span class="nav-text">扩展</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="nav-text">最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Producer-1"><span class="nav-text">Producer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Consumer-1"><span class="nav-text">Consumer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-text">参考资料</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AC%A2%E8%BF%8E%E5%85%B3%E6%B3%A8%E8%8E%B7%E5%8F%96%E6%9B%B4%E5%A4%9A%E8%B5%84%E6%BA%90"><span class="nav-text">欢迎关注获取更多资源</span></a></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box shields">
+        
+            <div class="info-item">
+                
+                <a class="shields-item">
+                    <img src="https://img.shields.io/badge/Since-2018_--_2024-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item" href="/">
+                        <img src="https://img.shields.io/badge/WebMaster-小明-dodgerblue?style=flat-square">
+                    </a>
+                
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       href="https://beian.miit.gov.cn"
+                    >
+                        <img src="https://img.shields.io/badge/ICP-京ICP备19029015号-dodgerblue?style=flat-square">
+                    </a>
+                
+                <a class="shields-item" href="https://hexo.io" target="_blank">
+                    <img src="https://img.shields.io/badge/Powered_by-Hexo-dodgerblue?style=flat-square">
+                </a>
+                <a class="shields-item" href="https://github.com/XPoet/hexo-theme-keep" target="_blank">
+                    <img class="shields-keep-version" src="https://img.shields.io/badge/Theme-Keep-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       rel="nofollow"
+                       href="https://github.com/WhenCoding"
+                    >
+                        <img src="https://img.shields.io/badge/Deploy_in-GitHub Pages-dodgerblue?style=flat-square">
+                    </a>
+                
+            </div>
+            
+                <div class="info-item">
+                    
+                        
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item shields">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-box border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MQ%E8%83%8C%E6%99%AF-amp-%E9%80%89%E5%9E%8B"><span class="nav-text">MQ背景&amp;选型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RocketMQ%E9%9B%86%E7%BE%A4%E6%A6%82%E8%BF%B0"><span class="nav-text">RocketMQ集群概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RocketMQ%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2%E7%BB%93%E6%9E%84"><span class="nav-text">RocketMQ集群部署结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Name-Server"><span class="nav-text">Name Server</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Broker"><span class="nav-text">Broker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Producer"><span class="nav-text">Producer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Consumer"><span class="nav-text">Consumer</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rocketmq%E5%A6%82%E4%BD%95%E6%94%AF%E6%8C%81%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E6%B6%88%E6%81%AF"><span class="nav-text">Rocketmq如何支持分布式事务消息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQ%E4%B8%8EDB%E4%B8%80%E8%87%B4%E6%80%A7%E5%8E%9F%E7%90%86%EF%BC%88%E4%B8%A4%E6%96%B9%E4%BA%8B%E5%8A%A1%EF%BC%89"><span class="nav-text">MQ与DB一致性原理（两方事务）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E7%B3%BB%E7%BB%9F%E4%B9%8B%E9%97%B4%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%EF%BC%88%E5%A4%9A%E6%96%B9%E4%BA%8B%E5%8A%A1%EF%BC%89"><span class="nav-text">多系统之间数据一致性（多方事务）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%E5%88%86%E6%9E%90"><span class="nav-text">案例分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83%E4%B8%8B%E7%9A%84%E4%BA%8B%E5%8A%A1%E7%A4%BA%E6%84%8F%E5%9B%BE"><span class="nav-text">单机环境下的事务示意图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E7%8E%AF%E5%A2%83%E4%B8%8B%E4%BA%8B%E5%8A%A1"><span class="nav-text">分布式环境下事务</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E6%B6%88%E6%81%AF"><span class="nav-text">顺序消息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E6%B6%88%E6%81%AF%E7%BC%BA%E9%99%B7"><span class="nav-text">顺序消息缺陷</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A9%E5%B1%95"><span class="nav-text">扩展</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="nav-text">最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Producer-1"><span class="nav-text">Producer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Consumer-1"><span class="nav-text">Consumer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-text">参考资料</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AC%A2%E8%BF%8E%E5%85%B3%E6%B3%A8%E8%8E%B7%E5%8F%96%E6%9B%B4%E5%A4%9A%E8%B5%84%E6%BA%90"><span class="nav-text">欢迎关注获取更多资源</span></a></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/local-search.js"></script>
+
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/toc.js"></script>
+        
+    
+    
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

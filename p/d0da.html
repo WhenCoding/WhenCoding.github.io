@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享">
+    <meta name="description" content="Spring Boot, Spring Cloud,日常开发, ElasticSearch, 微服务, 并发编程, 源码分析,Java,程序员小明">
+    <meta name="author" content="小明">
+    
+    <title>
+        
+            Springboot配置logback日志 |
+        
+        程序员小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/brands.min.css">
+    
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"mynamecoder.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":null,"favicon":"/images/logo.svg","avatar":"/images/avatar.png","font_size":null,"font_family":"Optima-Regular,PingFangTC-light","hover":{"shadow":true,"scale":true},"first_screen":{"enable":false,"header_transparent":true,"background_img":"https://img.mynamecoder.com/20230224112801.jpeg","description":"||","font_color":"","hitokoto":true},"scroll":{"progress_bar":false,"percent":false}},"local_search":{"enable":true,"preload":true},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":true,"use":"waline","valine":{"appid":"RYD6fM3F1jQ4aTSXOzbclYi6-9Nh9j0Va","appkey":"mjF7jJLYlbIcPU2mUOoh0I88","server_urls":null,"meta":["nick","mail","link"],"placeholder":"说点什么"},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":"https://comment.mynamecoder.com","reaction":true,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":false,"min2read":false},"img_align":"left","copyright_info":true},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"version":"3.7.7"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1566816837076058" crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+            <a class="site-name border-box" href="/">
+               程序员小明
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                标签
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >
+                                友链
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links">友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+
+            <div class="article-content-bottom border-box">
+                
+                    <div class="article-title">
+                        Springboot配置logback日志
+                    </div>
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/avatar.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">小明</span>
+                                
+                                    <span class="author-label">Lv6</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2021-01-05 16:32:00</span>
+                <span class="mobile">2021-01-05 16:32</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Tue Jan 09 2024 07:29:49 GMT+0000">2024-01-09 07:29:49</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item article-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul>
+                    
+                            <li class="category-item">
+                                
+                                <a href="/categories/SpringBoot/">SpringBoot</a>
+                            </li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="article-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul>
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/SpringBoot/">SpringBoot</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <blockquote>
+<p>本文主要给大家介绍SpringBoot中如何通过sl4j日志组件优雅地记录日志。其实，我们入门 <strong>JAVA</strong> 的第一行代码就是一行日志，那你现在还在使用<code>System.out.println(&quot;Hello,小明!&quot;)</code>记录日志吗？</p>
+</blockquote>
+<h2 id="我经历过的日志组件"><a href="#我经历过的日志组件" class="headerlink" title="我经历过的日志组件"></a>我经历过的日志组件</h2><p>我最开始接触的日志组件是<strong>Log4j</strong></p>
+<blockquote>
+<p><strong>Log4j</strong> 作为Apache的一个开放源代码的项目，通过使用<strong>Log4j</strong>，我们可以控制日志信息输送的目的地是控制台、文件等我们期望它输出到的地方；我们也可以控制每一条日志的输出格式；通过定义每一条日志信息的级别，我们能够更加细致地控制日志的生成过程。</p>
+</blockquote>
+<p>我们可以通过一个配置文件来灵活地进行上面的配置，而不需要修改应用的代码。<strong>Log4j</strong>作为当时作为最先比较流行的日志框架，给我们在应用开发和维护带来了很大的便捷。</p>
+<p>但是，如今还是慢慢的走下“神坛”呢，逐渐被<strong>Logback</strong>替代，众里寻她千百度，原来<strong>Logback</strong>是<strong>升级版</strong>，相对<strong>Log4j</strong>而言有了更多的改进，而且开发人员竟然是同班人马（其实就是一个人写的）！</p>
+<h2 id="新星Logback"><a href="#新星Logback" class="headerlink" title="新星Logback"></a>新星Logback</h2><p><strong>Logback</strong>主要有下面的特性：</p>
+<ol>
+<li>更快的执行速度：基于我们先前在<strong>Log4j</strong>上的工作，<strong>Logback</strong> 重写了内部的实现，在某些特定的场景上面，甚至可以比之前的速度快上10倍。在保证<strong>Logback</strong>的组件更加快速的同时，同时所需的内存更加少；</li>
+<li>充分的测试：<strong>Logback</strong> 历经了几年，数不清小时数的测试。尽管<strong>Log4j</strong>也是测试过的，但是<strong>Logback</strong>的测试更加充分，跟<strong>Log4j</strong>不在同一个级别。我们认为，这正是人们选择<strong>Logback</strong>而不是<strong>Log4j</strong>的最重要的原因。谁不希望即使在恶劣的条件下，你的日志框架依然稳定而可靠呢？</li>
+</ol>
+<ul>
+<li>由三个模块组成<ul>
+<li>logback-core</li>
+<li>logback-classic</li>
+<li>logback-access</li>
+</ul>
+</li>
+</ul>
+<p><code>logback-core</code>是其它模块的基础设施，其它模块基于它构建，显然，<code>logback-core</code>提供了一些关键的通用机制。<code>logback-classic</code>的地位和作用等同于 <code>Log4J</code>，它也被认为是 <code>Log4J</code>的一个改进版，并且它实现了简单日志门面 <code>SLF4J</code>；而 <code>logback-access</code>主要作为一个与 <code>Servlet</code>容器交互的模块，比如说<code>tomcat</code>或者 <code>jetty</code>，提供一些与 <code>HTTP</code>访问相关的功能。</p>
+<h2 id="那Sl4J又是什么？"><a href="#那Sl4J又是什么？" class="headerlink" title="那Sl4J又是什么？"></a>那Sl4J又是什么？</h2><blockquote>
+<p><strong>slf4j</strong>:The Simple Logging Facade for Java 即java的简单日志门面</p>
+</blockquote>
+<p>简答的讲就是<strong>slf4j</strong>是一系列的日志接口，<strong>slf4j</strong>是作为一个日志的抽象行为存在的，但是并没有提供真正的实现。</p>
+<p><strong>slf4j</strong>为各种日志框架提供了一个统一的界面，使用户可以用统一的接口记录日志，动态地决定要使用的实现框架，比如<strong>Logback</strong>，<strong>Log4j</strong>，<strong>common-logging</strong>等框架都实现了这些接口。</p>
+<h2 id="我是如何配置日志的？"><a href="#我是如何配置日志的？" class="headerlink" title="我是如何配置日志的？"></a>我是如何配置日志的？</h2><p>路人皆知，<strong>Springboot</strong>默认使用的日志框架是<strong>Logback</strong>。顺势而为，在项目中，我们使用<strong>Logback</strong>，其实只需增加一个配置文件（自定义你的配置）即可。</p>
+<h3 id="配置文件详解"><a href="#配置文件详解" class="headerlink" title="配置文件详解"></a>配置文件详解</h3><p>配置文件精简结构如下所示</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration scan=&quot;true&quot; scanPeriod=&quot;60 seconds&quot; debug=&quot;false&quot;&gt;  </span><br><span class="line">		 &lt;!-- 属性文件:在properties/yml文件中找到对应的配置项 --&gt;</span><br><span class="line">    &lt;springProperty scope=&quot;context&quot; name=&quot;logging.path&quot; source=&quot;logging.path&quot;/&gt;</span><br><span class="line">    &lt;contextName&gt;程序员小明&lt;/contextName&gt; </span><br><span class="line">    </span><br><span class="line">    &lt;appender&gt;</span><br><span class="line">        //xxxx</span><br><span class="line">    &lt;/appender&gt;   </span><br><span class="line">    </span><br><span class="line">    &lt;logger&gt;</span><br><span class="line">        //xxxx</span><br><span class="line">    &lt;/logger&gt;</span><br><span class="line">    </span><br><span class="line">    &lt;root&gt;             </span><br><span class="line">       //xxxx</span><br><span class="line">    &lt;/root&gt;  </span><br><span class="line">&lt;/configuration&gt;  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这个文件在springboot中默认叫做<strong>logback-spring.xml</strong>，我们只要新建一个同名文件放在<strong>resources</strong>下面， 配置即可生效。</p>
+<p>每个配置的解释如下所示：</p>
+<h4 id="contextName"><a href="#contextName" class="headerlink" title="contextName"></a>contextName</h4><p>每个<code>logger</code>都关联到<code>logger</code>上下文，默认上下文名称为<code>“default”</code>。但可以使用<code>contextName</code>标签设置成其他名字，用于区分不同应用程序的记录</p>
+<h4 id="property"><a href="#property" class="headerlink" title="property"></a>property</h4><p>用来定义变量值的标签，<code>property</code>标签有两个属性，<code>name</code>和<code>value</code>；其中<code>name</code>的值是变量的名称，<code>value</code>的值是变量定义的值。通过<code>property</code>定义的值会被插入到<code>logger</code>上下文中。定义变量后，可以使“${name}”来使用变量。如上面的<code>xml</code>所示。</p>
+<h4 id="logger"><a href="#logger" class="headerlink" title="logger"></a>logger</h4><p>用来设置某一个包或者具体的某一个类的日志打印级别以及指定<code>appender</code>。</p>
+<h4 id="root"><a href="#root" class="headerlink" title="root"></a>root</h4><p>根logger，也是一种logger，且只有一个level属性</p>
+<h4 id="appender"><a href="#appender" class="headerlink" title="appender"></a>appender</h4><p>负责写日志的组件</p>
+<h5 id="appender-的种类"><a href="#appender-的种类" class="headerlink" title="appender 的种类"></a>appender 的种类</h5><ul>
+<li>ConsoleAppender：把日志添加到控制台</li>
+<li>FileAppender：把日志添加到文件</li>
+<li>RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件。它是FileAppender的子类</li>
+</ul>
+<h4 id="filter"><a href="#filter" class="headerlink" title="filter"></a>filter</h4><p>filter其实是appender里面的子元素。它作为过滤器存在，执行一个过滤器会有返回DENY，NEUTRAL，ACCEPT三个枚举值中的一个。</p>
+<ul>
+<li><p>DENY：日志将立即被抛弃不再经过其他过滤器</p>
+</li>
+<li><p>NEUTRAL：有序列表里的下个过滤器过接着处理日志</p>
+</li>
+<li><p>ACCEPT：日志会被立即处理，不再经过剩余过滤器</p>
+<p>有以下几种过滤器</p>
+<h5 id="ThresholdFilter"><a href="#ThresholdFilter" class="headerlink" title="ThresholdFilter"></a>ThresholdFilter</h5><p>临界值过滤器，过滤掉低于指定临界值的日志。当日志级别等于或高于临界值时，过滤器返回<code>NEUTRAL</code>；当日志级别低于临界值时，日志会被拒绝。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;filter class=&quot;ch.qos.logback.classic.filter.ThresholdFilter&quot;&gt;</span><br><span class="line">    &lt;level&gt;INFO&lt;/level&gt;</span><br><span class="line">&lt;/filter&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="LevelFilter"><a href="#LevelFilter" class="headerlink" title="LevelFilter"></a>LevelFilter</h5><p>级别过滤器，根据日志级别进行过滤。如果日志级别等于配置级别，过滤器会根据<code>onMath</code>(用于配置符合过滤条件的操作) 和 <code>onMismatch</code>(用于配置不符合过滤条件的操作)接收或拒绝日志。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;filter class=&quot;ch.qos.logback.classic.filter.LevelFilter&quot;&gt;   </span><br><span class="line">  &lt;level&gt;INFO&lt;/level&gt;   </span><br><span class="line">  &lt;onMatch&gt;ACCEPT&lt;/onMatch&gt;   </span><br><span class="line">  &lt;onMismatch&gt;DENY&lt;/onMismatch&gt;   </span><br><span class="line">&lt;/filter&gt; </span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="项目实例"><a href="#项目实例" class="headerlink" title="项目实例"></a>项目实例</h2><h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><p>一个简单正常的Springboot项目</p>
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><h4 id="application-yml"><a href="#application-yml" class="headerlink" title="application.yml"></a>application.yml</h4><p>有关日志的简单配置，我们可以直接在<code>application.yml</code>中进行简单的配置，比如指明日志的打印级别和日志的输出位置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">logging:</span><br><span class="line">  level:</span><br><span class="line">    root: info</span><br><span class="line">  path: ./logs</span><br></pre></td></tr></table></figure>
+
+<p>也可以根据分环境配置指明使用的配置文件，缺省为<strong>logback-spring.xml</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">logging:</span><br><span class="line">  level:</span><br><span class="line">    root: info</span><br><span class="line">  path: ./logs</span><br><span class="line">  config: classpath:/logback-dev.xml</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="logback-spring-xml"><a href="#logback-spring-xml" class="headerlink" title="logback-spring.xml"></a>logback-spring.xml</h4><p>在<strong>resources</strong>目录下新建<strong>logback-spring.xml</strong>文件，举例一个简单的需求，如果在项目中我们如果需要指定日志的输出格式以及根据日志级别输出到不同的文件，可以配置如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span><br><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;!-- 属性文件:在properties文件中找到对应的配置项 --&gt;</span><br><span class="line">    &lt;springProperty scope=&quot;context&quot; name=&quot;logging.path&quot; source=&quot;logging.path&quot;/&gt;</span><br><span class="line">    &lt;contextName&gt;xiaoming&lt;/contextName&gt;</span><br><span class="line">    &lt;appender name=&quot;consoleLog&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;</span><br><span class="line">        &lt;encoder class=&quot;ch.qos.logback.classic.encoder.PatternLayoutEncoder&quot;&gt;</span><br><span class="line">            &lt;!--格式化输出（配色）：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符--&gt;</span><br><span class="line">            &lt;pattern&gt;%yellow(%d&#123;yyyy-MM-dd HH:mm:ss&#125;) %red([%thread]) %highlight(%-5level) %cyan(%logger&#123;50&#125;) - %magenta(%msg) %n</span><br><span class="line">            &lt;/pattern&gt;</span><br><span class="line">            &lt;charset&gt;UTF-8&lt;/charset&gt;</span><br><span class="line">        &lt;/encoder&gt;</span><br><span class="line">    &lt;/appender&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!--根据日志级别分离日志，分别输出到不同的文件--&gt;</span><br><span class="line">    &lt;appender name=&quot;fileInfoLog&quot; class=&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;&gt;</span><br><span class="line">        &lt;filter class=&quot;ch.qos.logback.classic.filter.LevelFilter&quot;&gt;</span><br><span class="line">            &lt;level&gt;ERROR&lt;/level&gt;</span><br><span class="line">            &lt;onMatch&gt;DENY&lt;/onMatch&gt;</span><br><span class="line">            &lt;onMismatch&gt;ACCEPT&lt;/onMismatch&gt;</span><br><span class="line">        &lt;/filter&gt;</span><br><span class="line">        &lt;encoder class=&quot;ch.qos.logback.classic.encoder.PatternLayoutEncoder&quot;&gt;</span><br><span class="line">            &lt;pattern&gt;</span><br><span class="line">                %d&#123;yyyy-MM-dd HH:mm:ss&#125; [%thread] %-5level %logger&#123;50&#125; - %msg%n</span><br><span class="line">            &lt;/pattern&gt;</span><br><span class="line">            &lt;charset&gt;UTF-8&lt;/charset&gt;</span><br><span class="line">        &lt;/encoder&gt;</span><br><span class="line">        &lt;!--滚动策略--&gt;</span><br><span class="line">        &lt;rollingPolicy class=&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;&gt;</span><br><span class="line">            &lt;!--按时间保存日志 修改格式可以按小时、按天、月来保存--&gt;</span><br><span class="line">            &lt;fileNamePattern&gt;$&#123;logging.path&#125;/xiaoming.info.%d&#123;yyyy-MM-dd&#125;.log&lt;/fileNamePattern&gt;</span><br><span class="line">            &lt;!--保存时长--&gt;</span><br><span class="line">            &lt;MaxHistory&gt;90&lt;/MaxHistory&gt;</span><br><span class="line">            &lt;!--文件大小--&gt;</span><br><span class="line">            &lt;totalSizeCap&gt;1GB&lt;/totalSizeCap&gt;</span><br><span class="line">        &lt;/rollingPolicy&gt;</span><br><span class="line">    &lt;/appender&gt;</span><br><span class="line"></span><br><span class="line">    &lt;appender name=&quot;fileErrorLog&quot; class=&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;&gt;</span><br><span class="line">        &lt;filter class=&quot;ch.qos.logback.classic.filter.ThresholdFilter&quot;&gt;</span><br><span class="line">            &lt;level&gt;ERROR&lt;/level&gt;</span><br><span class="line">        &lt;/filter&gt;</span><br><span class="line">        &lt;encoder&gt;</span><br><span class="line">            &lt;pattern&gt;</span><br><span class="line">                %d&#123;yyyy-MM-dd HH:mm:ss&#125; [%thread] %-5level %logger&#123;50&#125; - %msg%n</span><br><span class="line">            &lt;/pattern&gt;</span><br><span class="line">        &lt;/encoder&gt;</span><br><span class="line">        &lt;!--滚动策略--&gt;</span><br><span class="line">        &lt;rollingPolicy class=&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;&gt;</span><br><span class="line">            &lt;!--路径--&gt;</span><br><span class="line">            &lt;fileNamePattern&gt;$&#123;logging.path&#125;/xiaoming.error.%d&#123;yyyy-MM-dd&#125;.log&lt;/fileNamePattern&gt;</span><br><span class="line">            &lt;MaxHistory&gt;90&lt;/MaxHistory&gt;</span><br><span class="line">        &lt;/rollingPolicy&gt;</span><br><span class="line">    &lt;/appender&gt;</span><br><span class="line">    &lt;root level=&quot;info&quot;&gt;</span><br><span class="line">        &lt;appender-ref ref=&quot;consoleLog&quot;/&gt;</span><br><span class="line">        &lt;appender-ref ref=&quot;fileInfoLog&quot;/&gt;</span><br><span class="line">        &lt;appender-ref ref=&quot;fileErrorLog&quot;/&gt;</span><br><span class="line">    &lt;/root&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+
+<p>再比如如果粒度再细一些，根据不同的模块，输出到不同的文件，可以如下配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--特殊功能单独appender 例如调度类的日志--&gt;</span><br><span class="line">   &lt;appender name=&quot;CLASS-APPENDER&quot; class=&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;&gt;</span><br><span class="line">       &lt;filter class=&quot;ch.qos.logback.classic.filter.ThresholdFilter&quot;&gt;</span><br><span class="line">           &lt;level&gt;INFO&lt;/level&gt;</span><br><span class="line">       &lt;/filter&gt;</span><br><span class="line">       &lt;encoder&gt;</span><br><span class="line">           &lt;pattern&gt;</span><br><span class="line">               %d&#123;yyyy-MM-dd HH:mm:ss&#125; [%thread] %-5level %logger&#123;50&#125; - %msg%n</span><br><span class="line">           &lt;/pattern&gt;</span><br><span class="line">       &lt;/encoder&gt;</span><br><span class="line">       &lt;!--滚动策略--&gt;</span><br><span class="line">       &lt;rollingPolicy class=&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;&gt;</span><br><span class="line">           &lt;!--路径--&gt;</span><br><span class="line">           &lt;fileNamePattern&gt;$&#123;logging.path&#125;/mkc.class.%d&#123;yyyy-MM-dd&#125;.log&lt;/fileNamePattern&gt;</span><br><span class="line">           &lt;MaxHistory&gt;90&lt;/MaxHistory&gt;</span><br><span class="line">       &lt;/rollingPolicy&gt;</span><br><span class="line">   &lt;/appender&gt;</span><br><span class="line">   &lt;!--这里的name和业务类中的getLogger中的字符串是一样的--&gt;</span><br><span class="line">   &lt;logger name=&quot;xiaoming&quot; level=&quot;INFO&quot; additivity=&quot;true&quot;&gt;</span><br><span class="line">       &lt;appender-ref ref=&quot;CLASS-APPENDER&quot; /&gt;</span><br><span class="line">   &lt;/logger&gt;</span><br></pre></td></tr></table></figure>
+
+<p>正常情况下<strong>xiaoming</strong>是指的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private Logger xiaoming = LoggerFactory.getLogger(&quot;xiaoming&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>如果我们使用的是<strong>lomok</strong>插件，则<strong>xiaoming</strong>指的是<strong>topic</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Slf4j(topic = &quot;xiaoming&quot;)</span><br><span class="line">public class XiaoMingTest &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当然，我们还可以根据环境配置logback，比如开发环境(dev)输出到控制台，生产环境(prod)输出到文件中，举例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;springProfile name=&quot;dev&quot;&gt;</span><br><span class="line">    &lt;root level=&quot;INFO&quot;&gt;</span><br><span class="line">        &lt;appender-ref ref=&quot;consoleLog&quot;/&gt;</span><br><span class="line">    &lt;/root&gt;</span><br><span class="line">&lt;/springProfile&gt;</span><br><span class="line"></span><br><span class="line">&lt;springProfile name=&quot;prod&quot;&gt;</span><br><span class="line">    &lt;root level=&quot;INFO&quot;&gt;</span><br><span class="line">        &lt;appender-ref ref=&quot;fileInfoLog&quot;/&gt;</span><br><span class="line">    &lt;/root&gt;</span><br><span class="line">&lt;/springProfile&gt;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>小明目前用到的就这么多啦，更多的日志配置场景，欢迎大家补充～</p>
+
+                </div>
+
+                
+                    <div class="post-copyright-info">
+                        <div class="article-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="post-title border-box text-ellipsis">
+                Springboot配置logback日志
+            </div>
+
+            <div class="post-link border-box text-ellipsis">
+                p/d0da.html
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">小明</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2021-01-05 16:32</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-content="复制版权信息" data-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                    </div>
+                
+
+                
+                    <ul class="post-tags-box">
+                        
+                            <li class="tag-item">
+                                <a href="/tags/SpringBoot/"><i class="icon fas fa-hashtag"></i>SpringBoot</a>&nbsp;
+                            </li>
+                        
+                    </ul>
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/p/63927.html"
+                                   title="通过shell脚本一键安装JDK8"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">通过shell脚本一键安装JDK8</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/p/21452.html"
+                                   title="「Elasticsearch」SpringBoot快速集成ES"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">「Elasticsearch」SpringBoot快速集成ES</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <script data-pjax src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"></script>
+        <div id="waline-comment"></div>
+        <script data-pjax>
+          function loadWaline() {
+            Waline.init({
+              el: '#waline-comment',
+              serverURL: 'https://comment.mynamecoder.com',
+              lang: 'zh-CN' || 'zh-CN',
+              comment: '.post-comments-count',
+              reaction: 'true' === 'true'
+            })
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              loadWaline()
+            }, 1000)
+          } else {
+            window.addEventListener('DOMContentLoaded', loadWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%91%E7%BB%8F%E5%8E%86%E8%BF%87%E7%9A%84%E6%97%A5%E5%BF%97%E7%BB%84%E4%BB%B6"><span class="nav-text">我经历过的日志组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E6%98%9FLogback"><span class="nav-text">新星Logback</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3Sl4J%E5%8F%88%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">那Sl4J又是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%91%E6%98%AF%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AE%E6%97%A5%E5%BF%97%E7%9A%84%EF%BC%9F"><span class="nav-text">我是如何配置日志的？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3"><span class="nav-text">配置文件详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#contextName"><span class="nav-text">contextName</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#property"><span class="nav-text">property</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#logger"><span class="nav-text">logger</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#root"><span class="nav-text">root</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#appender"><span class="nav-text">appender</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#appender-%E7%9A%84%E7%A7%8D%E7%B1%BB"><span class="nav-text">appender 的种类</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#filter"><span class="nav-text">filter</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ThresholdFilter"><span class="nav-text">ThresholdFilter</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#LevelFilter"><span class="nav-text">LevelFilter</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B"><span class="nav-text">项目实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-text">准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-text">配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#application-yml"><span class="nav-text">application.yml</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#logback-spring-xml"><span class="nav-text">logback-spring.xml</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-text">其他</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box shields">
+        
+            <div class="info-item">
+                
+                <a class="shields-item">
+                    <img src="https://img.shields.io/badge/Since-2018_--_2024-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item" href="/">
+                        <img src="https://img.shields.io/badge/WebMaster-小明-dodgerblue?style=flat-square">
+                    </a>
+                
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       href="https://beian.miit.gov.cn"
+                    >
+                        <img src="https://img.shields.io/badge/ICP-京ICP备19029015号-dodgerblue?style=flat-square">
+                    </a>
+                
+                <a class="shields-item" href="https://hexo.io" target="_blank">
+                    <img src="https://img.shields.io/badge/Powered_by-Hexo-dodgerblue?style=flat-square">
+                </a>
+                <a class="shields-item" href="https://github.com/XPoet/hexo-theme-keep" target="_blank">
+                    <img class="shields-keep-version" src="https://img.shields.io/badge/Theme-Keep-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       rel="nofollow"
+                       href="https://github.com/WhenCoding"
+                    >
+                        <img src="https://img.shields.io/badge/Deploy_in-GitHub Pages-dodgerblue?style=flat-square">
+                    </a>
+                
+            </div>
+            
+                <div class="info-item">
+                    
+                        
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item shields">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-box border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%91%E7%BB%8F%E5%8E%86%E8%BF%87%E7%9A%84%E6%97%A5%E5%BF%97%E7%BB%84%E4%BB%B6"><span class="nav-text">我经历过的日志组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E6%98%9FLogback"><span class="nav-text">新星Logback</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3Sl4J%E5%8F%88%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">那Sl4J又是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%91%E6%98%AF%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AE%E6%97%A5%E5%BF%97%E7%9A%84%EF%BC%9F"><span class="nav-text">我是如何配置日志的？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3"><span class="nav-text">配置文件详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#contextName"><span class="nav-text">contextName</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#property"><span class="nav-text">property</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#logger"><span class="nav-text">logger</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#root"><span class="nav-text">root</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#appender"><span class="nav-text">appender</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#appender-%E7%9A%84%E7%A7%8D%E7%B1%BB"><span class="nav-text">appender 的种类</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#filter"><span class="nav-text">filter</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ThresholdFilter"><span class="nav-text">ThresholdFilter</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#LevelFilter"><span class="nav-text">LevelFilter</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B"><span class="nav-text">项目实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-text">准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-text">配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#application-yml"><span class="nav-text">application.yml</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#logback-spring-xml"><span class="nav-text">logback-spring.xml</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-text">其他</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/local-search.js"></script>
+
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/toc.js"></script>
+        
+    
+    
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

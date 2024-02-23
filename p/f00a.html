@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享">
+    <meta name="description" content="Spring Boot, Spring Cloud,日常开发, ElasticSearch, 微服务, 并发编程, 源码分析,Java,程序员小明">
+    <meta name="author" content="小明">
+    
+    <title>
+        
+            JDK 1.8 处理时间常用举例 |
+        
+        程序员小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/brands.min.css">
+    
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"mynamecoder.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":null,"favicon":"/images/logo.svg","avatar":"/images/avatar.png","font_size":null,"font_family":"Optima-Regular,PingFangTC-light","hover":{"shadow":true,"scale":true},"first_screen":{"enable":false,"header_transparent":true,"background_img":"https://img.mynamecoder.com/20230224112801.jpeg","description":"||","font_color":"","hitokoto":true},"scroll":{"progress_bar":false,"percent":false}},"local_search":{"enable":true,"preload":true},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":true,"use":"waline","valine":{"appid":"RYD6fM3F1jQ4aTSXOzbclYi6-9Nh9j0Va","appkey":"mjF7jJLYlbIcPU2mUOoh0I88","server_urls":null,"meta":["nick","mail","link"],"placeholder":"说点什么"},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":"https://comment.mynamecoder.com","reaction":true,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":false,"min2read":false},"img_align":"left","copyright_info":true},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"version":"3.7.7"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1566816837076058" crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+            <a class="site-name border-box" href="/">
+               程序员小明
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                标签
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >
+                                友链
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links">友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+
+            <div class="article-content-bottom border-box">
+                
+                    <div class="article-title">
+                        JDK 1.8 处理时间常用举例
+                    </div>
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/avatar.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">小明</span>
+                                
+                                    <span class="author-label">Lv6</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2019-05-16 17:00:55</span>
+                <span class="mobile">2019-05-16 17:00</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Tue Jan 09 2024 07:29:49 GMT+0000">2024-01-09 07:29:49</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item article-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul>
+                    
+                            <li class="category-item">
+                                
+                                <a href="/categories/Java/">Java</a>
+                            </li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="article-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul>
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Java/">Java</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <blockquote>
+<p>在Java 8以前，日期和时间处理一直被广大java程序员抱怨太难用，首先是<code>java.util</code>和<code>java.sql</code>中，都包含<code>Date</code>类，如果要处理<code>java.text.DateFormat</code>类处理。同时<code>java.util.Date</code>中既包含了日期，又包含了时间，所以java8新的日期和时间库，很好的解决了以前日期和时间类的很多弊端。并且也借鉴了第三方日期库<code>joda</code>很多的优点。</p>
+</blockquote>
+<p>在java8中，<code>java.time</code>包下主要包含下面几个主要的类：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Instant：时间戳  </span><br><span class="line">Duration：持续时间，时间差  </span><br><span class="line">LocalDate：只包含日期，比如：2016-10-20  </span><br><span class="line">LocalTime：只包含时间，比如：23:12:10  </span><br><span class="line">LocalDateTime：包含日期和时间，比如：2016-10-20 23:14:21  </span><br><span class="line">Period：时间段  </span><br><span class="line">ZoneOffset：时区偏移量，比如：+8:00  </span><br><span class="line">ZonedDateTime：带时区的时间  </span><br><span class="line">Clock：时钟，比如获取目前美国纽约的时间  </span><br></pre></td></tr></table></figure>
+
+<p>以及<code>java.time.format</code>包中的</p>
+<p><code>DateTimeFormatter：时间格式化</code></p>
+<p>下面我们通过例子来看如何使用java8新的日期时间库</p>
+<h2 id="获取今天的日期"><a href="#获取今天的日期" class="headerlink" title="获取今天的日期"></a>获取今天的日期</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">LocalDate todayDate = LocalDate.now();  </span><br><span class="line">System.out.println(&quot;今天的日期：&quot;+todayDate);  </span><br><span class="line">//结果</span><br><span class="line">今天的日期：2016-10-20</span><br></pre></td></tr></table></figure>
+
+<h2 id="指定日期，进行相应操作"><a href="#指定日期，进行相应操作" class="headerlink" title="指定日期，进行相应操作"></a>指定日期，进行相应操作</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">//取2016年10月的第1天</span><br><span class="line">LocalDate firstDay = oneday.with(TemporalAdjusters.firstDayOfMonth());  </span><br><span class="line">System.out.println(firstDay);</span><br><span class="line"></span><br><span class="line">//取2016年10月的第1天，另外一种写法</span><br><span class="line">LocalDate firstDay2 = oneday.withDayOfMonth(1);  </span><br><span class="line">System.out.println(firstDay2);</span><br><span class="line"></span><br><span class="line">//取2016年10月的最后1天，不用考虑大月，小月，平年，闰年</span><br><span class="line">LocalDate lastDay = oneday.with(TemporalAdjusters.lastDayOfMonth());  </span><br><span class="line">System.out.println(lastDay);</span><br><span class="line"></span><br><span class="line">//当前日期＋1天</span><br><span class="line">LocalDate tomorrow = oneday.plusDays(1);  </span><br><span class="line">System.out.println(tomorrow);</span><br><span class="line"></span><br><span class="line">//当前日期-7天</span><br><span class="line">LocalDate minus = oneday.minus(7, ChronoUnit.DAYS);</span><br><span class="line">//或者</span><br><span class="line">LocalDate minus = oneday.minusDays(7);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//判断是否为闰年</span><br><span class="line">boolean isLeapYear = tomorrow.isLeapYear();  </span><br><span class="line">System.out.println(isLeapYear);</span><br><span class="line"></span><br><span class="line">//运行结果</span><br><span class="line">2016-10-20  </span><br><span class="line">2016-10-01  </span><br><span class="line">2016-10-01  </span><br><span class="line">2016-10-31  </span><br><span class="line">2016-10-21  </span><br><span class="line">true  </span><br></pre></td></tr></table></figure>
+
+<h2 id="生日检查或者账单日检查"><a href="#生日检查或者账单日检查" class="headerlink" title="生日检查或者账单日检查"></a>生日检查或者账单日检查</h2><p>开发过程中，经常需要为过生日的用户送上一些祝福，例如，用户的生日为1990-10-12，如果今天是2016-10-12，那么今天就是用户的生日（按公历／身份证日期来算），那么通过java8新的日期库，我们该如何来进行判断？</p>
+<p>在java8中，可以使用<code>MonthDay</code>，该类不包含年份信息，当然还有一个类是<code>YearMonth</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">LocalDate birthday = LocalDate.of(1990, 10, 12);  </span><br><span class="line">MonthDay birthdayMd = MonthDay.of(birthday.getMonth(), birthday.getDayOfMonth());  </span><br><span class="line">MonthDay today = MonthDay.from(LocalDate.of(2016, 10, 12));  </span><br><span class="line">System.out.println(today.equals(birthdayMd));  </span><br><span class="line">//结果</span><br><span class="line">true  </span><br></pre></td></tr></table></figure>
+
+<h2 id="获取当前的时间"><a href="#获取当前的时间" class="headerlink" title="获取当前的时间"></a>获取当前的时间</h2><p>日期主要是使用LocalTime，该类不包含日期，只有时间信息</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//获取当前的时间</span><br><span class="line">LocalTime nowTime = LocalTime.now(); //结果14:29:40.558</span><br><span class="line"></span><br><span class="line">//如果不想显示毫秒</span><br><span class="line">LocalTime nowTime2 = LocalTime.now().withNano(0); //14:43:14</span><br><span class="line"></span><br><span class="line">//指定时间</span><br><span class="line">LocalTime time = LocalTime.of(14, 10, 21); //14:10:21  </span><br><span class="line">LocalTime time2 = LocalTime.parse(&quot;12:00:01&quot;); // 12:00:01</span><br><span class="line"></span><br><span class="line">//当前时间增加2小时</span><br><span class="line">LocalTime nowTimePlus2Hour = nowTime.plusHours(2); //16:47:23.144  </span><br><span class="line">//或者</span><br><span class="line">LocalTime nowTimePlus2Hour2 = nowTime.plus(2, ChronoUnit.HOURS);  </span><br></pre></td></tr></table></figure>
+
+<h2 id="日期前后比较"><a href="#日期前后比较" class="headerlink" title="日期前后比较"></a>日期前后比较</h2><p>比较2个日期哪个在前，哪个在后，java8 LocalDate提供了2个方法，<code>isAfter()</code>,<code>isBefore</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">LocalDate today = LocalDate.now();  </span><br><span class="line">LocalDate specifyDate = LocalDate.of(2015, 10, 20);  </span><br><span class="line">System.out.println(today.isAfter(specifyDate)); //true  </span><br></pre></td></tr></table></figure>
+
+<h2 id="处理不同时区的时间"><a href="#处理不同时区的时间" class="headerlink" title="处理不同时区的时间"></a>处理不同时区的时间</h2><p>java8中，将日期，时间，时区都很好的进行了分离。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//查看当前的时区</span><br><span class="line">ZoneId defaultZone = ZoneId.systemDefault();  </span><br><span class="line">System.out.println(defaultZone); //Asia/Shanghai</span><br><span class="line"></span><br><span class="line">//查看美国纽约当前的时间</span><br><span class="line">ZoneId america = ZoneId.of(&quot;America/New_York&quot;);  </span><br><span class="line">LocalDateTime shanghaiTime = LocalDateTime.now();  </span><br><span class="line">LocalDateTime americaDateTime = LocalDateTime.now(america);  </span><br><span class="line">System.out.println(shanghaiTime); //2016-11-06T15:20:27.996  </span><br><span class="line">System.out.println(americaDateTime); //2016-11-06T02:20:27.996 ，可以看到美国与北京时间差了13小时</span><br><span class="line"></span><br><span class="line">//带有时区的时间</span><br><span class="line">ZonedDateTime americaZoneDateTime = ZonedDateTime.now(america);  </span><br><span class="line">System.out.println(americaZoneDateTime); //2016-11-06T02:23:44.863-05:00[America/New_York]  </span><br></pre></td></tr></table></figure>
+<h2 id="比较两个日期之前时间差"><a href="#比较两个日期之前时间差" class="headerlink" title="比较两个日期之前时间差"></a>比较两个日期之前时间差</h2><p>在项目中，经常需要比较两个日期之间相差几天，或者相隔几个月，我们可以使用java8的Period来进行处理。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">LocalDate today = LocalDate.now();  </span><br><span class="line">LocalDate specifyDate = LocalDate.of(2015, 10, 2);  </span><br><span class="line">Period period = Period.between(specifyDate, today);</span><br><span class="line"></span><br><span class="line">System.out.println(period.getDays());  //4  </span><br><span class="line">System.out.println(period.getMonths()); //1  </span><br><span class="line">System.out.println(specifyDate.until(today, ChronoUnit.DAYS)); //401  </span><br><span class="line">//输出结果</span><br><span class="line">4  </span><br><span class="line">1  </span><br><span class="line">401  </span><br></pre></td></tr></table></figure>
+
+<p>我们可以看到，我们使用<code>Period</code>类比较天数，比较奇怪，他返回的值，并不是2个日期之间总共的天数差，而是一个相对天数差，比如，5月1日，和10月2日，他比较的是仅仅2个天之间的差，那1号和2号，相差1天，而实际上，因为中间相差了好几个月，所以真正的天数差肯定不是1天，所以我们可以使用<code>until</code>，并指明精度单位是<code>days</code>，就可以计算真正的天数差了。</p>
+<h2 id="日期时间格式解析、格式化"><a href="#日期时间格式解析、格式化" class="headerlink" title="日期时间格式解析、格式化"></a>日期时间格式解析、格式化</h2><p>在java8之前，我们进行时间格式化主要是使用<code>SimpleDateFormat</code>，而在java8中，主要是使用<code>DateTimeFormatter</code>,java8中，预定义了一些标准的时间格式，我们可以直接将时间转换为标准的时间格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">String specifyDate = &quot;20151011&quot;;  </span><br><span class="line">DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;  </span><br><span class="line">LocalDate formatted = LocalDate.parse(specifyDate,formatter);  </span><br><span class="line">System.out.println(formatted);  </span><br><span class="line">//输出</span><br><span class="line">2015-10-11  </span><br><span class="line">当然，很多时间标准的时间格式可能也不满足我们的要求，我们需要转为自定义的时间格式</span><br><span class="line"></span><br><span class="line">DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern(&quot;YYYY MM dd&quot;);  </span><br><span class="line">System.out.println(formatter2.format(LocalDate.now()));  </span><br><span class="line">//结果</span><br><span class="line">2015 10 11  </span><br></pre></td></tr></table></figure>
+
+<h2 id="java8-时间类与Date类的相互转化"><a href="#java8-时间类与Date类的相互转化" class="headerlink" title="java8 时间类与Date类的相互转化"></a>java8 时间类与Date类的相互转化</h2><p>在转换中，我们需要注意，因为java8之前<code>Date</code>是包含日期和时间的，而<code>LocalDate</code>只包含日期，<code>LocalTime</code>只包含时间，所以与<code>Date</code>在互转中，势必会丢失日期或者时间，或者会使用起始时间。如果转<code>LocalDateTime</code>，那么就不存在信息误差。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">//Date与Instant的相互转化</span><br><span class="line">Instant instant  = Instant.now();  </span><br><span class="line">Date date = Date.from(instant);  </span><br><span class="line">Instant instant2 = date.toInstant();</span><br><span class="line"></span><br><span class="line">//Date转为LocalDateTime</span><br><span class="line">Date date2 = new Date();  </span><br><span class="line">LocalDateTime localDateTime2 = LocalDateTime.ofInstant(date2.toInstant(), ZoneId.systemDefault());</span><br><span class="line">//Date转为LocalDate</span><br><span class="line">LocalDate localDate = date2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();</span><br><span class="line"></span><br><span class="line">//LocalDateTime转Date</span><br><span class="line">LocalDateTime localDateTime3 = LocalDateTime.now();  </span><br><span class="line">Instant instant3 = localDateTime3.atZone(ZoneId.systemDefault()).toInstant();  </span><br><span class="line">Date date3 = Date.from(instant);</span><br><span class="line"></span><br><span class="line">//LocalDate转Date</span><br><span class="line">//因为LocalDate不包含时间，所以转Date时，会默认转为当天的起始时间，00:00:00</span><br><span class="line">LocalDate localDate4 = LocalDate.now();  </span><br><span class="line">Instant instant4 = localDate4.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();  </span><br><span class="line">Date date4 = Date.from(instant); </span><br></pre></td></tr></table></figure>
+
+<h3 id="欢迎关注获取更多资源"><a href="#欢迎关注获取更多资源" class="headerlink" title="欢迎关注获取更多资源"></a>欢迎关注获取更多资源</h3><p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/coderxm_qrcode.jpeg"
+                      alt="程序员小明"
+                ></p>
+
+                </div>
+
+                
+                    <div class="post-copyright-info">
+                        <div class="article-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="post-title border-box text-ellipsis">
+                JDK 1.8 处理时间常用举例
+            </div>
+
+            <div class="post-link border-box text-ellipsis">
+                p/f00a.html
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">小明</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2019-05-16 17:00</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-content="复制版权信息" data-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                    </div>
+                
+
+                
+                    <ul class="post-tags-box">
+                        
+                            <li class="tag-item">
+                                <a href="/tags/Java/"><i class="icon fas fa-hashtag"></i>Java</a>&nbsp;
+                            </li>
+                        
+                    </ul>
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/p/5d3b.html"
+                                   title="常用的几个消息组件"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">常用的几个消息组件</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/p/d6d4.html"
+                                   title="9 个你应该知道的支付系统开源项目"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">9 个你应该知道的支付系统开源项目</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <script data-pjax src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"></script>
+        <div id="waline-comment"></div>
+        <script data-pjax>
+          function loadWaline() {
+            Waline.init({
+              el: '#waline-comment',
+              serverURL: 'https://comment.mynamecoder.com',
+              lang: 'zh-CN' || 'zh-CN',
+              comment: '.post-comments-count',
+              reaction: 'true' === 'true'
+            })
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              loadWaline()
+            }, 1000)
+          } else {
+            window.addEventListener('DOMContentLoaded', loadWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E4%BB%8A%E5%A4%A9%E7%9A%84%E6%97%A5%E6%9C%9F"><span class="nav-text">获取今天的日期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E6%97%A5%E6%9C%9F%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%9B%B8%E5%BA%94%E6%93%8D%E4%BD%9C"><span class="nav-text">指定日期，进行相应操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%97%A5%E6%A3%80%E6%9F%A5%E6%88%96%E8%80%85%E8%B4%A6%E5%8D%95%E6%97%A5%E6%A3%80%E6%9F%A5"><span class="nav-text">生日检查或者账单日检查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%9A%84%E6%97%B6%E9%97%B4"><span class="nav-text">获取当前的时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A5%E6%9C%9F%E5%89%8D%E5%90%8E%E6%AF%94%E8%BE%83"><span class="nav-text">日期前后比较</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E4%B8%8D%E5%90%8C%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4"><span class="nav-text">处理不同时区的时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%94%E8%BE%83%E4%B8%A4%E4%B8%AA%E6%97%A5%E6%9C%9F%E4%B9%8B%E5%89%8D%E6%97%B6%E9%97%B4%E5%B7%AE"><span class="nav-text">比较两个日期之前时间差</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A5%E6%9C%9F%E6%97%B6%E9%97%B4%E6%A0%BC%E5%BC%8F%E8%A7%A3%E6%9E%90%E3%80%81%E6%A0%BC%E5%BC%8F%E5%8C%96"><span class="nav-text">日期时间格式解析、格式化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java8-%E6%97%B6%E9%97%B4%E7%B1%BB%E4%B8%8EDate%E7%B1%BB%E7%9A%84%E7%9B%B8%E4%BA%92%E8%BD%AC%E5%8C%96"><span class="nav-text">java8 时间类与Date类的相互转化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AC%A2%E8%BF%8E%E5%85%B3%E6%B3%A8%E8%8E%B7%E5%8F%96%E6%9B%B4%E5%A4%9A%E8%B5%84%E6%BA%90"><span class="nav-text">欢迎关注获取更多资源</span></a></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box shields">
+        
+            <div class="info-item">
+                
+                <a class="shields-item">
+                    <img src="https://img.shields.io/badge/Since-2018_--_2024-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item" href="/">
+                        <img src="https://img.shields.io/badge/WebMaster-小明-dodgerblue?style=flat-square">
+                    </a>
+                
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       href="https://beian.miit.gov.cn"
+                    >
+                        <img src="https://img.shields.io/badge/ICP-京ICP备19029015号-dodgerblue?style=flat-square">
+                    </a>
+                
+                <a class="shields-item" href="https://hexo.io" target="_blank">
+                    <img src="https://img.shields.io/badge/Powered_by-Hexo-dodgerblue?style=flat-square">
+                </a>
+                <a class="shields-item" href="https://github.com/XPoet/hexo-theme-keep" target="_blank">
+                    <img class="shields-keep-version" src="https://img.shields.io/badge/Theme-Keep-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       rel="nofollow"
+                       href="https://github.com/WhenCoding"
+                    >
+                        <img src="https://img.shields.io/badge/Deploy_in-GitHub Pages-dodgerblue?style=flat-square">
+                    </a>
+                
+            </div>
+            
+                <div class="info-item">
+                    
+                        
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item shields">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-box border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E4%BB%8A%E5%A4%A9%E7%9A%84%E6%97%A5%E6%9C%9F"><span class="nav-text">获取今天的日期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E6%97%A5%E6%9C%9F%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%9B%B8%E5%BA%94%E6%93%8D%E4%BD%9C"><span class="nav-text">指定日期，进行相应操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%97%A5%E6%A3%80%E6%9F%A5%E6%88%96%E8%80%85%E8%B4%A6%E5%8D%95%E6%97%A5%E6%A3%80%E6%9F%A5"><span class="nav-text">生日检查或者账单日检查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%9A%84%E6%97%B6%E9%97%B4"><span class="nav-text">获取当前的时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A5%E6%9C%9F%E5%89%8D%E5%90%8E%E6%AF%94%E8%BE%83"><span class="nav-text">日期前后比较</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E4%B8%8D%E5%90%8C%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4"><span class="nav-text">处理不同时区的时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%94%E8%BE%83%E4%B8%A4%E4%B8%AA%E6%97%A5%E6%9C%9F%E4%B9%8B%E5%89%8D%E6%97%B6%E9%97%B4%E5%B7%AE"><span class="nav-text">比较两个日期之前时间差</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A5%E6%9C%9F%E6%97%B6%E9%97%B4%E6%A0%BC%E5%BC%8F%E8%A7%A3%E6%9E%90%E3%80%81%E6%A0%BC%E5%BC%8F%E5%8C%96"><span class="nav-text">日期时间格式解析、格式化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java8-%E6%97%B6%E9%97%B4%E7%B1%BB%E4%B8%8EDate%E7%B1%BB%E7%9A%84%E7%9B%B8%E4%BA%92%E8%BD%AC%E5%8C%96"><span class="nav-text">java8 时间类与Date类的相互转化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AC%A2%E8%BF%8E%E5%85%B3%E6%B3%A8%E8%8E%B7%E5%8F%96%E6%9B%B4%E5%A4%9A%E8%B5%84%E6%BA%90"><span class="nav-text">欢迎关注获取更多资源</span></a></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/local-search.js"></script>
+
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/toc.js"></script>
+        
+    
+    
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

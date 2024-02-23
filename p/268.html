@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享">
+    <meta name="description" content="Spring Boot, Spring Cloud,日常开发, ElasticSearch, 微服务, 并发编程, 源码分析,Java,程序员小明">
+    <meta name="author" content="小明">
+    
+    <title>
+        
+            订单超时取消的解决方案 |
+        
+        程序员小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/brands.min.css">
+    
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"mynamecoder.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":null,"favicon":"/images/logo.svg","avatar":"/images/avatar.png","font_size":null,"font_family":"Optima-Regular,PingFangTC-light","hover":{"shadow":true,"scale":true},"first_screen":{"enable":false,"header_transparent":true,"background_img":"https://img.mynamecoder.com/20230224112801.jpeg","description":"||","font_color":"","hitokoto":true},"scroll":{"progress_bar":false,"percent":false}},"local_search":{"enable":true,"preload":true},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":true,"use":"waline","valine":{"appid":"RYD6fM3F1jQ4aTSXOzbclYi6-9Nh9j0Va","appkey":"mjF7jJLYlbIcPU2mUOoh0I88","server_urls":null,"meta":["nick","mail","link"],"placeholder":"说点什么"},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":"https://comment.mynamecoder.com","reaction":true,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":false,"min2read":false},"img_align":"left","copyright_info":true},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"version":"3.7.7"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1566816837076058" crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+            <a class="site-name border-box" href="/">
+               程序员小明
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                标签
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >
+                                友链
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links">友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+                <div class="article-content-top border-box">
+                    <div class="cover-article-title">
+                        订单超时取消的解决方案
+                    </div>
+                    <img class="post-cover" src="/gallery/order_cancle.jpg" alt="订单超时取消的解决方案">
+                </div>
+            
+
+            <div class="article-content-bottom border-box has-cover">
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/avatar.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">小明</span>
+                                
+                                    <span class="author-label">Lv6</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2019-10-30 18:25:22</span>
+                <span class="mobile">2019-10-30 18:25</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Thu Jan 18 2024 08:35:59 GMT+0000">2024-01-18 08:35:59</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item article-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul>
+                    
+                            <li class="category-item">
+                                
+                                <a href="/categories/%E6%97%A5%E5%B8%B8%E5%BC%80%E5%8F%91/">日常开发</a>
+                            </li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="article-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul>
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/SpringBoot/">SpringBoot</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/mq/">mq</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ol>
+<li><p>为什么需要使用延迟队列？适用于什么场景？<br>   场景一：订单下单之后30分钟后，如果用户没有付钱，则系统自动取消订单。<br>   这样类似的需求是我们经常会遇见的问题。最常用的方法是定期轮训数据库，设置状态。在数据量小的时候并没有什么大的问题，但是数据量一大轮训数据库的方式就会变得特别耗资源。当面对千万级、上亿级数据量时，本身写入的IO就比较高，导致长时间查询或者根本就查不出来。通过使用延迟队列来解决这种问题</p>
+</li>
+<li><p>使用RabbitMQ来实现延迟任务必须先了解RabbitMQ的两个概念：消息的Time To Live(TTL)和Dead Letter Exchanges（DLX），利用两者的组合来实现延迟队列<br>简述一下：A.消息的TTL就是消息的存活时间，B.DLX是死信路由<br>实现原理：先发送一个消息到队列中，设置存活时间，超时后会转发到死信路由中，客户端消费死信路由中的消息，消息中包装好需要转发的队列名，再根据此队列名发送消息，这样间接中转的方式实现了延迟队列。</p>
+</li>
+</ol>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><h4 id="新建SpringBoot项目，添加-amqp-引用"><a href="#新建SpringBoot项目，添加-amqp-引用" class="headerlink" title="新建SpringBoot项目，添加 amqp 引用"></a>新建SpringBoot项目，添加 amqp 引用</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-amqp&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.alibaba&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;fastjson&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.2.47&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="在配置文件application-properties中配置好mq的连接地址"><a href="#在配置文件application-properties中配置好mq的连接地址" class="headerlink" title="在配置文件application.properties中配置好mq的连接地址"></a>在配置文件application.properties中配置好mq的连接地址</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#rabbitmq</span><br><span class="line">spring.rabbitmq.host=127.0.0.1   </span><br><span class="line">spring.rabbitmq.port=5672  </span><br><span class="line">spring.rabbitmq.username=root</span><br><span class="line">spring.rabbitmq.password=root</span><br><span class="line">spring.rabbitmq.virtual-host=ykh_vhosts</span><br></pre></td></tr></table></figure>
+
+<h4 id="创建配置类，使用配置文件中的连接"><a href="#创建配置类，使用配置文件中的连接" class="headerlink" title="创建配置类，使用配置文件中的连接"></a>创建配置类，使用配置文件中的连接</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 读取application.properties中的连接配置</span><br><span class="line"> */</span><br><span class="line">@Configuration</span><br><span class="line">public class RabbitMQConfiguration &#123;</span><br><span class="line"></span><br><span class="line">    private static Logger logger = Logger.getLogger(&quot;RabbitMQConfiguration&quot;);</span><br><span class="line"></span><br><span class="line">    @Value(&quot;$&#123;spring.rabbitmq.host&#125;&quot;)</span><br><span class="line">    public String host;</span><br><span class="line"></span><br><span class="line">    @Value(&quot;$&#123;spring.rabbitmq.port&#125;&quot;)</span><br><span class="line">    public int port;</span><br><span class="line"></span><br><span class="line">    @Value(&quot;$&#123;spring.rabbitmq.username&#125;&quot;)</span><br><span class="line">    public String username;</span><br><span class="line"></span><br><span class="line">    @Value(&quot;$&#123;spring.rabbitmq.password&#125;&quot;)</span><br><span class="line">    public String password;</span><br><span class="line"></span><br><span class="line">    @Value(&quot;$&#123;spring.rabbitmq.virtual-host&#125;&quot;)</span><br><span class="line">    public String virtualHost;</span><br><span class="line"></span><br><span class="line">    @Bean</span><br><span class="line">    public ConnectionFactory connectionFactory() &#123;</span><br><span class="line">        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(host, port);</span><br><span class="line">        connectionFactory.setUsername(username);</span><br><span class="line">        connectionFactory.setPassword(password);</span><br><span class="line">        connectionFactory.setVirtualHost(virtualHost);</span><br><span class="line">        connectionFactory.setPublisherConfirms(true);</span><br><span class="line">        logger.info(&quot;Create ConnectionFactory bean ..&quot;);</span><br><span class="line">        return connectionFactory;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Bean</span><br><span class="line">    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)</span><br><span class="line">    public RabbitTemplate rabbitTemplate() &#123;</span><br><span class="line">        RabbitTemplate template = new RabbitTemplate(connectionFactory());</span><br><span class="line">        return template;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="创建一个常量类，定义队列名称"><a href="#创建一个常量类，定义队列名称" class="headerlink" title="创建一个常量类，定义队列名称"></a>创建一个常量类，定义队列名称</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Rabbit消息队列相关常量</span><br><span class="line"> */</span><br><span class="line">public final class MQConstant &#123;</span><br><span class="line"></span><br><span class="line">    private MQConstant()&#123;&#125;</span><br><span class="line"></span><br><span class="line">    //exchange name</span><br><span class="line">    public static final String DEFAULT_EXCHANGE = &quot;ZyChange&quot;;</span><br><span class="line"></span><br><span class="line">    //TTL QUEUE</span><br><span class="line">    public static final String DEFAULT_DEAD_LETTER_QUEUE_NAME = &quot;zy.dead.letter.queue&quot;;</span><br><span class="line"></span><br><span class="line">    //DLX repeat QUEUE 死信转发队列</span><br><span class="line">    public static final String DEFAULT_REPEAT_TRADE_QUEUE_NAME = &quot;zy.repeat.trade.queue&quot;;</span><br><span class="line"></span><br><span class="line">    //Hello 测试消息队列名称</span><br><span class="line">    public static final String HELLO_QUEUE_NAME = &quot;HELLO&quot;;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="创建一个队列配置类，作用是信道配置，队列配置，队列绑定"><a href="#创建一个队列配置类，作用是信道配置，队列配置，队列绑定" class="headerlink" title="创建一个队列配置类，作用是信道配置，队列配置，队列绑定"></a>创建一个队列配置类，作用是信道配置，队列配置，队列绑定</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 队列配置，所有配置@Bean的队列名称，由系统启动时创建队列，并绑定到Exchane上</span><br><span class="line"> */</span><br><span class="line">@Configuration</span><br><span class="line">public class QueueConfiguration &#123;</span><br><span class="line"></span><br><span class="line">    //信道配置</span><br><span class="line">    @Bean</span><br><span class="line">    public DirectExchange defaultExchange() &#123;</span><br><span class="line">        return new DirectExchange(MQConstant.DEFAULT_EXCHANGE, true, false);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /*********************    业务队列定义与绑定 hello 测试    *****************/</span><br><span class="line">    @Bean</span><br><span class="line">    public Queue queue() &#123;</span><br><span class="line">        Queue queue = new Queue(MQConstant.HELLO_QUEUE_NAME,true);</span><br><span class="line">        return queue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Bean</span><br><span class="line">    public Binding binding() &#123;</span><br><span class="line">        //队列绑定到exchange上，再绑定好路由键</span><br><span class="line">        return BindingBuilder.bind(queue()).to(defaultExchange()).with(MQConstant.HELLO_QUEUE_NAME);</span><br><span class="line">    &#125;</span><br><span class="line">    /*********************    业务队列定义与绑定 hello 测试    *****************/</span><br><span class="line"></span><br><span class="line">    //下面是延迟队列的配置</span><br><span class="line">    //转发队列</span><br><span class="line">    @Bean</span><br><span class="line">    public Queue repeatTradeQueue() &#123;</span><br><span class="line">        Queue queue = new Queue(MQConstant.DEFAULT_REPEAT_TRADE_QUEUE_NAME,true,false,false);</span><br><span class="line">        return queue;</span><br><span class="line">    &#125;</span><br><span class="line">    //绑定转发队列</span><br><span class="line">    @Bean</span><br><span class="line">    public Binding  drepeatTradeBinding() &#123;</span><br><span class="line">        return BindingBuilder.bind(repeatTradeQueue()).to(defaultExchange()).with(MQConstant.DEFAULT_REPEAT_TRADE_QUEUE_NAME);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //死信队列  -- 消息在死信队列上堆积，消息超时时，会把消息转发到转发队列，转发队列根据消息内容再把转发到指定的队列上</span><br><span class="line">    @Bean</span><br><span class="line">    public Queue deadLetterQueue() &#123;</span><br><span class="line">        Map&lt;String, Object&gt; arguments = new HashMap&lt;&gt;();</span><br><span class="line">        arguments.put(&quot;x-dead-letter-exchange&quot;, MQConstant.DEFAULT_EXCHANGE);</span><br><span class="line">        arguments.put(&quot;x-dead-letter-routing-key&quot;, MQConstant.DEFAULT_REPEAT_TRADE_QUEUE_NAME);</span><br><span class="line">        Queue queue = new Queue(MQConstant.DEFAULT_DEAD_LETTER_QUEUE_NAME,true,false,false,arguments);</span><br><span class="line">        return queue;</span><br><span class="line">    &#125;</span><br><span class="line">    //绑定死信队列</span><br><span class="line">    @Bean</span><br><span class="line">    public Binding  deadLetterBinding() &#123;</span><br><span class="line">        return BindingBuilder.bind(deadLetterQueue()).to(defaultExchange()).with(MQConstant.DEFAULT_DEAD_LETTER_QUEUE_NAME);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="创建消息生成接口和实现"><a href="#创建消息生成接口和实现" class="headerlink" title="创建消息生成接口和实现"></a>创建消息生成接口和实现</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">public interface IMessageService &#123;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 发送消息到队列</span><br><span class="line">     * @param queueName 队列名称</span><br><span class="line">     * @param message 消息内容</span><br><span class="line">     */</span><br><span class="line">    public void send(String queueName,String message);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 延迟发送消息到队列</span><br><span class="line">     * @param queueName 队列名称</span><br><span class="line">     * @param message 消息内容</span><br><span class="line">     * @param times 延迟时间 单位毫秒</span><br><span class="line">     */</span><br><span class="line">    public void send(String queueName,String message,long times);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 消息队列服务接口实现</span><br><span class="line"> */</span><br><span class="line">@Service(&quot;messageService&quot;)</span><br><span class="line">public class MessageService implements IMessageService &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private RabbitTemplate rabbitTemplate;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 发送消息到队列</span><br><span class="line">     * @param queueName 队列名称</span><br><span class="line">     * @param message 消息内容</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public void send(String queueName, String message) &#123;</span><br><span class="line">        rabbitTemplate.convertAndSend(MQConstant.DEFAULT_EXCHANGE,queueName, message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 延迟发送消息到队列</span><br><span class="line">     * @param queueName 队列名称</span><br><span class="line">     * @param message 消息内容</span><br><span class="line">     * @param times 延迟时间 单位毫秒</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public void send(String queueName, String message, long times) &#123;</span><br><span class="line">        //消息发送到死信队列上，当消息超时时，会发生到转发队列上，转发队列根据下面封装的queueName，把消息转发的指定队列上</span><br><span class="line">        //发送前，把消息进行封装，转发时应转发到指定 queueName 队列上</span><br><span class="line">        DLXMessage dlxMessage = new DLXMessage(MQConstant.DEFAULT_EXCHANGE,queueName,message,times);</span><br><span class="line">        MessagePostProcessor processor = new MessagePostProcessor()&#123;</span><br><span class="line">            @Override</span><br><span class="line">            public Message postProcessMessage(Message message) throws AmqpException &#123;</span><br><span class="line">                message.getMessageProperties().setExpiration(times + &quot;&quot;);</span><br><span class="line">                return message;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        rabbitTemplate.convertAndSend(MQConstant.DEFAULT_EXCHANGE,MQConstant.DEFAULT_DEAD_LETTER_QUEUE_NAME, JSON.toJSONString(dlxMessage), processor);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="死信消息载体"><a href="#死信消息载体" class="headerlink" title="死信消息载体"></a>死信消息载体</h4><p>DLXMessage是一个消息封装对象，很关键，发送延迟队列时，先把消息存在此对象中，在加上目的地队列名称，然后再发到死信队列中，当消息超时时，转发到转发队列，添加对转发队列的监听，消费转发队列，获取需要延迟发送的信息，该信息就是DLXMessage对象，这样就拿到了目的地队列名称，然后再发送一次消息，就完成了延迟队列的发送。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * rabbit 死信消息载体</span><br><span class="line"> */</span><br><span class="line">public class DLXMessage implements Serializable &#123;</span><br><span class="line"></span><br><span class="line">    private static final long serialVersionUID = 9956432152000L;</span><br><span class="line">    private String exchange;</span><br><span class="line">    private String queueName;</span><br><span class="line">    private String content;</span><br><span class="line">    private long times;</span><br><span class="line"></span><br><span class="line">    public DLXMessage() &#123;</span><br><span class="line">        super();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public DLXMessage(String queueName, String content, long times) &#123;</span><br><span class="line">        super();</span><br><span class="line">        this.queueName = queueName;</span><br><span class="line">        this.content = content;</span><br><span class="line">        this.times = times;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public DLXMessage(String exchange, String queueName, String content, long times) &#123;</span><br><span class="line">        super();</span><br><span class="line">        this.exchange = exchange;</span><br><span class="line">        this.queueName = queueName;</span><br><span class="line">        this.content = content;</span><br><span class="line">        this.times = times;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public static long getSerialVersionUID() &#123;</span><br><span class="line">        return serialVersionUID;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getExchange() &#123;</span><br><span class="line">        return exchange;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setExchange(String exchange) &#123;</span><br><span class="line">        this.exchange = exchange;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getQueueName() &#123;</span><br><span class="line">        return queueName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setQueueName(String queueName) &#123;</span><br><span class="line">        this.queueName = queueName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getContent() &#123;</span><br><span class="line">        return content;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setContent(String content) &#123;</span><br><span class="line">        this.content = content;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public long getTimes() &#123;</span><br><span class="line">        return times;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setTimes(long times) &#123;</span><br><span class="line">        this.times = times;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="添加消息消费者监听，当有消息时进行消费"><a href="#添加消息消费者监听，当有消息时进行消费" class="headerlink" title="添加消息消费者监听，当有消息时进行消费"></a>添加消息消费者监听，当有消息时进行消费</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">//监听hello队列，有消息时进行消费</span><br><span class="line">@Component</span><br><span class="line">@RabbitListener(queues = MQConstant.HELLO_QUEUE_NAME)</span><br><span class="line">public class ReceiverMessage &#123;</span><br><span class="line"></span><br><span class="line">    @RabbitHandler</span><br><span class="line">    public void process(String content) &#123;</span><br><span class="line">        System.out.println(&quot;接受时间:&quot;+ System.currentTimeMillis());</span><br><span class="line">        System.out.println(&quot;接受消息:&quot; + content);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//监听转发队列，有消息时，把消息转发到目标队列</span><br><span class="line">@Component</span><br><span class="line">@RabbitListener(queues = MQConstant.DEFAULT_REPEAT_TRADE_QUEUE_NAME)</span><br><span class="line">public class ReceiverDelayMessage &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private IMessageService messageService;</span><br><span class="line"></span><br><span class="line">    @RabbitHandler</span><br><span class="line">    public void process(String content) &#123;</span><br><span class="line">        //此时，才把消息发送到指定队列，而实现延迟功能</span><br><span class="line">        DLXMessage message = JSON.parseObject(content, DLXMessage.class);</span><br><span class="line">        messageService.send(message.getQueueName(), message.getContent());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="测试-启动项目，会执行发送消息代码"><a href="#测试-启动项目，会执行发送消息代码" class="headerlink" title="测试,启动项目，会执行发送消息代码"></a>测试,启动项目，会执行发送消息代码</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 启动启动时执行</span><br><span class="line"> */</span><br><span class="line">@Component</span><br><span class="line">public class SysInitLoad implements ApplicationRunner &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private IMessageService messageService;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void run(ApplicationArguments args) throws Exception &#123;</span><br><span class="line">        System.out.println(&quot;发送时间:&quot;+ System.currentTimeMillis());</span><br><span class="line">        String message = &quot;测试延迟消息&quot;;</span><br><span class="line">        messageService.send(MQConstant.HELLO_QUEUE_NAME,message,6000);</span><br><span class="line"></span><br><span class="line">        message = &quot;测试普通消息&quot;;</span><br><span class="line">        messageService.send(MQConstant.HELLO_QUEUE_NAME,message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>普通消息马上就接收到了，延迟消息6s后收到。</p>
+<p>以上就是订单超时未处理的解决方案，希望能够给予大家帮助。</p>
+<h3 id="欢迎关注获取更多资源"><a href="#欢迎关注获取更多资源" class="headerlink" title="欢迎关注获取更多资源"></a>欢迎关注获取更多资源</h3><p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/coderxm_qrcode.jpeg"
+                      alt="程序员小明"
+                ></p>
+
+                </div>
+
+                
+                    <div class="post-copyright-info">
+                        <div class="article-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="post-title border-box text-ellipsis">
+                订单超时取消的解决方案
+            </div>
+
+            <div class="post-link border-box text-ellipsis">
+                p/268.html
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">小明</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2019-10-30 18:25</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-content="复制版权信息" data-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                    </div>
+                
+
+                
+                    <ul class="post-tags-box">
+                        
+                            <li class="tag-item">
+                                <a href="/tags/SpringBoot/"><i class="icon fas fa-hashtag"></i>SpringBoot</a>&nbsp;
+                            </li>
+                        
+                            <li class="tag-item">
+                                <a href="/tags/mq/"><i class="icon fas fa-hashtag"></i>mq</a>&nbsp;
+                            </li>
+                        
+                    </ul>
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/p/707c.html"
+                                   title="Mac安装Homebrew并配置Redis"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Mac安装Homebrew并配置Redis</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/p/35e7.html"
+                                   title="hexo用自己的服务器搭建博客"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">hexo用自己的服务器搭建博客</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <script data-pjax src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"></script>
+        <div id="waline-comment"></div>
+        <script data-pjax>
+          function loadWaline() {
+            Waline.init({
+              el: '#waline-comment',
+              serverURL: 'https://comment.mynamecoder.com',
+              lang: 'zh-CN' || 'zh-CN',
+              comment: '.post-comments-count',
+              reaction: 'true' === 'true'
+            })
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              loadWaline()
+            }, 1000)
+          } else {
+            window.addEventListener('DOMContentLoaded', loadWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B0%E5%BB%BASpringBoot%E9%A1%B9%E7%9B%AE%EF%BC%8C%E6%B7%BB%E5%8A%A0-amqp-%E5%BC%95%E7%94%A8"><span class="nav-text">新建SpringBoot项目，添加 amqp 引用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6application-properties%E4%B8%AD%E9%85%8D%E7%BD%AE%E5%A5%BDmq%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%9C%B0%E5%9D%80"><span class="nav-text">在配置文件application.properties中配置好mq的连接地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%85%8D%E7%BD%AE%E7%B1%BB%EF%BC%8C%E4%BD%BF%E7%94%A8%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84%E8%BF%9E%E6%8E%A5"><span class="nav-text">创建配置类，使用配置文件中的连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%B8%B8%E9%87%8F%E7%B1%BB%EF%BC%8C%E5%AE%9A%E4%B9%89%E9%98%9F%E5%88%97%E5%90%8D%E7%A7%B0"><span class="nav-text">创建一个常量类，定义队列名称</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E9%98%9F%E5%88%97%E9%85%8D%E7%BD%AE%E7%B1%BB%EF%BC%8C%E4%BD%9C%E7%94%A8%E6%98%AF%E4%BF%A1%E9%81%93%E9%85%8D%E7%BD%AE%EF%BC%8C%E9%98%9F%E5%88%97%E9%85%8D%E7%BD%AE%EF%BC%8C%E9%98%9F%E5%88%97%E7%BB%91%E5%AE%9A"><span class="nav-text">创建一个队列配置类，作用是信道配置，队列配置，队列绑定</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%B6%88%E6%81%AF%E7%94%9F%E6%88%90%E6%8E%A5%E5%8F%A3%E5%92%8C%E5%AE%9E%E7%8E%B0"><span class="nav-text">创建消息生成接口和实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%BB%E4%BF%A1%E6%B6%88%E6%81%AF%E8%BD%BD%E4%BD%93"><span class="nav-text">死信消息载体</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%B6%88%E6%81%AF%E6%B6%88%E8%B4%B9%E8%80%85%E7%9B%91%E5%90%AC%EF%BC%8C%E5%BD%93%E6%9C%89%E6%B6%88%E6%81%AF%E6%97%B6%E8%BF%9B%E8%A1%8C%E6%B6%88%E8%B4%B9"><span class="nav-text">添加消息消费者监听，当有消息时进行消费</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95-%E5%90%AF%E5%8A%A8%E9%A1%B9%E7%9B%AE%EF%BC%8C%E4%BC%9A%E6%89%A7%E8%A1%8C%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF%E4%BB%A3%E7%A0%81"><span class="nav-text">测试,启动项目，会执行发送消息代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AC%A2%E8%BF%8E%E5%85%B3%E6%B3%A8%E8%8E%B7%E5%8F%96%E6%9B%B4%E5%A4%9A%E8%B5%84%E6%BA%90"><span class="nav-text">欢迎关注获取更多资源</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box shields">
+        
+            <div class="info-item">
+                
+                <a class="shields-item">
+                    <img src="https://img.shields.io/badge/Since-2018_--_2024-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item" href="/">
+                        <img src="https://img.shields.io/badge/WebMaster-小明-dodgerblue?style=flat-square">
+                    </a>
+                
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       href="https://beian.miit.gov.cn"
+                    >
+                        <img src="https://img.shields.io/badge/ICP-京ICP备19029015号-dodgerblue?style=flat-square">
+                    </a>
+                
+                <a class="shields-item" href="https://hexo.io" target="_blank">
+                    <img src="https://img.shields.io/badge/Powered_by-Hexo-dodgerblue?style=flat-square">
+                </a>
+                <a class="shields-item" href="https://github.com/XPoet/hexo-theme-keep" target="_blank">
+                    <img class="shields-keep-version" src="https://img.shields.io/badge/Theme-Keep-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       rel="nofollow"
+                       href="https://github.com/WhenCoding"
+                    >
+                        <img src="https://img.shields.io/badge/Deploy_in-GitHub Pages-dodgerblue?style=flat-square">
+                    </a>
+                
+            </div>
+            
+                <div class="info-item">
+                    
+                        
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item shields">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-box border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B0%E5%BB%BASpringBoot%E9%A1%B9%E7%9B%AE%EF%BC%8C%E6%B7%BB%E5%8A%A0-amqp-%E5%BC%95%E7%94%A8"><span class="nav-text">新建SpringBoot项目，添加 amqp 引用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6application-properties%E4%B8%AD%E9%85%8D%E7%BD%AE%E5%A5%BDmq%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%9C%B0%E5%9D%80"><span class="nav-text">在配置文件application.properties中配置好mq的连接地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%85%8D%E7%BD%AE%E7%B1%BB%EF%BC%8C%E4%BD%BF%E7%94%A8%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84%E8%BF%9E%E6%8E%A5"><span class="nav-text">创建配置类，使用配置文件中的连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%B8%B8%E9%87%8F%E7%B1%BB%EF%BC%8C%E5%AE%9A%E4%B9%89%E9%98%9F%E5%88%97%E5%90%8D%E7%A7%B0"><span class="nav-text">创建一个常量类，定义队列名称</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E9%98%9F%E5%88%97%E9%85%8D%E7%BD%AE%E7%B1%BB%EF%BC%8C%E4%BD%9C%E7%94%A8%E6%98%AF%E4%BF%A1%E9%81%93%E9%85%8D%E7%BD%AE%EF%BC%8C%E9%98%9F%E5%88%97%E9%85%8D%E7%BD%AE%EF%BC%8C%E9%98%9F%E5%88%97%E7%BB%91%E5%AE%9A"><span class="nav-text">创建一个队列配置类，作用是信道配置，队列配置，队列绑定</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%B6%88%E6%81%AF%E7%94%9F%E6%88%90%E6%8E%A5%E5%8F%A3%E5%92%8C%E5%AE%9E%E7%8E%B0"><span class="nav-text">创建消息生成接口和实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%BB%E4%BF%A1%E6%B6%88%E6%81%AF%E8%BD%BD%E4%BD%93"><span class="nav-text">死信消息载体</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%B6%88%E6%81%AF%E6%B6%88%E8%B4%B9%E8%80%85%E7%9B%91%E5%90%AC%EF%BC%8C%E5%BD%93%E6%9C%89%E6%B6%88%E6%81%AF%E6%97%B6%E8%BF%9B%E8%A1%8C%E6%B6%88%E8%B4%B9"><span class="nav-text">添加消息消费者监听，当有消息时进行消费</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95-%E5%90%AF%E5%8A%A8%E9%A1%B9%E7%9B%AE%EF%BC%8C%E4%BC%9A%E6%89%A7%E8%A1%8C%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF%E4%BB%A3%E7%A0%81"><span class="nav-text">测试,启动项目，会执行发送消息代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AC%A2%E8%BF%8E%E5%85%B3%E6%B3%A8%E8%8E%B7%E5%8F%96%E6%9B%B4%E5%A4%9A%E8%B5%84%E6%BA%90"><span class="nav-text">欢迎关注获取更多资源</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/local-search.js"></script>
+
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/toc.js"></script>
+        
+    
+    
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

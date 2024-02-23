@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享">
+    <meta name="description" content="Spring Boot, Spring Cloud,日常开发, ElasticSearch, 微服务, 并发编程, 源码分析,Java,程序员小明">
+    <meta name="author" content="小明">
+    
+    <title>
+        
+            程序员的简历到底该怎么写？ |
+        
+        程序员小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/brands.min.css">
+    
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"mynamecoder.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":null,"favicon":"/images/logo.svg","avatar":"/images/avatar.png","font_size":null,"font_family":"Optima-Regular,PingFangTC-light","hover":{"shadow":true,"scale":true},"first_screen":{"enable":false,"header_transparent":true,"background_img":"https://img.mynamecoder.com/20230224112801.jpeg","description":"||","font_color":"","hitokoto":true},"scroll":{"progress_bar":false,"percent":false}},"local_search":{"enable":true,"preload":true},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":true,"use":"waline","valine":{"appid":"RYD6fM3F1jQ4aTSXOzbclYi6-9Nh9j0Va","appkey":"mjF7jJLYlbIcPU2mUOoh0I88","server_urls":null,"meta":["nick","mail","link"],"placeholder":"说点什么"},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":"https://comment.mynamecoder.com","reaction":true,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":false,"min2read":false},"img_align":"left","copyright_info":true},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"version":"3.7.7"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1566816837076058" crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+            <a class="site-name border-box" href="/">
+               程序员小明
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                标签
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >
+                                友链
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links">友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+
+            <div class="article-content-bottom border-box">
+                
+                    <div class="article-title">
+                        程序员的简历到底该怎么写？
+                    </div>
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/avatar.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">小明</span>
+                                
+                                    <span class="author-label">Lv6</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2019-05-29 10:16:43</span>
+                <span class="mobile">2019-05-29 10:16</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Thu Jan 18 2024 08:35:59 GMT+0000">2024-01-18 08:35:59</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item article-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul>
+                    
+                            <li class="category-item">
+                                
+                                <a href="/categories/%E4%B8%AA%E4%BA%BA%E6%88%90%E9%95%BF/">个人成长</a>
+                            </li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="article-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul>
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E9%9D%A2%E8%AF%95/">面试</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <blockquote>
+<p>小明最近有换工作的打算，那身为程序员的我们，简历到底应该怎么写呢？</p>
+</blockquote>
+<p>我们知道，HR在筛选简历时主要从公司需求出发，重点不一，不过还是有很多“通用”的套路，为了在30秒内判断出这份简历是否值得跟进，我认为程序员写简历的正确姿势是这样的：</p>
+<h1 id="主要风格"><a href="#主要风格" class="headerlink" title="主要风格"></a>主要风格</h1><p>即首次看到简历后的第一感觉。就好比小明多年相亲未遂，鼓起勇气参加“非诚勿扰”的节目，首次登场，台下的妹子看见他的第一眼，一定会有一个整体的Feel，他是fashion的、小清新的还是老道的？有了第一印象感觉之后，台下的妹子才会确定是灭灯还是亮灯（小明的话八成会是全亮的）。下面给大家举个例子：</p>
+<p>加分写法：</p>
+<ul>
+<li><p>逻辑结构清晰，简洁明了。</p>
+</li>
+<li><p>字体适中，排版顺畅，清晰整齐。</p>
+</li>
+<li><p>DF格式，兼容性不仅强而且不易乱序。</p>
+<p>减分写法：</p>
+</li>
+<li><p>设计的十分浮夸或者十分简单。（eg.简历做的十分酷炫、又是五颜六色，but半天找不到联系方式，抑或是只有个人基本信息和公司名称)</p>
+</li>
+<li><p>冗余过度，写了好多页，但是半天打不开的，更甚至加载了半天，打开还乱码！</p>
+</li>
+</ul>
+<h1 id="基本信息（姓名-性别-毕业院校-电话-邮箱-居住地-期望地）"><a href="#基本信息（姓名-性别-毕业院校-电话-邮箱-居住地-期望地）" class="headerlink" title="基本信息（姓名/性别/毕业院校/电话/邮箱/居住地/期望地）"></a>基本信息（姓名/性别/毕业院校/电话/邮箱/居住地/期望地）</h1><p>加分写法:</p>
+<ul>
+<li>清晰罗列出以上信息，这样HR不仅在接下来的电话沟通或面试中不会再去追问这些内容，而且又进一步建立对你的熟悉度。</li>
+<li>增加社交账号，比如QQ或者微信，防患于未然（万一有时候HR电话打不通，这种情况挺多见的）</li>
+</ul>
+<p>减分写法：</p>
+<ul>
+<li><p>相当大的基本信息没有写。</p>
+</li>
+<li><p>只留下一个Github链接或者博客链接，甚至极致简洁的几句描述，HR只能通过你的链接来找你的联系方式，那就难受啦。（ps：除非写的特别nice，不然基本是要放弃你了）</p>
+</li>
+</ul>
+<h1 id="工作经历-amp-项目经历"><a href="#工作经历-amp-项目经历" class="headerlink" title="工作经历&amp;项目经历"></a>工作经历&amp;项目经历</h1><p>加分写法：</p>
+<ul>
+<li>工作经历项目经历可以参照万能的STAR法则来写。（STAR不清楚的童鞋自觉百度哈）</li>
+<li>曾经效力过哪些公司，是否和求职公司匹配？</li>
+<li>做过什么行业领域，是否和求职公司匹配？</li>
+<li>你最擅长的技术语言，应用了哪些技术栈？（Java,Scala,Pyhton,Ruby, React, Vue, Microservice…）</li>
+<li>经历的项目时间复杂度，及在项目中承担什么样的角色(人的变化/技术的变化/环境的变化/不同工作经历相同角色的不同点)</li>
+<li>时间节点（空档期）</li>
+</ul>
+<p>减分写法：</p>
+<ul>
+<li>HR观摩了半天，不知所云，毫无亮点，没有可以继续聊一聊的话题。</li>
+</ul>
+<h1 id="先来几个栗子"><a href="#先来几个栗子" class="headerlink" title="先来几个栗子"></a>先来几个栗子</h1><h2 id="栗子1错误打开方式："><a href="#栗子1错误打开方式：" class="headerlink" title="栗子1错误打开方式："></a>栗子1错误打开方式：</h2><ul>
+<li>XX（全栈工程师）2013.06 — 至今</li>
+<li>参与需求分析及实现方案设计。</li>
+<li>产品线上部署及运维。</li>
+<li>负责公司配置管理，环境维护等工作</li>
+<li>负责公司产品性能测试，及线上数据分析</li>
+<li>设计数据库表结构，实现后台功能及web页面展示。</li>
+</ul>
+<p>点评：太概括不具体，没有逻辑性，甚至不知道采用的技术语言，根本不能了解情况。</p>
+<h2 id="栗子2正确打开方式："><a href="#栗子2正确打开方式：" class="headerlink" title="栗子2正确打开方式："></a>栗子2正确打开方式：</h2><p>北京XXX公司 Java工程师 — 2017.2月-2018.4月<br>1、LINK推荐架构数据与缓存层设计开发</p>
+<ul>
+<li>LINK是一款时尚资讯app,负责推荐页面资讯feed流的展示及用户历史的展示；</li>
+<li>负责进行压测监测、缓存处理,对接又进一步改进优化,主用redis缓存；</li>
+<li>负责数据层,处理前端逻辑整个开发工作,分布式rpc服务搭建。</li>
+</ul>
+<p>2、基于JAVA的电商爬虫开发</p>
+<ul>
+<li>使用java搭建爬虫server平台,进行配置和开发,进行网页改版监测功能开发；</li>
+<li>通过频率、ip池、匿名代理等应对一些网站的反爬；</li>
+<li>爬取淘宝时尚品牌与其他电商网站商品品牌与详情等。</li>
+</ul>
+<p>3、同图搜索Solr服务开发</p>
+<ul>
+<li>基于算法组的同图策略,使用solr做java接口，又实现rpc服务搭建,进行索引构建和solr实现。</li>
+<li>点评：非常清晰的告诉简历阅读者自己做了什么事情，负责了什么样的事情，用了什么技术栈，且逻辑连贯。</li>
+</ul>
+<h1 id="工作期望-amp-个人评价"><a href="#工作期望-amp-个人评价" class="headerlink" title="工作期望&amp;个人评价"></a>工作期望&amp;个人评价</h1><p>加分写法：</p>
+<ul>
+<li>对自己有一个全方位的一个描述总结，可以让他人更好的解读我们。甚至可以在此处，大笔书写你的优点特长有哪些。</li>
+<li>我们可以不写个人评价，但是也一定记得写上工作期望！</li>
+</ul>
+<p>减分写法：</p>
+<ul>
+<li>丝毫看不出个性特点，写和没写没什么区别。  再 来几个栗子</li>
+</ul>
+<h2 id="栗子1-错误打开方式"><a href="#栗子1-错误打开方式" class="headerlink" title="栗子1 错误打开方式"></a>栗子1 错误打开方式</h2><ul>
+<li>为人性格,诚实谦虚，勤奋，能吃苦耐劳，有耐心，有团队意识，能和同学和谐相处，能虚心接受别人的建议的人。</li>
+<li>责任心强，善于沟通，具有良好的团队合作精神；专业扎实，具有较强的钻研精神和学习能力；性格比较乐观外向，喜欢打羽毛球。</li>
+</ul>
+<h2 id="栗子2正确打开方式"><a href="#栗子2正确打开方式" class="headerlink" title="栗子2正确打开方式"></a>栗子2正确打开方式</h2><ul>
+<li>极客、热爱技术、热爱开源</li>
+<li>Ruby on Rails：精通</li>
+<li>AWS：掌握</li>
+<li>Docker：掌握</li>
+<li>Agile/Lean：精通</li>
+<li>ReactJS：掌握</li>
+</ul>
+<h2 id="栗子3正确打开方式"><a href="#栗子3正确打开方式" class="headerlink" title="栗子3正确打开方式"></a>栗子3正确打开方式</h2><ul>
+<li><p>我对自己的定位: 主攻前端,同时在其他方面打打辅助。我不希望过于依赖别人,即使没有后端没有设计没有产品经理,我依然想要把这个产品做到完美。毕竟全栈才能最高效地解决问题。</p>
+</li>
+<li><p>我对工作的态度: 第一,要高效完成自己的本职工作。第二,要在完成的基础上寻找完美。第三,要在完美的基础上,与其他同事 互相交流学习,互相提升。工作是一种生活方式,不是一份养家糊口的差事。</p>
+</li>
+<li><p>我怎样克服困难: 不用百度是第一原则,在遇到技术问题时我往往会去Google、Stack over flow上寻找答案。但通常很多问题 并不一定已经被人解决,所以熟练地阅读源码、在手册、规范甚至 REPL的环境自己做实验才是最终解决问题的办法。相信事实的结果,自己动手去做。</p>
+</li>
+<li><p>怎样保持自己的视野:我一直认为软件开发中视野极其重要,除了在 Twitter 上关注业界大牛,Github Trending 也是每周必刷。 另外 Podcast、Hacker News、Reddit 以及TechRadar 也是重要的一手资料。保持开阔视野才能找到更酷的解决方案。</p>
+</li>
+<li><p>我的优势: 热爱技术、自学能力强,有良好的自我认知。全面的技能树与开阔的视野,良好的心态、情商与沟通能力。</p>
+</li>
+<li><p>我的劣势: 非科班出身没有科班同学对算法的熟练掌握,但我决定死磕技术,弥补不足。</p>
+</li>
+</ul>
+<h1 id="博客，个人技术栈点等"><a href="#博客，个人技术栈点等" class="headerlink" title="博客，个人技术栈点等"></a>博客，个人技术栈点等</h1><ul>
+<li>看到有这项的HR两眼已经放光了，加分加分项，说明你真正的热爱技术，善于学习总结，乐于分享，且有投入自己的业余时间到软件事业中。</li>
+<li>我喜欢的书籍:《重构》《卓有成效的程序员》《代码整洁之道》等</li>
+<li>我喜欢的社区: 图灵社区，知乎，博客园，Stack Over flow，Google Developer Group等</li>
+<li>我的博客链接、个人作品链接如下:<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/github" >https://github.com/github<i class="fas fa-external-link-alt"></i></a><br><a class="link"   target="_blank" rel="noopener" href="http://www.oschina.net/" >http://www.oschina.net/<i class="fas fa-external-link-alt"></i></a><br><a class="link"   target="_blank" rel="noopener" href="https://www.cnblogs.com/" >https://www.cnblogs.com/<i class="fas fa-external-link-alt"></i></a></li>
+</ul>
+<h1 id="简历内容真实性"><a href="#简历内容真实性" class="headerlink" title="简历内容真实性"></a>简历内容真实性</h1><p>老司机提醒你，你简历的任意一个细节将会是后面面试中的呈堂证供。因此在技术方面，我们还是要真真实实下功夫的！</p>
+<h3 id="欢迎关注获取更多资源"><a href="#欢迎关注获取更多资源" class="headerlink" title="欢迎关注获取更多资源"></a>欢迎关注获取更多资源</h3><p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://img.mynamecoder.com/coderxm_qrcode.jpeg"
+                      alt="程序员小明"
+                ></p>
+
+                </div>
+
+                
+                    <div class="post-copyright-info">
+                        <div class="article-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="post-title border-box text-ellipsis">
+                程序员的简历到底该怎么写？
+            </div>
+
+            <div class="post-link border-box text-ellipsis">
+                p/6d2.html
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">小明</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2019-05-29 10:16</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-content="复制版权信息" data-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                    </div>
+                
+
+                
+                    <ul class="post-tags-box">
+                        
+                            <li class="tag-item">
+                                <a href="/tags/%E9%9D%A2%E8%AF%95/"><i class="icon fas fa-hashtag"></i>面试</a>&nbsp;
+                            </li>
+                        
+                    </ul>
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/p/e48d.html"
+                                   title="springboot快速集成swagger"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">springboot快速集成swagger</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/p/d69c.html"
+                                   title="公众号开发入门：查询用户是否已经关注公众号？"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">公众号开发入门：查询用户是否已经关注公众号？</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <script data-pjax src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"></script>
+        <div id="waline-comment"></div>
+        <script data-pjax>
+          function loadWaline() {
+            Waline.init({
+              el: '#waline-comment',
+              serverURL: 'https://comment.mynamecoder.com',
+              lang: 'zh-CN' || 'zh-CN',
+              comment: '.post-comments-count',
+              reaction: 'true' === 'true'
+            })
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              loadWaline()
+            }, 1000)
+          } else {
+            window.addEventListener('DOMContentLoaded', loadWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E9%A3%8E%E6%A0%BC"><span class="nav-text">主要风格</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF%EF%BC%88%E5%A7%93%E5%90%8D-%E6%80%A7%E5%88%AB-%E6%AF%95%E4%B8%9A%E9%99%A2%E6%A0%A1-%E7%94%B5%E8%AF%9D-%E9%82%AE%E7%AE%B1-%E5%B1%85%E4%BD%8F%E5%9C%B0-%E6%9C%9F%E6%9C%9B%E5%9C%B0%EF%BC%89"><span class="nav-text">基本信息（姓名&#x2F;性别&#x2F;毕业院校&#x2F;电话&#x2F;邮箱&#x2F;居住地&#x2F;期望地）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E7%BB%8F%E5%8E%86-amp-%E9%A1%B9%E7%9B%AE%E7%BB%8F%E5%8E%86"><span class="nav-text">工作经历&amp;项目经历</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%88%E6%9D%A5%E5%87%A0%E4%B8%AA%E6%A0%97%E5%AD%90"><span class="nav-text">先来几个栗子</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%97%E5%AD%901%E9%94%99%E8%AF%AF%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="nav-text">栗子1错误打开方式：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%97%E5%AD%902%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="nav-text">栗子2正确打开方式：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%9C%9F%E6%9C%9B-amp-%E4%B8%AA%E4%BA%BA%E8%AF%84%E4%BB%B7"><span class="nav-text">工作期望&amp;个人评价</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%97%E5%AD%901-%E9%94%99%E8%AF%AF%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F"><span class="nav-text">栗子1 错误打开方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%97%E5%AD%902%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F"><span class="nav-text">栗子2正确打开方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%97%E5%AD%903%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F"><span class="nav-text">栗子3正确打开方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%9A%E5%AE%A2%EF%BC%8C%E4%B8%AA%E4%BA%BA%E6%8A%80%E6%9C%AF%E6%A0%88%E7%82%B9%E7%AD%89"><span class="nav-text">博客，个人技术栈点等</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E5%8E%86%E5%86%85%E5%AE%B9%E7%9C%9F%E5%AE%9E%E6%80%A7"><span class="nav-text">简历内容真实性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AC%A2%E8%BF%8E%E5%85%B3%E6%B3%A8%E8%8E%B7%E5%8F%96%E6%9B%B4%E5%A4%9A%E8%B5%84%E6%BA%90"><span class="nav-text">欢迎关注获取更多资源</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box shields">
+        
+            <div class="info-item">
+                
+                <a class="shields-item">
+                    <img src="https://img.shields.io/badge/Since-2018_--_2024-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item" href="/">
+                        <img src="https://img.shields.io/badge/WebMaster-小明-dodgerblue?style=flat-square">
+                    </a>
+                
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       href="https://beian.miit.gov.cn"
+                    >
+                        <img src="https://img.shields.io/badge/ICP-京ICP备19029015号-dodgerblue?style=flat-square">
+                    </a>
+                
+                <a class="shields-item" href="https://hexo.io" target="_blank">
+                    <img src="https://img.shields.io/badge/Powered_by-Hexo-dodgerblue?style=flat-square">
+                </a>
+                <a class="shields-item" href="https://github.com/XPoet/hexo-theme-keep" target="_blank">
+                    <img class="shields-keep-version" src="https://img.shields.io/badge/Theme-Keep-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       rel="nofollow"
+                       href="https://github.com/WhenCoding"
+                    >
+                        <img src="https://img.shields.io/badge/Deploy_in-GitHub Pages-dodgerblue?style=flat-square">
+                    </a>
+                
+            </div>
+            
+                <div class="info-item">
+                    
+                        
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item shields">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-box border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E9%A3%8E%E6%A0%BC"><span class="nav-text">主要风格</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF%EF%BC%88%E5%A7%93%E5%90%8D-%E6%80%A7%E5%88%AB-%E6%AF%95%E4%B8%9A%E9%99%A2%E6%A0%A1-%E7%94%B5%E8%AF%9D-%E9%82%AE%E7%AE%B1-%E5%B1%85%E4%BD%8F%E5%9C%B0-%E6%9C%9F%E6%9C%9B%E5%9C%B0%EF%BC%89"><span class="nav-text">基本信息（姓名&#x2F;性别&#x2F;毕业院校&#x2F;电话&#x2F;邮箱&#x2F;居住地&#x2F;期望地）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E7%BB%8F%E5%8E%86-amp-%E9%A1%B9%E7%9B%AE%E7%BB%8F%E5%8E%86"><span class="nav-text">工作经历&amp;项目经历</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%88%E6%9D%A5%E5%87%A0%E4%B8%AA%E6%A0%97%E5%AD%90"><span class="nav-text">先来几个栗子</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%97%E5%AD%901%E9%94%99%E8%AF%AF%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="nav-text">栗子1错误打开方式：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%97%E5%AD%902%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="nav-text">栗子2正确打开方式：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%9C%9F%E6%9C%9B-amp-%E4%B8%AA%E4%BA%BA%E8%AF%84%E4%BB%B7"><span class="nav-text">工作期望&amp;个人评价</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%97%E5%AD%901-%E9%94%99%E8%AF%AF%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F"><span class="nav-text">栗子1 错误打开方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%97%E5%AD%902%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F"><span class="nav-text">栗子2正确打开方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%97%E5%AD%903%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F"><span class="nav-text">栗子3正确打开方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%9A%E5%AE%A2%EF%BC%8C%E4%B8%AA%E4%BA%BA%E6%8A%80%E6%9C%AF%E6%A0%88%E7%82%B9%E7%AD%89"><span class="nav-text">博客，个人技术栈点等</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E5%8E%86%E5%86%85%E5%AE%B9%E7%9C%9F%E5%AE%9E%E6%80%A7"><span class="nav-text">简历内容真实性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AC%A2%E8%BF%8E%E5%85%B3%E6%B3%A8%E8%8E%B7%E5%8F%96%E6%9B%B4%E5%A4%9A%E8%B5%84%E6%BA%90"><span class="nav-text">欢迎关注获取更多资源</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/local-search.js"></script>
+
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/toc.js"></script>
+        
+    
+    
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>

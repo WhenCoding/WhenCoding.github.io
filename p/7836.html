@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享">
+    <meta name="description" content="Spring Boot, Spring Cloud,日常开发, ElasticSearch, 微服务, 并发编程, 源码分析,Java,程序员小明">
+    <meta name="author" content="小明">
+    
+    <title>
+        
+            【面试】最容易被问到的N种排序算法！ |
+        
+        程序员小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logo.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/font/css/brands.min.css">
+    
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"mynamecoder.com","root":"/","language":"zh-CN","path":"search.json"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":false,"init_open":true},"style":{"primary_color":"#0066cc","logo":null,"favicon":"/images/logo.svg","avatar":"/images/avatar.png","font_size":null,"font_family":"Optima-Regular,PingFangTC-light","hover":{"shadow":true,"scale":true},"first_screen":{"enable":false,"header_transparent":true,"background_img":"/images/article/20230224112801.jpeg","description":"||","font_color":"","hitokoto":true},"scroll":{"progress_bar":false,"percent":false}},"local_search":{"enable":true,"preload":true},"code_block":{"tools":{"enable":false,"style":"default"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":true,"use":"waline","valine":{"appid":"RYD6fM3F1jQ4aTSXOzbclYi6-9Nh9j0Va","appkey":"mjF7jJLYlbIcPU2mUOoh0I88","server_urls":null,"meta":["nick","mail","link"],"placeholder":"说点什么"},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":"https://comment.mynamecoder.com","reaction":true,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect"]},"word_count":{"enable":true,"wordcount":false,"min2read":false},"img_align":"left","copyright_info":true},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"version":"3.7.7"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1566816837076058" crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="程序员小明 | Java | Spring Boot | Spring Cloud | ElasticSearch |日常开发 |最新干货分享" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+            <a class="site-name border-box" href="/">
+               程序员小明
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                标签
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >
+                                友链
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links">友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            
+
+            <div class="article-content-bottom border-box">
+                
+                    <div class="article-title">
+                        【面试】最容易被问到的N种排序算法！
+                    </div>
+                
+
+                
+                    <div class="article-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/avatar.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author">
+                                <span class="name">小明</span>
+                                
+                                    <span class="author-label">Lv6</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2019-06-20 20:34:14</span>
+                <span class="mobile">2019-06-20 20:34</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Mon Oct 28 2024 12:12:32 GMT+0000">2024-10-28 12:12:32</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item article-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul>
+                    
+                            <li class="category-item">
+                                
+                                <a href="/categories/%E6%97%A5%E5%B8%B8%E5%BC%80%E5%8F%91/">日常开发</a>
+                            </li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="article-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul>
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E9%9D%A2%E8%AF%95/">面试</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E7%AE%97%E6%B3%95/">算法</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="article-content keep-markdown-body">
+                    
+
+                    <blockquote>
+<p>面试官：小明，是吧？你都知道哪些排序算法，哪几种是稳定排序？<br>小明：这个我有总结！</p>
+</blockquote>
+<h1 id="关于排序稳定性的定义"><a href="#关于排序稳定性的定义" class="headerlink" title="关于排序稳定性的定义"></a>关于排序稳定性的定义</h1><p>通俗地讲就是能保证排序前两个相等的数其在序列的前后位置顺序和排序后它们两个的前后位置顺序相同。在简单形式化一下，如果Ai = Aj，Ai原来在位置前，排序后Ai还是要在Aj位置前。</p>
+<h1 id="现实生活中稳定排序如何表现呢？"><a href="#现实生活中稳定排序如何表现呢？" class="headerlink" title="现实生活中稳定排序如何表现呢？"></a>现实生活中稳定排序如何表现呢？</h1><blockquote>
+<p>举个例子：<br>某次学校发奖学金，只有排在前三个的有奖，结果一排序把原来在第三位的并列第三名给弄到第四位了，他估计不会乐意😂</p>
+</blockquote>
+<p>接下来给大家用java代码演绎一下常见的几种排序，前提：有一个数组arr，要求从小到大排序。</p>
+<h1 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h1><p>简单选择排序的思想是：从第一个位置开始，逐渐向后，选择后面的无序序列中的最小值放到该位置。很简单，直接上代码吧：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//选择排序</span><br><span class="line">for(int i = 0; i &lt; arr.length - 1; i++) &#123;// 做第i趟排序</span><br><span class="line">    int k = i;</span><br><span class="line">    for(int j = k + 1; j &lt; arr.length; j++)&#123;// 选最小的记录</span><br><span class="line">        if(arr[j] &lt; arr[k])&#123; </span><br><span class="line">            k = j; //记下目前找到的最小值所在的位置</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    //在内层循环结束，也就是找到本轮循环的最小的数以后，再进行交换</span><br><span class="line">    if(i != k)&#123;  //交换a[i]和a[k]</span><br><span class="line">        int temp = arr[i];</span><br><span class="line">        arr[i] = arr[k];</span><br><span class="line">        arr[k] = temp;</span><br><span class="line">    &#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="那选择排序是稳定排序吗？"><a href="#那选择排序是稳定排序吗？" class="headerlink" title="那选择排序是稳定排序吗？"></a>那选择排序是稳定排序吗？</h2><blockquote>
+<p>举个例子，假如有序列[5,8,5,2,9]按从小到大排序，第一遍排序,第一个元素“5”会和第四个元素“2”交换，那么原序列中两个“5”的相对前后顺序此时就遭到破坏了，由此可见，选择排序不是一个稳定的排序算法。</p>
+</blockquote>
+<h1 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h1><p>冒泡排序就是相邻的两个元素之间按照要求进行比较交换，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 冒泡排序</span><br><span class="line">for (int i = 0; i &lt; arr.length - 1; i++) &#123; //外层循环n-1</span><br><span class="line">    for (int j = 0; j &lt; arr.length - i - 1; j++) &#123; //内层循环n-i-1</span><br><span class="line">        if (arr[j] &gt; arr[j + 1]) &#123; //从第一个开始，往后两两比较大小，如果前面的比后面的大，交换位置</span><br><span class="line">            int tmp = arr[j];</span><br><span class="line">            arr[j] = arr[j + 1];</span><br><span class="line">            arr[j + 1] = tmp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="那冒泡排序是稳定排序吗？"><a href="#那冒泡排序是稳定排序吗？" class="headerlink" title="那冒泡排序是稳定排序吗？"></a>那冒泡排序是稳定排序吗？</h2><p>因为发生在相邻的元素之间，所以，如果两个元素相等，我们是不会多此一举把他们俩交换一下的；如果两个相等的元素没有相邻，那么即使通过前面的两两交换把两个相邻起来，这时候也不会交换，所以相同元素的前后顺序并没有改变，所以冒泡排序是一种<strong>稳定</strong>排序算法。</p>
+<h1 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h1><p>插入排序与打扑克时整理手上的牌非常类似。摸来的第1张牌无须整理，此后每次从桌上的牌(无序区)中摸最上面的1张并插入左手的牌(有序区)中正确的位置上。为了找到这个正确的位置，须自左向右(或自右向左)将摸来的牌与左手中已有的牌逐一比较，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 插入排序</span><br><span class="line">for (int index = 1; index &lt; length; index++) &#123; //外层向右的index，即作为比较对象的数据的index</span><br><span class="line">    int temp = arr[index]; //用作比较的数据</span><br><span class="line">    int leftindex = index - 1;</span><br><span class="line">    while (leftindex &gt;= 0 &amp;&amp; arr[leftindex] &gt; temp) &#123; //当比到最左边或者遇到比temp小的数据时，结束循环</span><br><span class="line">        arr[leftindex + 1] = arr[leftindex];</span><br><span class="line">        leftindex--;</span><br><span class="line">    &#125;</span><br><span class="line">    arr[leftindex + 1] = temp;//把temp放到空位上</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一开始，左边会产生一个只有一个元素的有序序列，比较是从该有序序列的末尾开始，也就是想要插入的元素和已经有序的最大者开始比起，如果比它大则直接插入在其后面，否则一直往前找直到找到它该插入的位置。</p>
+<h2 id="那插入排序是稳定排序吗？"><a href="#那插入排序是稳定排序吗？" class="headerlink" title="那插入排序是稳定排序吗？"></a>那插入排序是稳定排序吗？</h2><p>如果碰见一个和插入元素相等的，那么插入元素把想插入的元素放在相等元素的后面。所以，相等元素的前后顺序没有改变，从原无序序列出去的顺序就是排好序后的顺序，所以插入排序是稳定的。</p>
+<h1 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h1><p>快速排序有两个方向，左边的i下标一直往右走，当<code>a[i] &lt;= a[center_index]</code>，其中<code>center_index</code>是中枢元素的数组下标，一般取为数组<strong>第0个元素</strong>。而右边的j下标一直往左走，当<code>a[j] &gt; a[center_index]</code>。如果i和j都走不动了，<code>i &lt;= j</code>，交换<code>a[i]</code>和<code>a[j]</code>,重复上面的过程，直到<code>i &gt; j</code>。 交换<code>a[j]</code>和<code>a[center_index]</code>，完成一趟快速排序。在中枢元素和<code>a[j]</code>交换的时候，很有可能把前面的元素的稳定性打乱，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">// 快速排序</span><br><span class="line">public static void sort(int[] a, int low, int height) &#123;</span><br><span class="line">        int i = low;</span><br><span class="line">        int j = height;</span><br><span class="line">        if (i &gt; j) &#123;    //放在k之前，防止下标越界</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        int k = a[i];</span><br><span class="line">        while (i &lt; j) &#123;   </span><br><span class="line">            while (i &lt; j &amp;&amp; a[j] &gt; k) &#123;    //找出小的数</span><br><span class="line">                j--;</span><br><span class="line">            &#125;</span><br><span class="line">            while (i &lt; j &amp;&amp; a[i] &lt;= k) &#123;  //找出大的数</span><br><span class="line">                i++;</span><br><span class="line">            &#125;</span><br><span class="line">            if (i &lt; j) &#123;   //交换</span><br><span class="line">                int swap = a[i];</span><br><span class="line">                a[i] = a[j];</span><br><span class="line">                a[j] = swap;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        //交换K</span><br><span class="line">        k = a[i];</span><br><span class="line">        a[i] = a[low];</span><br><span class="line">        a[low] = k;</span><br><span class="line">        //对左边进行排序,递归算法</span><br><span class="line">        sort(a, low, i - 1);</span><br><span class="line">        //对右边进行排序</span><br><span class="line">        sort(a, i + 1, height);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="那快速排序是稳定排序吗？"><a href="#那快速排序是稳定排序吗？" class="headerlink" title="那快速排序是稳定排序吗？"></a>那快速排序是稳定排序吗？</h2><blockquote>
+<p>比如序列为5 3 3 4 3 8 9 10 11，现在中枢元素5和3（第五个元素，下标从1开始计）交换就会把元素3的稳定性打乱，所以快速排序是一个不稳定的排序算法，不稳定发生在中枢元素和a[j] 交换的时刻。</p>
+</blockquote>
+<h1 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h1><p>归并排序是把序列递归地分成短序列，递归出口是短序列只有1个元素（认为直接有序）或者2个序列（1次比较和交换），然后把各个有序的段序列合并成一个有序的长序列，不断合并直到原序列全部排好序，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">// 归并排序</span><br><span class="line">public class Main &#123;</span><br><span class="line"> </span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		int[] arr = &#123;11,44,23,67,88,65,34,48,9,12&#125;;</span><br><span class="line">		int[] tmp = new int[arr.length];    //新建一个临时数组存放</span><br><span class="line">		mergeSort(arr,0,arr.length-1,tmp);</span><br><span class="line">		for(int i=0;i&lt;arr.length;i++)&#123;</span><br><span class="line">			System.out.print(arr[i]+&quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void merge(int[] arr,int low,int mid,int high,int[] tmp)&#123;</span><br><span class="line">		int i = 0;</span><br><span class="line">		int j = low,k = mid+1;  //左边序列和右边序列起始索引</span><br><span class="line">		while(j &lt;= mid &amp;&amp; k &lt;= high)&#123;</span><br><span class="line">			if(arr[j] &lt; arr[k])&#123;</span><br><span class="line">				tmp[i++] = arr[j++];</span><br><span class="line">			&#125;else&#123;</span><br><span class="line">				tmp[i++] = arr[k++];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		//若左边序列还有剩余，则将其全部拷贝进tmp[]中</span><br><span class="line">		while(j &lt;= mid)&#123;    </span><br><span class="line">			tmp[i++] = arr[j++];</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		while(k &lt;= high)&#123;</span><br><span class="line">			tmp[i++] = arr[k++];</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		for(int t=0;t&lt;i;t++)&#123;</span><br><span class="line">			arr[low+t] = tmp[t];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	public static void mergeSort(int[] arr,int low,int high,int[] tmp)&#123;</span><br><span class="line">		if(low&lt;high)&#123;</span><br><span class="line">			int mid = (low+high)/2;</span><br><span class="line">			mergeSort(arr,low,mid,tmp); //对左边序列进行归并排序</span><br><span class="line">			mergeSort(arr,mid+1,high,tmp);  //对右边序列进行归并排序</span><br><span class="line">			merge(arr,low,mid,high,tmp);    //合并两个有序序列</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="那归并排序是稳定排序吗？"><a href="#那归并排序是稳定排序吗？" class="headerlink" title="那归并排序是稳定排序吗？"></a>那归并排序是稳定排序吗？</h2><p>可以发现，在1个或2个元素时，1个元素不会交换，2个元素如果大小相等也没有人故意交换，这不会破坏稳定性。那么，在短的有序序列合并的过程中，稳定是是否受到破坏？没有，合并过程中我们可以保证如果两个当前元素相等时，我们把处在前面的序列的元素保存在结果序列的前面，这样就保证了稳定性。所以，归并排序也是<strong>稳定</strong>的排序算法。</p>
+<h1 id="基数排序（又称桶子法）"><a href="#基数排序（又称桶子法）" class="headerlink" title="基数排序（又称桶子法）"></a>基数排序（又称桶子法）</h1><p>基数排序是按照低位先排序，然后收集；再按照高位排序，然后再收集；依次类推，直到最高位。</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://s2.ax1x.com/2019/06/21/Vxw1G4.gif"
+                      alt="桶子法动画"
+                ></p>
+<p>代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">// 基数排序（又称桶子法）</span><br><span class="line">public static void myRadixSort(int[] arr) &#123;</span><br><span class="line">    int max = 0;</span><br><span class="line">//        找到最大的数</span><br><span class="line">    for (int i = 0; i &lt; arr.length; i++) &#123;</span><br><span class="line">        if (arr[i] &gt; max) &#123;</span><br><span class="line">            max = arr[i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">//        获取最大数的位数</span><br><span class="line">    int times = 0;</span><br><span class="line">    while (max &gt; 0) &#123;</span><br><span class="line">        max = max / 10;</span><br><span class="line">        times++;</span><br><span class="line">    &#125;</span><br><span class="line">//        创建一个二维的list</span><br><span class="line">    List&lt;ArrayList&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line">//  创建10个list（每一位有从0到9，一共10个数，每个list数组用来存放每次迭代中，0-9 每个数组中需要装入的数）</span><br><span class="line">    for (int i = 0; i &lt; 10; i++) &#123;</span><br><span class="line">        ArrayList list1 = new ArrayList();</span><br><span class="line">        //在二维数组中把这10个数组加进去，相当于二维数组的行，从0-9的行</span><br><span class="line">        list.add(list1);</span><br><span class="line">    &#125;</span><br><span class="line">//        进行times次分配和收集</span><br><span class="line">    for (int i = 0; i &lt; times; i++) &#123;</span><br><span class="line">//            分配</span><br><span class="line">        for (int j = 0; j &lt; arr.length; j++) &#123;</span><br><span class="line">            int x = arr[j] % (int) Math.pow(10, i + 1) / (int) Math.pow(10, i);</span><br><span class="line">            // list.get(x) 是在返回第0的这个行的list上面的数，然后再 add(arr[j]) 是把当前的这个数添加到末尾去</span><br><span class="line">            list.get(x).add(arr[j]);</span><br><span class="line">        &#125;</span><br><span class="line">//            收集        ------------&gt;   把这0-9共10个list里面的数值存到一个数组里面</span><br><span class="line">        int count = 0;</span><br><span class="line">        for (int j = 0; j &lt; 10; j++) &#123;</span><br><span class="line">            while (list.get(j).size() &gt; 0) &#123;</span><br><span class="line">                // 把list这个二维list中的第j行返回并赋值给list2</span><br><span class="line">                ArrayList&lt;Integer&gt; list2 = list.get(j);</span><br><span class="line">                //  把list2这个数组中的第0个位置的元素，赋值给arr[count]         </span><br><span class="line">                arr[count] = list2.get(0);</span><br><span class="line">                //   把list2这个数组中的第0个位置的元素删除掉，则后面的元素会自动移上来                      </span><br><span class="line">                list2.remove(0);</span><br><span class="line">                count++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="那基数排序是稳定排序吗？"><a href="#那基数排序是稳定排序吗？" class="headerlink" title="那基数排序是稳定排序吗？"></a>那基数排序是稳定排序吗？</h2><p>由上可得，基数排序基于分别排序，分别收集，所以其是稳定的<strong>排序算法</strong>。</p>
+<h1 id="希尔排序"><a href="#希尔排序" class="headerlink" title="希尔排序"></a>希尔排序</h1><p>希尔排序是按照不同步长对元素进行<strong>插入排序</strong>，当刚开始元素很无序的时候，步长最大，所以插入排序的元素个数很少，速度很快；当元素基本有序了，步长很小， 插入排序对于有序的序列效率很高，所以，希尔排序的时间复杂度会比O(n^2)好一些。代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 希尔排序</span><br><span class="line">int incrementNum = arr.length / 2;</span><br><span class="line">while (incrementNum &gt;= 1) &#123;</span><br><span class="line">    for (int i = 0; i &lt; arr.length; i++) &#123;</span><br><span class="line">        //进行插入排序</span><br><span class="line">        for (int j = i; j &lt; arr.length - incrementNum; j = j + incrementNum) &#123;</span><br><span class="line">            if (arr[j] &gt; arr[j + incrementNum]) &#123;</span><br><span class="line">                int temple = arr[j];</span><br><span class="line">                arr[j] = arr[j + incrementNum];</span><br><span class="line">                arr[j + incrementNum] = temple;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    //设置新的增量</span><br><span class="line">    incrementNum = incrementNum / 2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="那希尔排序是稳定排序吗？"><a href="#那希尔排序是稳定排序吗？" class="headerlink" title="那希尔排序是稳定排序吗？"></a>那希尔排序是稳定排序吗？</h2><p>由于多次插入排序，我们知道一次插入排序是稳定的，不会改变相同元素的相对顺序，但在不同的插入排序过程中，相同的元素可能在各自的插入排序中移动，最后其稳定性就会被打乱，所以shell排序是不稳定的。</p>
+<h1 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h1><p><a class="link"   target="_blank" rel="noopener" href="https://www.cnblogs.com/chengxiao/p/6129630.html" >堆排序<i class="fas fa-external-link-alt"></i></a>的基本思想是：将待排序序列构造成一个大顶堆，此时，整个序列的最大值就是堆顶的根节点。将其与末尾元素进行交换，此时末尾就为最大值。然后将剩余n-1个元素重新构造成一个堆，这样会得到n个元素的次小值。如此反复执行，便能得到一个有序序列了,代码举例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">// 堆排序</span><br><span class="line">public static void sort(int[] arr) &#123;</span><br><span class="line">    //1.构建大顶堆</span><br><span class="line">    for (int i = arr.length / 2 - 1; i &gt;= 0; i--) &#123;</span><br><span class="line">        //从第一个非叶子结点从下至上，从右至左调整结构</span><br><span class="line">        adjustHeap(arr, i, arr.length);</span><br><span class="line">    &#125;</span><br><span class="line">    //2.调整堆结构+交换堆顶元素与末尾元素</span><br><span class="line">    for (int j = arr.length - 1; j &gt; 0; j--) &#123;</span><br><span class="line">        swap(arr, 0, j);//将堆顶元素与末尾元素进行交换</span><br><span class="line">        adjustHeap(arr, 0, j);//重新对堆进行调整</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">* 调整大顶堆（仅是调整过程，建立在大顶堆已构建的基础上）</span><br><span class="line">*</span><br><span class="line">* @param arr</span><br><span class="line">* @param i</span><br><span class="line">* @param length</span><br><span class="line">*/</span><br><span class="line">public static void adjustHeap(int[] arr, int i, int length) &#123;</span><br><span class="line">    int temp = arr[i];//先取出当前元素i</span><br><span class="line">    for (int k = i * 2 + 1; k &lt; length; k = k * 2 + 1) &#123;//从i结点的左子结点开始，也就是2i+1处开始</span><br><span class="line">        if (k + 1 &lt; length &amp;&amp; arr[k] &lt; arr[k + 1]) &#123;//如果左子结点小于右子结点，k指向右子结点</span><br><span class="line">            k++;</span><br><span class="line">        &#125;</span><br><span class="line">        if (arr[k] &gt; temp) &#123;//如果子节点大于父节点，将子节点值赋给父节点（不用进行交换）</span><br><span class="line">            arr[i] = arr[k];</span><br><span class="line">            i = k;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    arr[i] = temp;//将temp值放到最终的位置</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">* 交换元素</span><br><span class="line">*</span><br><span class="line">* @param arr</span><br><span class="line">* @param a</span><br><span class="line">* @param b</span><br><span class="line">*/</span><br><span class="line">public static void swap(int[] arr, int a, int b) &#123;</span><br><span class="line">    int temp = arr[a];</span><br><span class="line">    arr[a] = arr[b];</span><br><span class="line">    arr[b] = temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="那堆排序是稳定排序吗？"><a href="#那堆排序是稳定排序吗？" class="headerlink" title="那堆排序是稳定排序吗？"></a>那堆排序是稳定排序吗？</h2><p>我们知道堆的结构是节点i的孩子为<code>2 * i</code>和<code>2 * i + 1</code>节点，大顶堆要求父节点大于等于其2个子节点，小顶堆要求父节点小于等于其2个子节点。在一个长为n 的序列，堆排序的过程是从第<code>n / 2</code>开始和其子节点共3个值选择最大（大顶堆）或者最小（小顶堆），这3个元素之间的选择当然不会破坏稳定性。但当为<code>n / 2 - 1， n / 2 - 2， ... 1</code>这些个父节点选择元素时，就会破坏稳定性。有可能第<code>n / 2</code>个父节点交换把后面一个元素交换过去了，而第<code>n / 2 - 1</code>个父节点把后面一个相同的元素没 有交换，那么这2个相同的元素之间的稳定性就被破坏了。所以，堆排序不是稳定的排序算法。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li>不稳定的排序: 选择排序、快速排序、希尔排序、堆排序</li>
+<li>稳定排序：冒泡排序、插入排序、归并排序、基数排序</li>
+</ul>
+<h3 id="欢迎关注获取更多资源"><a href="#欢迎关注获取更多资源" class="headerlink" title="欢迎关注获取更多资源"></a>欢迎关注获取更多资源</h3><p><img  
+                     lazyload
+                     alt="image"
+                     data-src="/images/article/coderxm_qrcode.jpeg"
+                      alt="程序员小明"
+                ></p>
+
+                </div>
+
+                
+                    <div class="post-copyright-info">
+                        <div class="article-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="post-title border-box text-ellipsis">
+                【面试】最容易被问到的N种排序算法！
+            </div>
+
+            <div class="post-link border-box text-ellipsis">
+                p/7836.html
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">小明</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2019-06-20 20:34</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-content="复制版权信息" data-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                    </div>
+                
+
+                
+                    <ul class="post-tags-box">
+                        
+                            <li class="tag-item">
+                                <a href="/tags/%E9%9D%A2%E8%AF%95/"><i class="icon fas fa-hashtag"></i>面试</a>&nbsp;
+                            </li>
+                        
+                            <li class="tag-item">
+                                <a href="/tags/%E7%AE%97%E6%B3%95/"><i class="icon fas fa-hashtag"></i>算法</a>&nbsp;
+                            </li>
+                        
+                    </ul>
+                
+
+                
+                    <div class="article-nav">
+                        
+                            <div class="article-prev">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/p/1b5.html"
+                                   title="mybatis常用总结"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                      <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                            <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">mybatis常用总结</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="article-next">
+                                <a class="next"
+                                   rel="next"
+                                   href="/p/17df.html"
+                                   title="阿里云企业云邮箱收发设置"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">阿里云企业云邮箱收发设置</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                            <span class="right arrow-icon flex-center">
+                                      <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <script data-pjax src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"></script>
+        <div id="waline-comment"></div>
+        <script data-pjax>
+          function loadWaline() {
+            Waline.init({
+              el: '#waline-comment',
+              serverURL: 'https://comment.mynamecoder.com',
+              lang: 'zh-CN' || 'zh-CN',
+              comment: '.post-comments-count',
+              reaction: 'true' === 'true'
+            })
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              loadWaline()
+            }, 1000)
+          } else {
+            window.addEventListener('DOMContentLoaded', loadWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%8E%92%E5%BA%8F%E7%A8%B3%E5%AE%9A%E6%80%A7%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-text">关于排序稳定性的定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8E%B0%E5%AE%9E%E7%94%9F%E6%B4%BB%E4%B8%AD%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%A6%82%E4%BD%95%E8%A1%A8%E7%8E%B0%E5%91%A2%EF%BC%9F"><span class="nav-text">现实生活中稳定排序如何表现呢？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F"><span class="nav-text">选择排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F%E6%98%AF%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%90%97%EF%BC%9F"><span class="nav-text">那选择排序是稳定排序吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F"><span class="nav-text">冒泡排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%E6%98%AF%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%90%97%EF%BC%9F"><span class="nav-text">那冒泡排序是稳定排序吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F"><span class="nav-text">插入排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%E6%98%AF%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%90%97%EF%BC%9F"><span class="nav-text">那插入排序是稳定排序吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F"><span class="nav-text">快速排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E6%98%AF%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%90%97%EF%BC%9F"><span class="nav-text">那快速排序是稳定排序吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F"><span class="nav-text">归并排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F%E6%98%AF%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%90%97%EF%BC%9F"><span class="nav-text">那归并排序是稳定排序吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%EF%BC%88%E5%8F%88%E7%A7%B0%E6%A1%B6%E5%AD%90%E6%B3%95%EF%BC%89"><span class="nav-text">基数排序（又称桶子法）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%E6%98%AF%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%90%97%EF%BC%9F"><span class="nav-text">那基数排序是稳定排序吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F"><span class="nav-text">希尔排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F%E6%98%AF%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%90%97%EF%BC%9F"><span class="nav-text">那希尔排序是稳定排序吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A0%86%E6%8E%92%E5%BA%8F"><span class="nav-text">堆排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E5%A0%86%E6%8E%92%E5%BA%8F%E6%98%AF%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%90%97%EF%BC%9F"><span class="nav-text">那堆排序是稳定排序吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AC%A2%E8%BF%8E%E5%85%B3%E6%B3%A8%E8%8E%B7%E5%8F%96%E6%9B%B4%E5%A4%9A%E8%B5%84%E6%BA%90"><span class="nav-text">欢迎关注获取更多资源</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box shields">
+        
+            <div class="info-item">
+                
+                <a class="shields-item">
+                    <img src="https://img.shields.io/badge/Since-2018_--_2025-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item" href="/">
+                        <img src="https://img.shields.io/badge/WebMaster-小明-dodgerblue?style=flat-square">
+                    </a>
+                
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       href="https://beian.miit.gov.cn"
+                    >
+                        <img src="https://img.shields.io/badge/ICP-京ICP备19029015号-dodgerblue?style=flat-square">
+                    </a>
+                
+                <a class="shields-item" href="https://hexo.io" target="_blank">
+                    <img src="https://img.shields.io/badge/Powered_by-Hexo-dodgerblue?style=flat-square">
+                </a>
+                <a class="shields-item" href="https://github.com/XPoet/hexo-theme-keep" target="_blank">
+                    <img class="shields-keep-version" src="https://img.shields.io/badge/Theme-Keep-dodgerblue?style=flat-square">
+                </a>
+                
+                    <a class="shields-item"
+                       target="_blank"
+                       rel="nofollow"
+                       href="https://github.com/WhenCoding"
+                    >
+                        <img src="https://img.shields.io/badge/Deploy_in-GitHub Pages-dodgerblue?style=flat-square">
+                    </a>
+                
+            </div>
+            
+                <div class="info-item">
+                    
+                        
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item shields">
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-box border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%8E%92%E5%BA%8F%E7%A8%B3%E5%AE%9A%E6%80%A7%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-text">关于排序稳定性的定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8E%B0%E5%AE%9E%E7%94%9F%E6%B4%BB%E4%B8%AD%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%A6%82%E4%BD%95%E8%A1%A8%E7%8E%B0%E5%91%A2%EF%BC%9F"><span class="nav-text">现实生活中稳定排序如何表现呢？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F"><span class="nav-text">选择排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F%E6%98%AF%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%90%97%EF%BC%9F"><span class="nav-text">那选择排序是稳定排序吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F"><span class="nav-text">冒泡排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%E6%98%AF%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%90%97%EF%BC%9F"><span class="nav-text">那冒泡排序是稳定排序吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F"><span class="nav-text">插入排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%E6%98%AF%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%90%97%EF%BC%9F"><span class="nav-text">那插入排序是稳定排序吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F"><span class="nav-text">快速排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E6%98%AF%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%90%97%EF%BC%9F"><span class="nav-text">那快速排序是稳定排序吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F"><span class="nav-text">归并排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F%E6%98%AF%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%90%97%EF%BC%9F"><span class="nav-text">那归并排序是稳定排序吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%EF%BC%88%E5%8F%88%E7%A7%B0%E6%A1%B6%E5%AD%90%E6%B3%95%EF%BC%89"><span class="nav-text">基数排序（又称桶子法）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%E6%98%AF%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%90%97%EF%BC%9F"><span class="nav-text">那基数排序是稳定排序吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F"><span class="nav-text">希尔排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F%E6%98%AF%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%90%97%EF%BC%9F"><span class="nav-text">那希尔排序是稳定排序吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A0%86%E6%8E%92%E5%BA%8F"><span class="nav-text">堆排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%A3%E5%A0%86%E6%8E%92%E5%BA%8F%E6%98%AF%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F%E5%90%97%EF%BC%9F"><span class="nav-text">那堆排序是稳定排序吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AC%A2%E8%BF%8E%E5%85%B3%E6%B3%A8%E8%8E%B7%E5%8F%96%E6%9B%B4%E5%A4%9A%E8%B5%84%E6%BA%90"><span class="nav-text">欢迎关注获取更多资源</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/local-search.js"></script>
+
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts pjax">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/toc.js"></script>
+        
+    
+    
+    
+</div>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.7/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>
